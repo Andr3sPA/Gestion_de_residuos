@@ -24,6 +24,10 @@ const User = new Schema({
     enum: ["admin", "user", "guest"],
     default: "user",
   },
+  password:{
+    type:String,
+    required: [true, "La contraseña es obligatoria"]
+  }
 });
 // Export model
 module.exports = mongoose.model("User", User);
