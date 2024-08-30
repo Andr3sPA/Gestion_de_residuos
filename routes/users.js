@@ -3,10 +3,10 @@ var cookieParser = require('cookie-parser');
 var bcrypt = require('bcrypt');  // Asegúrate de importar bcrypt
 var router = express.Router();
 var User = require('../models/user');
-
+const jwt = require('jsonwebtoken');
+const verifyToken = require('./validate-token');
 router.use(cookieParser());
-
-router.get('/cookie', function(req, res) {
+router.get('/cookie', verifyToken, function(req, res) {
   res.cookie("cookieTest", 'cookie_value').send('Cookie is set');
 });
 
@@ -36,10 +36,21 @@ router.post('/login', async function(req, res, next) {
     if (!user || !(await bcrypt.compare(data.password, user.password))) {
       return res.status(401).json({ message: 'Invalid email or password' });
     }
-    res.send('Login successful');
+        // create token
+    const token = jwt.sign({
+        name: user.username,
+        id: user._id
+    }, process.env.TOKEN_SECRET)
+    res.cookie("jwt", token).send('Cookie is set');
   } catch (error) {
     next(error);
   }
 });
+router.post('/logout', function (req, res) {
 
+
+    // Clearing the cookie
+    res.clearCookie('jwt').send('Cookie cleared');
+
+});
 module.exports = router;
