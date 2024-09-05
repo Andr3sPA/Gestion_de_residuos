@@ -12,7 +12,7 @@ router.get('/cookie', verifyToken, function(req, res) {
 
 /* GET users listing. */
 router.get('/', function(req, res, next) {
-  res.send('respond with a resource');
+  res.cookie("jwt", "blasadbaikuhj").send('Cookie is set');
 });
 
 /* POST register user. */
