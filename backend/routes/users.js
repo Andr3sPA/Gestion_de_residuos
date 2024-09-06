@@ -31,26 +31,27 @@ router.post('/register', async function(req, res, next) {
 /* POST login user. */
 router.post('/login', async function(req, res, next) {
   const data = req.body;
+  console.log(data)
   try {
     const user = await User.findOne({ email: data.email }).exec();
     if (!user || !(await bcrypt.compare(data.password, user.password))) {
       return res.status(401).json({ message: 'Invalid email or password' });
     }
-        // create token
+    // create token
     const token = jwt.sign({
-        name: user.username,
-        id: user._id
-    }, process.env.TOKEN_SECRET)
+      name: user.username,
+      id: user._id
+    }, "andres")
     res.cookie("jwt", token).send('Cookie is set');
   } catch (error) {
     next(error);
   }
 });
-router.post('/logout', function (req, res) {
+router.post('/logout', function(req, res) {
 
 
-    // Clearing the cookie
-    res.clearCookie('jwt').send('Cookie cleared');
+  // Clearing the cookie
+  res.clearCookie('jwt').send('Cookie cleared');
 
 });
 module.exports = router;

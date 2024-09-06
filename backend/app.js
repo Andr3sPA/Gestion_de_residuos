@@ -1,6 +1,6 @@
 var createError = require('http-errors');
 var express = require('express');
- const cors = require('cors');
+const cors = require('cors');
 var path = require('path');
 var logger = require('morgan');
 require('dotenv').config()
@@ -12,6 +12,10 @@ var app = express();
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'pug');
 
+app.use(cors({
+  origin: "http://localhost:3000",
+  credentials: true
+}))
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
@@ -37,7 +41,7 @@ app.use(function(err, req, res, next) {
 
 const mongoose = require("mongoose");
 mongoose.set("strictQuery", false);
-const mongoDB = process.env.mongoDB_URL;
+const mongoDB = "mongodb://localhost:27017";
 
 main().catch((err) => console.log(err));
 async function main() {
@@ -45,4 +49,5 @@ async function main() {
 }
 
 app.use(cors());
+app.listen(30001)
 module.exports = app;
