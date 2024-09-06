@@ -31,7 +31,6 @@ router.post('/register', async function(req, res, next) {
 /* POST login user. */
 router.post('/login', async function(req, res, next) {
   const data = req.body;
-  console.log(data)
   try {
     const user = await User.findOne({ email: data.email }).exec();
     if (!user || !(await bcrypt.compare(data.password, user.password))) {
@@ -41,7 +40,7 @@ router.post('/login', async function(req, res, next) {
     const token = jwt.sign({
       name: user.username,
       id: user._id
-    }, "andres")
+    }, process.env.TOKEN_SECRET)
     res.cookie("jwt", token).send('Cookie is set');
   } catch (error) {
     next(error);
