@@ -1,13 +1,14 @@
 const mongoose = require("mongoose");
 
 const Schema = mongoose.Schema;
-const User = new Schema({
+const UserSchema = new Schema({
   username: {
     type: String,
     required: [true, "El nombre de usuario es obligatorio"],
     minlength: [3, "El nombre de usuario es muy corto"],
     maxlength: [20, "El nombre de usuario es muy largo"],
   },
+  company: { type: Schema.Types.ObjectId, ref: "Company", required: true }, // Relación con Company
   age: {
     type: Number,
     min: [18, "Debes tener al menos 18 años"],
@@ -24,10 +25,10 @@ const User = new Schema({
     enum: ["admin", "user", "guest"],
     default: "user",
   },
-  password:{
-    type:String,
+  password: {
+    type: String,
     required: [true, "La contraseña es obligatoria"]
   }
 });
-// Export model
-module.exports = mongoose.model("User", User);
+
+module.exports = mongoose.model("User", UserSchema);

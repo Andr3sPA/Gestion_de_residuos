@@ -6,14 +6,10 @@ var logger = require('morgan');
 require('dotenv').config()
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
-var bodyParser = require('body-parser');
-var cookieParser = require('cookie-parser');
-var csrf = require('csurf');
+var companyRouter = require('./routes/company');
+
 var app = express();
-app.use(bodyParser.urlencoded({ extended: false }));
-app.use(cookieParser(process.env.TOKEN_SECRET));
-var csrfProtection = csrf({ cookie: true });
-app.use(csrfProtection);
+
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'pug');
@@ -29,6 +25,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
+app.use('/company', companyRouter);
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
   next(createError(404));
