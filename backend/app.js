@@ -6,8 +6,14 @@ var logger = require('morgan');
 require('dotenv').config()
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
-
+var bodyParser = require('body-parser');
+var cookieParser = require('cookie-parser');
+var csrf = require('csurf');
 var app = express();
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(cookieParser(process.env.TOKEN_SECRET));
+var csrfProtection = csrf({ cookie: true });
+app.use(csrfProtection);
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'pug');
@@ -41,13 +47,11 @@ app.use(function(err, req, res, next) {
 
 const mongoose = require("mongoose");
 mongoose.set("strictQuery", false);
-const mongoDB = "mongodb://localhost:27017";
+const mongoDB = process.env.mongoDB_URL;
 
 main().catch((err) => console.log(err));
 async function main() {
   await mongoose.connect(mongoDB);
 }
 
-app.use(cors());
-app.listen(30001)
 module.exports = app;
