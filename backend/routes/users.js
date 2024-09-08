@@ -1,21 +1,22 @@
-var express = require('express');
-var cookieParser = require('cookie-parser');
-var bcrypt = require('bcrypt');  // Asegúrate de importar bcrypt
-var router = express.Router();
-var User = require('../models/User');
-var Company = require('../models/company');
+const { Router } = require('express');
+const cookieParser = require('cookie-parser');
+const bcrypt = require('bcrypt');  // Asegúrate de importar bcrypt
+const User = require('../models/User');
+const Company = require('../models/company');
 const jwt = require('jsonwebtoken');
 const verifyToken = require('./validate-token');
-router.use(cookieParser());
-router.get('/cookie', verifyToken, function(req, res) {
-  res.send({response:jwt.decode(req.cookies.jwt)});
 
-});
+const router = Router();
+router.use(cookieParser());
+
+// router.get('/cookie', verifyToken, function(req, res) {
+//   res.send({response:jwt.decode(req.cookies.jwt)});
+// });
 
 /* GET users listing. */
-router.get('/', function(req, res, next) {
-  res.cookie("jwt", "blasadbaikuhj").send('Cookie is set');
-});
+// router.get('/', function(req, res, next) {
+//   res.cookie("jwt", "blasadbaikuhj").send('Cookie is set');
+// });
 
 /* POST register user. */
 router.post('/register', async function(req, res, next) {
@@ -51,6 +52,7 @@ router.post('/register', async function(req, res, next) {
 /* POST login user. */
 router.post('/login', async function(req, res, next) {
   const data = req.body;
+  console.log(data)
   try {
     const user = await User.findOne({ email: data.email }).exec();
     if (!user || !(await bcrypt.compare(data.password, user.password))) {
@@ -61,21 +63,21 @@ router.post('/login', async function(req, res, next) {
       name: user.username,
       id: user._id
     }, process.env.TOKEN_SECRET)
-    res.cookie("jwt", token,{
+
+    res.cookie("jwt", token, {
       httpOnly: true,  // La cookie no es accesible desde el lado del cliente (JavaScript)
       secure: true,    // Solo se envía en conexiones HTTPS
       sameSite: 'Strict', // Evita ataques CSRF
       maxAge: 3600000   // Expira en 1 hora
-    }).send('Cookie is set');
+    }).status(200).send("logged successfully")
+
   } catch (error) {
     next(error);
   }
 });
-router.post('/logout', function(req, res) {
 
-
-  // Clearing the cookie
-  res.clearCookie('jwt').send('Cookie cleared');
-
+router.post('/logout', verifyToken, function(req, res) {
+  res.clearCookie('jwt').status(200).send("logout");
 });
+
 module.exports = router;
