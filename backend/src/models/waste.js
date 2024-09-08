@@ -1,3 +1,5 @@
+const { Schema, model } = require("mongoose");
+
 const WasteSchema = new Schema({
   type: {
     type: String,
@@ -10,4 +12,4 @@ const WasteSchema = new Schema({
   company: { type: Schema.Types.ObjectId, ref: "Company", required: true }, // Empresa que sube el residuo
 });
 
-module.exports = mongoose.model("Waste", WasteSchema);
+module.exports = model("Waste", WasteSchema);

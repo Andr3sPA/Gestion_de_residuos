@@ -1,6 +1,8 @@
-var express = require('express');
-var router = express.Router();
-var Company = require('../models/company');
+const { Router } = require('express');
+
+const router = Router();
+const Company = require('../models/company');
+
 router.post('/register', async function(req, res, next) {
   const data = req.body;
   try {

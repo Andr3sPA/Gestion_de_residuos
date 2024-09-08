@@ -1,6 +1,5 @@
-const mongoose = require("mongoose");
+const { Schema, model } = require("mongoose");
 
-const Schema = mongoose.Schema;
 const CompanySchema = new Schema({
   name: {
     type: String,
@@ -10,5 +9,5 @@ const CompanySchema = new Schema({
   wastes: [{ type: Schema.Types.ObjectId, ref: "Waste" }] // Relación con los residuos
 });
 
-module.exports = mongoose.model("Company", CompanySchema);
+module.exports = model("Company", CompanySchema);
 

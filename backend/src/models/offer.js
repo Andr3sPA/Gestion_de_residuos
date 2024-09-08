@@ -1,3 +1,5 @@
+const { Schema, model } = require("mongoose");
+
 const OfferSchema = new Schema({
   description: {
     type: String,
@@ -14,4 +16,4 @@ const OfferSchema = new Schema({
   }
 });
 
-module.exports = mongoose.model("Offer", OfferSchema);
+module.exports = model("Offer", OfferSchema);
