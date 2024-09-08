@@ -10,6 +10,7 @@ const OfferSchema = new Schema({
   waste: { type: Schema.Types.ObjectId, ref: "Waste", required: true }, // Residuos relacionados
   company_seller: { type: Schema.Types.ObjectId, ref: "Company", required: true }, // Empresa del vendedor
   company_buyer: { type: Schema.Types.ObjectId, ref: "Company", required: false }, // Empresa del comprador
+
   createdAt: {
     type: Date,
     default: Date.now

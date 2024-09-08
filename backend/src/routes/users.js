@@ -10,8 +10,8 @@ const router = Router();
 router.use(cookieParser());
 
 // router.get('/cookie', verifyToken, function(req, res) {
-//   res.send({response:jwt.decode(req.cookies.jwt)});
-// });
+// //   res.send({response:jwt.decode(req.cookies.jwt)});
+// // });
 
 /* GET users listing. */
 // router.get('/', function(req, res, next) {
@@ -60,8 +60,10 @@ router.post('/login', async function(req, res, next) {
     }
     // create token
     const token = jwt.sign({
-      name: user.username,
-      id: user._id
+      email: user.email,
+      id: user._id,
+      role:user.role,
+      company_id:user.company
     }, process.env.TOKEN_SECRET)
 
     res.cookie("jwt", token, {
