@@ -14,4 +14,10 @@ router.post('/register', async function(req, res, next) {
   }
 });
 
+router.get("", (req, res, next) => {
+  res.send({
+    companies: Company.find({})
+  })
+})
+
 module.exports = router;

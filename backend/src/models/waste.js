@@ -14,10 +14,9 @@ const WasteSchema = new Schema({
     required: [true, "La unidad de medida es obligatoria"],
   },
   quantity: {
-    type: String,
+    type: Number,
     required: [true, "La cantidad del residuo es obligatoria"],
-  }
-
+  },
   company: { type: Schema.Types.ObjectId, ref: "Company", required: true }, // Empresa que sube el residuo
 });
 

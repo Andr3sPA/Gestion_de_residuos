@@ -6,12 +6,23 @@ const OfferSchema = new Schema({
     required: [true, "La descripción de la oferta es obligatoria"],
   },
   seller: { type: Schema.Types.ObjectId, ref: "User", required: true }, // Usuario vendedor
-  buyer: { type: Schema.Types.ObjectId, ref: "User", required: false },  // Usuario comprador
   waste: { type: Schema.Types.ObjectId, ref: "Waste", required: true }, // Residuos relacionados
   company_seller: { type: Schema.Types.ObjectId, ref: "Company", required: true }, // Empresa del vendedor
-  company_buyer: { type: Schema.Types.ObjectId, ref: "Company", required: false }, // Empresa del comprador
-
-  createdAt: {
+  price: {
+    type: Number,
+    required: true
+  },
+  quantity: {
+    type: Number,
+    required: true
+  },
+  status: {
+    type: String,
+    required: true,
+    default: "available",
+    enum: ["available", "expired", "sold"]
+  },
+  created_at: {
     type: Date,
     default: Date.now
   }

@@ -42,7 +42,7 @@ router.post('/register', async function(req, res, next) {
 
     const savedUser = await user.save();
     company.employees.push(savedUser._id);
-    await companny.save()
+    await company.save()
     res.send('User registered successfully');
   } catch (error) {
     next(error);
@@ -62,8 +62,8 @@ router.post('/login', async function(req, res, next) {
     const token = jwt.sign({
       email: user.email,
       id: user._id,
-      role:user.role,
-      company_id:user.company
+      role: user.role,
+      company_id: user.company
     }, process.env.TOKEN_SECRET)
 
     res.cookie("jwt", token, {
