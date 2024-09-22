@@ -1,11 +1,18 @@
 'use client'
 
-import React from "react"
+import React, { useEffect } from "react"
 import { useRouter } from "next/navigation"
 import { Button } from "@chakra-ui/react"
 
 export default function Home() {
   const router = useRouter()
+
+  useEffect(() => {
+    fetch("/api").then((res) => console.log(res.json()))
+    fetch("/api", {
+      method: "POST"
+    })
+  })
 
   return (
     <div className="h-screen grid place-content-center">
