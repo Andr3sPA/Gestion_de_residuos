@@ -3,14 +3,16 @@
 import React, { useEffect } from "react"
 import { useRouter } from "next/navigation"
 import { Button } from "@chakra-ui/react"
+import axios from "axios"
 
 export default function Home() {
   const router = useRouter()
 
   useEffect(() => {
-    fetch("/api").then((res) => console.log(res.json()))
-    fetch("/api", {
-      method: "POST"
+    axios.post("/api/login", {
+      email: "nox",
+      password: "tampokc",
+      age: 2,
     })
   })
 

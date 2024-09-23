@@ -8,11 +8,93 @@ datasource db {
   directUrl = env("POSTGRES_URL_NON_POOLING") // uses a direct connection
 }
 
+model CounterOffer {
+  id           String             @id @default(cuid())
+  description  String
+  buyer        User               @relation(fields: [buyerId], references: [id])
+  buyerId      String
+  offer        Offer              @relation(fields: [offerId], references: [id])
+  offerId      String
+  companyBuyer Company            @relation(fields: [companyId], references: [id])
+  companyId    Int
+  price        Float
+  createdAt    DateTime           @default(now())
+  status       CounterOfferStatus @default(waiting)
+  Sale         Sale[]
+}
+
+model Offer {
+  id            String         @id @default(cuid())
+  description   String
+  companySeller Company        @relation(fields: [companyId], references: [id])
+  companyId     Int
+  seller        User           @relation(fields: [sellerId], references: [id])
+  sellerId        String
+  waste         Waste          @relation(fields: [wasteId], references: [id])
+  wasteId       String
+  price         Float
+  quantity      Int
+  createdAt     DateTime       @default(now())
+  status        OfferStatus    @default(available)
+  CounterOffer  CounterOffer[]
+  Sale          Sale[]
+}
+
+model Company {
+  id           Int            @id @default(autoincrement())
+  name         String
+  description  String
+  users        User[]
+  wastes       Waste[]
+  CounterOffer CounterOffer[]
+  Offer        Offer[]
+}
+
+model Sale {
+  id             String       @id @default(cuid())
+  counterOffer   CounterOffer @relation(fields: [counterOfferId], references: [id])
+  counterOfferId String
+  offer          Offer        @relation(fields: [offerId], references: [id])
+  offerId        String
+  price          Float
+  createdAt      DateTime     @default(now())
+}
+
 model User {
-  id            String    @default(cuid()) @id
-  name          String?
-  email         String?   @unique
-  createdAt     DateTime  @default(now()) @map(name: "created_at")
-  updatedAt     DateTime  @updatedAt @map(name: "updated_at")
-  @@map(name: "users")
+  id           String         @id @default(cuid())
+  age          Int
+  firstName    String
+  lastName     String
+  email        String         @unique
+  role         String         @default("user")
+  password     String
+  company      Company        @relation(fields: [companyId], references: [id])
+  companyId    Int
+  CounterOffer CounterOffer[]
+  Offer        Offer[]
+}
+
+model Waste {
+  id          String  @id @default(cuid())
+  type        String
+  description String
+  measureUnit String
+  quantity    Float
+  company     Company @relation(fields: [companyId], references: [id])
+  companyId   Int
+  Offer       Offer[]
+}
+
+// Enum for CounterOfferStatus
+enum CounterOfferStatus {
+  waiting
+  accepted
+  rejected
+}
+
+// Enum for OfferStatus
+enum OfferStatus {
+  available
+  expired
+  sold
 }
