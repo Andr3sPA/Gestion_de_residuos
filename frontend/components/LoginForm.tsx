@@ -1,72 +1,66 @@
+import { useAuth } from "@/contexts/Auth";
 import { InfoOutlineIcon } from "@chakra-ui/icons";
-import { Box, Button, ButtonGroup, Collapse, Divider, Flex, FormControl, FormErrorMessage, FormLabel, Input } from "@chakra-ui/react";
-import axios from "axios";
+import { Alert, Box, Button, ButtonGroup, Collapse, Divider, Flex, FormControl, FormErrorMessage, FormLabel, Input } from "@chakra-ui/react";
 import { useState } from "react";
 import { isEmail } from "validator";
-export default function LoginForm() {
+
+export default function LoginForm({ popoverOnClose }:
+  { popoverOnClose: any }) {
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
-
-  const handleSubmit = async (e: any) => {
-    e.preventDefault();
-    const response = await axios.post('http://localhost:3001/users/login',
-      {
-        email,
-        password
-      },
-      { withCredentials: true }
-    )
-      .then((response) => {
-        console.log('Form data submitted successfully:', response.data);
-      })
-      .catch((error) => {
-        console.error('Error submitting form data:', error);
-        if (error.response) {
-          console.error('Response data:', error.response.data);
-          // Aquí podrías mostrar un mensaje de error específico en tu interfaz de usuario
-        } else if (error.request) {
-          console.error('Request made but no response received:', error.request);
-          // Aquí podrías manejar errores relacionados con la solicitud
-        } else {
-          console.error('Error setting up the request:', error.message);
-          // Aquí podrías manejar otros tipos de errores
-        }
+  const [response, setResponse] = useState({ status: "pending", info: "" })
+  const auth = useAuth()
 
 
-      })
+  const handleSubmit = async () => {
+    setResponse({ status: "loading", info: "" })
+    auth.login({ email, password }).then(() => {
+      popoverOnClose()
+      setResponse({ status: "ok", info: "" })
+    }
+    ).catch((err) => {
+      const res = { status: "error", info: "" }
+      res.info = err.response ? err.response.data.error : "Error al enviar los datos"
+      setResponse(res)
+    })
   }
 
   const invalidPassword = password.length > 0 && password.length < 8
 
   return (
-    <Flex flexDir={"column"} gap={"1rem"}>
+    <Flex as={'form'} flexDir={"column"} gap={"1rem"}>
       <FormControl isRequired isInvalid={email.length > 0 && !isEmail(email)} >
         <FormLabel>Email</FormLabel>
         <Input onChange={(e: any) => setEmail(e.target.value)}
-          inputMode="email" required placeholder="example@mail.com" />
+          inputMode="email" autoComplete="email" required placeholder="example@mail.com" />
       </FormControl>
       <FormControl isRequired isInvalid={invalidPassword}>
-        <FormLabel>Password</FormLabel>
+        <FormLabel>Contraseña</FormLabel>
         <Input onChange={(e: any) => setPassword(e.target.value)}
-          inputMode="text" type="password" required placeholder="********" />
+          inputMode="text" type="password" autoComplete="current-password" required placeholder="********" />
         <Collapse in={invalidPassword} animateOpacity
           transition={{ exit: { duration: .75 }, enter: { duration: .75 } }}
         >
           <Box>
             <FormErrorMessage alignItems={"baseline"}>
               <InfoOutlineIcon marginRight={"1rem"} marginTop={"1rem"} />
-              Type at least 8 characteres
+              Escriba al menos 8 caracteres
             </FormErrorMessage>
           </Box>
         </Collapse>
         <Divider className="my-4" />
         <ButtonGroup className="flex flex-row w-full place-content-center">
           <Button colorScheme="blue" variant={"outline"}>
-            Register
+            Registrarse
           </Button>
-          <Button onClick={handleSubmit} colorScheme="blue">Proceed</Button>
+          <Button onClick={handleSubmit} isLoading={response.status === "loading"}
+            isDisabled={invalidPassword || !isEmail(email) || email.length <= 0 || password.length <= 0}
+            width={"7rem"} colorScheme="blue">Enviar</Button>
         </ButtonGroup>
       </FormControl>
+      <Collapse in={response.status === "error"}>
+        <Alert status="error">{response.info}</Alert>
+      </Collapse>
     </Flex>
   )
 }

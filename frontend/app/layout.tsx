@@ -6,6 +6,7 @@ import { Avatar, Button, Divider, Drawer, DrawerBody, DrawerCloseButton, DrawerC
 import { HamburgerIcon } from "@chakra-ui/icons";
 import React from "react";
 import LoginForm from "@/components/LoginForm";
+import Profile from "@/components/Profile";
 
 export default function RootLayout({
   children,
@@ -31,34 +32,7 @@ export default function RootLayout({
               icon={<HamburgerIcon color={"white"} />}
             />
             <Spacer />
-            <Popover
-              placement="bottom-start"
-            >
-              <PopoverTrigger>
-                <IconButton
-                  aria-label="Avatar"
-                  variant={"ghost"}
-                  colorScheme="blackAlpha"
-                  isRound
-                  size={"lg"}
-                  icon={<Avatar boxSize={"2rem"} />}
-                />
-              </PopoverTrigger>
-              <PopoverContent
-                className="py-4"
-              >
-                <Flex direction={"column"} align={"center"}>
-                  <PopoverHeader>
-                    <Heading size={"md"}>
-                      Log in
-                    </Heading>
-                  </PopoverHeader>
-                  <PopoverBody>
-                    <LoginForm />
-                  </PopoverBody>
-                </Flex>
-              </PopoverContent>
-            </Popover>
+            <Profile />
           </Flex>
           <Drawer
             isOpen={isOpen}

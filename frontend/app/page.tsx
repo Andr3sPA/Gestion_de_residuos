@@ -8,14 +8,6 @@ import axios from "axios"
 export default function Home() {
   const router = useRouter()
 
-  useEffect(() => {
-    axios.post("/api/login", {
-      email: "nox",
-      password: "tampokc",
-      age: 2,
-    })
-  })
-
   return (
     <div className="h-screen grid place-content-center">
       <div className="flex flex-col gap-2">
