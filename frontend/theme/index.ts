@@ -1,4 +1,3 @@
-import { extendTheme, StyleFunctionProps } from "@chakra-ui/react";
 
 const colors = {
   prosecto: {
@@ -29,13 +28,6 @@ const colors = {
   }
 }
 
-const prosectoTheme = extendTheme({
-  colors,
-  semanticTokens: {
-  }
-})
-
-export { prosectoTheme };
 
 /*
 original colors:

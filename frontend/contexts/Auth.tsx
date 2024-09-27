@@ -23,7 +23,7 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [loggedAt, setLoggedAt] = useState(new Date(0));
 
   const login = async (data: { email: string, password: string }) => {
-    return axios.post("api/users/login", data).then(
+    return axios.post("/api/users/login", data).then(
       (res) => {
         setUser(res.data);
         setLoggedIn(true)
@@ -36,7 +36,7 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
     setLoggedIn(false)
     setLoggedAt(new Date(0))
     setUser(null);
-    return axios.post("api/users/logout")
+    return axios.post("/api/users/logout")
       .then(() => { })
   };
 

@@ -1,66 +1,62 @@
-import { useAuth } from "@/contexts/Auth";
-import { InfoOutlineIcon } from "@chakra-ui/icons";
-import { Alert, Box, Button, ButtonGroup, Collapse, Divider, Flex, FormControl, FormErrorMessage, FormLabel, Input } from "@chakra-ui/react";
-import { useState } from "react";
-import { isEmail } from "validator";
+import Link from "next/link"
 
-export default function LoginForm({ popoverOnClose }:
-  { popoverOnClose: any }) {
-  const [email, setEmail] = useState("")
-  const [password, setPassword] = useState("")
-  const [response, setResponse] = useState({ status: "pending", info: "" })
-  const auth = useAuth()
+import { Button } from "@/components/ui/button"
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card"
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
 
+export const description =
+  "A login form with email and password. There's an option to login with Google and a link to sign up if you don't have an account."
 
-  const handleSubmit = async () => {
-    setResponse({ status: "loading", info: "" })
-    auth.login({ email, password }).then(() => {
-      popoverOnClose()
-      setResponse({ status: "ok", info: "" })
-    }
-    ).catch((err) => {
-      const res = { status: "error", info: "" }
-      res.info = err.response ? err.response.data.error : "Error al enviar los datos"
-      setResponse(res)
-    })
-  }
-
-  const invalidPassword = password.length > 0 && password.length < 8
-
+export function LoginForm() {
   return (
-    <Flex as={'form'} flexDir={"column"} gap={"1rem"}>
-      <FormControl isRequired isInvalid={email.length > 0 && !isEmail(email)} >
-        <FormLabel>Email</FormLabel>
-        <Input onChange={(e: any) => setEmail(e.target.value)}
-          inputMode="email" autoComplete="email" required placeholder="example@mail.com" />
-      </FormControl>
-      <FormControl isRequired isInvalid={invalidPassword}>
-        <FormLabel>Contraseña</FormLabel>
-        <Input onChange={(e: any) => setPassword(e.target.value)}
-          inputMode="text" type="password" autoComplete="current-password" required placeholder="********" />
-        <Collapse in={invalidPassword} animateOpacity
-          transition={{ exit: { duration: .75 }, enter: { duration: .75 } }}
-        >
-          <Box>
-            <FormErrorMessage alignItems={"baseline"}>
-              <InfoOutlineIcon marginRight={"1rem"} marginTop={"1rem"} />
-              Escriba al menos 8 caracteres
-            </FormErrorMessage>
-          </Box>
-        </Collapse>
-        <Divider className="my-4" />
-        <ButtonGroup className="flex flex-row w-full place-content-center">
-          <Button colorScheme="blue" variant={"outline"}>
-            Registrarse
+    <Card className="mx-auto max-w-sm">
+      <CardHeader>
+        <CardTitle className="text-2xl">Login</CardTitle>
+        <CardDescription>
+          Enter your email below to login to your account
+        </CardDescription>
+      </CardHeader>
+      <CardContent>
+        <div className="grid gap-4">
+          <div className="grid gap-2">
+            <Label htmlFor="email">Email</Label>
+            <Input
+              id="email"
+              type="email"
+              placeholder="m@example.com"
+              required
+            />
+          </div>
+          <div className="grid gap-2">
+            <div className="flex items-center">
+              <Label htmlFor="password">Password</Label>
+              <Link href="#" className="ml-auto inline-block text-sm underline">
+                Forgot your password?
+              </Link>
+            </div>
+            <Input id="password" type="password" required />
+          </div>
+          <Button type="submit" className="w-full">
+            Login
           </Button>
-          <Button onClick={handleSubmit} isLoading={response.status === "loading"}
-            isDisabled={invalidPassword || !isEmail(email) || email.length <= 0 || password.length <= 0}
-            width={"7rem"} colorScheme="blue">Enviar</Button>
-        </ButtonGroup>
-      </FormControl>
-      <Collapse in={response.status === "error"}>
-        <Alert status="error">{response.info}</Alert>
-      </Collapse>
-    </Flex>
+          <Button variant="outline" className="w-full">
+            Login with Google
+          </Button>
+        </div>
+        <div className="mt-4 text-center text-sm">
+          Don&apos;t have an account?{" "}
+          <Link href="#" className="underline">
+            Sign up
+          </Link>
+        </div>
+      </CardContent>
+    </Card>
   )
 }
