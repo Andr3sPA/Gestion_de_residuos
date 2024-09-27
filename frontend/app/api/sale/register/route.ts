@@ -55,7 +55,15 @@ export async function POST(req: NextRequest) {
               id: data.counter_offer_id,  
             },  
           })
-          console.log(counterOffer)
+          const offer = await prismaClient.offer.update({  
+            data: {  
+              status: 'sold',  
+            },  
+            where: {  
+              id: data.offer_id,  
+            },  
+          })
+
         const sale = await prismaClient.sale.create({
             data: {
                 price:counter_offer.price,
