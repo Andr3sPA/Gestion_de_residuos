@@ -17,24 +17,28 @@ export async function POST(req: NextRequest) {
 
   let { success: isValid, data } = loginReqSchema.safeParse(await req.json())
 
-  if (!data || !isValid) return errorRes()
+  if (!data || !isValid) return errorRes("Error al validar los datos")
   const user = await prismaClient.user.findUnique({
     where: {
       email: data.email
     }
   })
 
-  console.log(cookies().get("jwt"))
-
-  if (!user) return errorRes()
+  if (!user) return errorRes("Email o contraseña incorrectos")
 
   if (await bcrypt.compare(data.password, user.password)) {
     const jwt = await new SignJWT({
       id: user.id,
       username: `${user.firstName} ${user.lastName}`,
       email: user.email,
+<<<<<<< HEAD
       role: user.role
     }).setProtectedHeader({ alg: 'HS256' })
+=======
+      role: "Default"
+    })
+      .setProtectedHeader({ alg: 'HS256' })
+>>>>>>> f2735545739594ed6a417874d6481a30bcaee53f
       .setIssuedAt()
       .setExpirationTime('1h')
       .sign(encodedKey)
@@ -47,14 +51,14 @@ export async function POST(req: NextRequest) {
       path: '/',
     })
 
-    return NextResponse.json({ data }, { status: 200 })
+    return NextResponse.json({ userId: user.id, username: `${user.firstName} ${user.lastName}`, email: user.email }, { status: 200 })
   }
 
-  return NextResponse.json({ data, error: "incorrect email or password" }, { status: 400 })
+  return NextResponse.json({ data, error: "Email o contraseña incorrectos" }, { status: 400 })
 }
 
-const errorRes = () => {
-  return NextResponse.json({ error: "invalid request" }, { status: 400 })
+const errorRes = (reason?: string) => {
+  return NextResponse.json({ error: reason ?? "Petición inválida" }, { status: 400 })
 }
 
 

@@ -1,72 +1,62 @@
-import { InfoOutlineIcon } from "@chakra-ui/icons";
-import { Box, Button, ButtonGroup, Collapse, Divider, Flex, FormControl, FormErrorMessage, FormLabel, Input } from "@chakra-ui/react";
-import axios from "axios";
-import { useState } from "react";
-import { isEmail } from "validator";
-export default function LoginForm() {
-  const [email, setEmail] = useState("")
-  const [password, setPassword] = useState("")
+import Link from "next/link"
 
-  const handleSubmit = async (e: any) => {
-    e.preventDefault();
-    const response = await axios.post('http://localhost:3001/users/login',
-      {
-        email,
-        password
-      },
-      { withCredentials: true }
-    )
-      .then((response) => {
-        console.log('Form data submitted successfully:', response.data);
-      })
-      .catch((error) => {
-        console.error('Error submitting form data:', error);
-        if (error.response) {
-          console.error('Response data:', error.response.data);
-          // Aquí podrías mostrar un mensaje de error específico en tu interfaz de usuario
-        } else if (error.request) {
-          console.error('Request made but no response received:', error.request);
-          // Aquí podrías manejar errores relacionados con la solicitud
-        } else {
-          console.error('Error setting up the request:', error.message);
-          // Aquí podrías manejar otros tipos de errores
-        }
+import { Button } from "@/components/ui/button"
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card"
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
 
+export const description =
+  "A login form with email and password. There's an option to login with Google and a link to sign up if you don't have an account."
 
-      })
-  }
-
-  const invalidPassword = password.length > 0 && password.length < 8
-
+export function LoginForm() {
   return (
-    <Flex flexDir={"column"} gap={"1rem"}>
-      <FormControl isRequired isInvalid={email.length > 0 && !isEmail(email)} >
-        <FormLabel>Email</FormLabel>
-        <Input onChange={(e: any) => setEmail(e.target.value)}
-          inputMode="email" required placeholder="example@mail.com" />
-      </FormControl>
-      <FormControl isRequired isInvalid={invalidPassword}>
-        <FormLabel>Password</FormLabel>
-        <Input onChange={(e: any) => setPassword(e.target.value)}
-          inputMode="text" type="password" required placeholder="********" />
-        <Collapse in={invalidPassword} animateOpacity
-          transition={{ exit: { duration: .75 }, enter: { duration: .75 } }}
-        >
-          <Box>
-            <FormErrorMessage alignItems={"baseline"}>
-              <InfoOutlineIcon marginRight={"1rem"} marginTop={"1rem"} />
-              Type at least 8 characteres
-            </FormErrorMessage>
-          </Box>
-        </Collapse>
-        <Divider className="my-4" />
-        <ButtonGroup className="flex flex-row w-full place-content-center">
-          <Button colorScheme="blue" variant={"outline"}>
-            Register
+    <Card className="mx-auto max-w-sm">
+      <CardHeader>
+        <CardTitle className="text-2xl">Login</CardTitle>
+        <CardDescription>
+          Enter your email below to login to your account
+        </CardDescription>
+      </CardHeader>
+      <CardContent>
+        <div className="grid gap-4">
+          <div className="grid gap-2">
+            <Label htmlFor="email">Email</Label>
+            <Input
+              id="email"
+              type="email"
+              placeholder="m@example.com"
+              required
+            />
+          </div>
+          <div className="grid gap-2">
+            <div className="flex items-center">
+              <Label htmlFor="password">Password</Label>
+              <Link href="#" className="ml-auto inline-block text-sm underline">
+                Forgot your password?
+              </Link>
+            </div>
+            <Input id="password" type="password" required />
+          </div>
+          <Button type="submit" className="w-full">
+            Login
           </Button>
-          <Button onClick={handleSubmit} colorScheme="blue">Proceed</Button>
-        </ButtonGroup>
-      </FormControl>
-    </Flex>
+          <Button variant="outline" className="w-full">
+            Login with Google
+          </Button>
+        </div>
+        <div className="mt-4 text-center text-sm">
+          Don&apos;t have an account?{" "}
+          <Link href="#" className="underline">
+            Sign up
+          </Link>
+        </div>
+      </CardContent>
+    </Card>
   )
 }
