@@ -33,7 +33,7 @@ export async function POST(req: NextRequest) {
       id: user.id,
       username: `${user.firstName} ${user.lastName}`,
       email: user.email,
-      role: "Default"
+      role: user.role
     }).setProtectedHeader({ alg: 'HS256' })
       .setIssuedAt()
       .setExpirationTime('1h')
