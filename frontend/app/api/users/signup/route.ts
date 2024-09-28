@@ -7,7 +7,6 @@ import { z } from "zod";
 const signupSchema = z.object({
   firstName: z.string(),
   lastName: z.string(),
-  age: z.number().positive().min(12 + 1),
   email: z.string().email(),
   password: z.string() //TODO: regex this
 })
@@ -34,7 +33,7 @@ export async function POST(req: NextRequest) {
     data: {
       firstName: data.firstName,
       lastName: data.lastName,
-      age: data.age,
+      age: 0,
       email: data.email,
       password: await bcrypt.hash(data.password, 10),
       company: {

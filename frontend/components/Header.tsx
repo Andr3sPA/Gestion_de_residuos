@@ -1,52 +1,81 @@
-import { CircleUser, Menu, Package2, Search } from "lucide-react";
+import { CircleUser, Menu, MenuIcon, Package2 } from "lucide-react";
 import { Button } from "./ui/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "./ui/dropdown-menu";
-import { Input } from "./ui/input";
 import { Sheet, SheetContent, SheetTrigger } from "./ui/sheet";
 import Link from "next/link";
+import { LoginForm } from "./users/LoginForm";
+import { useAuth } from "@/contexts/Auth";
+import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
+import { usePathname, useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 
 export default function Header() {
+  const auth = useAuth()
+  const router = useRouter()
+  const path = usePathname()
 
-  return <div className="flex min-h-screen w-full flex-col">
+  const userButton = <Button variant="secondary" size="icon" className="rounded-full">
+    <CircleUser className="h-5 w-5" />
+    <span className="sr-only">Toggle user menu</span>
+  </Button>
+
+  const menuLoggedIn = <DropdownMenu>
+    <DropdownMenuTrigger asChild>
+      {userButton}
+    </DropdownMenuTrigger>
+    <DropdownMenuContent align="end">
+      <DropdownMenuLabel>Cuenta</DropdownMenuLabel>
+      <DropdownMenuSeparator />
+      {/* <DropdownMenuItem disabled className="cursor-pointer" */}
+      {/*   onClick={() => router.push("/settings")}>Ajustes</DropdownMenuItem> */}
+      <DropdownMenuSeparator />
+      <DropdownMenuItem className="cursor-pointer" onClick={() => auth.logout()}>Cerrar sesión</DropdownMenuItem>
+    </DropdownMenuContent>
+  </DropdownMenu>
+
+  const [open, setOpen] = useState(false)
+
+  const menuLogin = <Popover open={open} onOpenChange={setOpen}>
+    <PopoverTrigger asChild>
+      {userButton}
+    </PopoverTrigger>
+    <PopoverContent>
+      <LoginForm onClose={() => setOpen(false)} border={false} />
+    </PopoverContent>
+  </Popover>
+
+  const checkIfPath = (pathStr: string) => {
+    return path === pathStr
+  }
+
+  const goto = (pathStr: string) => {
+    router.push(pathStr)
+  }
+
+  return <div className="flex w-full flex-col shadow-md">
     <header className="sticky top-0 flex h-16 items-center gap-4 border-b bg-background px-4 md:px-6">
-      <nav className="hidden flex-col gap-6 text-lg font-medium md:flex md:flex-row md:items-center md:gap-5 md:text-sm lg:gap-6">
-        <Link
-          href="#"
-          className="flex items-center gap-2 text-lg font-semibold md:text-base"
-        >
-          <Package2 className="h-6 w-6" />
-          <span className="sr-only">Acme Inc</span>
-        </Link>
-        <Link
-          href="#"
+      <nav className="text-nowrap hidden flex-col gap-6 text-lg font-medium md:flex md:flex-row md:items-center md:gap-5 md:text-sm lg:gap-6">
+        <Button variant={"link"}
+          onClick={() => goto("/")}
+          disabled={checkIfPath("/")}
           className="text-muted-foreground transition-colors hover:text-foreground"
         >
-          Dashboard
-        </Link>
-        <Link
-          href="#"
+          Inicio
+        </Button>
+        <Button variant={"link"}
+          onClick={() => goto("/manage/offers")}
+          disabled={checkIfPath("/manage/offers")}
           className="text-muted-foreground transition-colors hover:text-foreground"
         >
-          Orders
-        </Link>
-        <Link
-          href="#"
+          Mis ofertas
+        </Button>
+        <Button variant={"link"}
+          onClick={() => goto("/search/offers")}
+          disabled={checkIfPath("/search/offers")}
           className="text-muted-foreground transition-colors hover:text-foreground"
         >
-          Products
-        </Link>
-        <Link
-          href="#"
-          className="text-muted-foreground transition-colors hover:text-foreground"
-        >
-          Customers
-        </Link>
-        <Link
-          href="#"
-          className="text-foreground transition-colors hover:text-foreground"
-        >
-          Settings
-        </Link>
+          Buscar Ofertas
+        </Button>
       </nav>
       <Sheet>
         <SheetTrigger asChild>
@@ -62,71 +91,25 @@ export default function Header() {
         <SheetContent side="left">
           <nav className="grid gap-6 text-lg font-medium">
             <Link
-              href="#"
-              className="flex items-center gap-2 text-lg font-semibold"
+              href="/"
+              className="text-muted-foreground hover:text-foreground"
             >
-              <Package2 className="h-6 w-6" />
-              <span className="sr-only">Acme Inc</span>
+              Inicio
             </Link>
             <Link
               href="#"
               className="text-muted-foreground hover:text-foreground"
             >
-              Dashboard
-            </Link>
-            <Link
-              href="#"
-              className="text-muted-foreground hover:text-foreground"
-            >
-              Orders
-            </Link>
-            <Link
-              href="#"
-              className="text-muted-foreground hover:text-foreground"
-            >
-              Products
-            </Link>
-            <Link
-              href="#"
-              className="text-muted-foreground hover:text-foreground"
-            >
-              Customers
-            </Link>
-            <Link href="#" className="hover:text-foreground">
-              Settings
+              Ofertas
             </Link>
           </nav>
         </SheetContent>
       </Sheet>
       <div className="flex w-full items-center gap-4 md:ml-auto md:gap-2 lg:gap-4">
-        <form className="ml-auto flex-1 sm:flex-initial">
-          <div className="relative">
-            <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
-            <Input
-              type="search"
-              placeholder="Search products..."
-              className="pl-8 sm:w-[300px] md:w-[200px] lg:w-[300px]"
-            />
-          </div>
-        </form>
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="secondary" size="icon" className="rounded-full">
-              <CircleUser className="h-5 w-5" />
-              <span className="sr-only">Toggle user menu</span>
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            <DropdownMenuLabel>My Account</DropdownMenuLabel>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem>Settings</DropdownMenuItem>
-            <DropdownMenuItem>Support</DropdownMenuItem>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem>Logout</DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
+        <div className="ml-auto flex-1 sm:flex-initial">
+        </div>
+        {auth.loggedIn ? menuLoggedIn : menuLogin}
       </div>
     </header>
   </div>
-
 }

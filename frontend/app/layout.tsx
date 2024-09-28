@@ -2,6 +2,12 @@ import React from "react";
 import "./globals.css";
 import { Providers } from "./providers";
 import Header from "@/components/Header";
+import { Quicksand } from "next/font/google"
+
+const quicksand = Quicksand({
+  subsets: ["latin"],
+  display: "auto"
+})
 
 export default function RootLayout({
   children,
@@ -9,13 +15,13 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="es" className={quicksand.className}>
       <Providers>
-        <body>
+        <body className="flex flex-col gap-8 min-h-screen items-center">
           <Header />
           {children}
         </body>
-      </Providers>
-    </html>
+      </Providers >
+    </html >
   );
 }

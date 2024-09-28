@@ -1,5 +1,5 @@
 import axios, { AxiosError } from "axios";
-import { createContext, ReactNode, useContext, useState } from "react";
+import { createContext, ReactNode, useContext, useEffect, useState } from "react";
 
 interface authI {
   loggedIn: boolean,
@@ -39,6 +39,11 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
     return axios.post("/api/users/logout")
       .then(() => { })
   };
+
+  // try login with jwt cookie
+  useEffect(() => {
+    login({ email: "", password: "" }).catch(() => { })
+  }, [])
 
   return (
     <AuthContext.Provider value={{ loggedIn, loggedAt, user, login, logout }}>
