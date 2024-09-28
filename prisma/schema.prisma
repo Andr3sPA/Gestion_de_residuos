@@ -1,0 +1,168 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("POSTGRES_PRISMA_URL") // uses connection pooling
+  directUrl = env("POSTGRES_URL_NON_POOLING") // uses a direct connection
+}
+
+model Company {
+  id              Int                 @id @default(autoincrement())
+  code            String              @unique @default(uuid())
+  name            String
+  address         String
+  latitude        Decimal
+  longitude       Decimal
+  description     String
+  users           User[]
+  wastes          Waste[]
+  offers          WasteOffer[]
+  counterOffers   WasteCounteroffer[]
+  WasteCollection WasteCollection[]
+}
+
+model CollectionCompany {
+  id                 Int                      @id @default(autoincrement())
+  code               String                   @unique @default(uuid())
+  name               String
+  address            String
+  description        String
+  users              User[]
+  collectionServices WasteCollectionService[]
+}
+
+model User {
+  id                  Int                @id @default(autoincrement())
+  firstName           String
+  lastName            String
+  email               String             @unique
+  password            String
+  phone               String
+  role                Role               @default(user)
+  company             Company            @relation(fields: [companyId], references: [id])
+  companyId           Int
+  CollectionCompany   CollectionCompany? @relation(fields: [collectionCompanyId], references: [id])
+  collectionCompanyId Int?
+}
+
+enum Role {
+  user
+  admin
+}
+
+model Waste {
+  id              Int               @id @default(autoincrement())
+  companyOwner    Company           @relation(fields: [companyOwnerId], references: [id])
+  companyOwnerId  Int
+  wasteType       WasteType         @relation(fields: [wasteTypeId], references: [id])
+  wasteTypeId     Int
+  category        WasteCategory
+  description     String
+  units           Decimal
+  unitType        UnitType          @relation(fields: [unitTypeId], references: [id])
+  unitTypeId      Int
+  expirationDate  DateTime?
+  createdAt       DateTime          @default(now())
+  WasteOffer      WasteOffer[]
+  WasteCollection WasteCollection[]
+}
+
+model WasteType {
+  id                     Int                      @id @default(autoincrement())
+  wasteType              String
+  Waste                  Waste[]
+  WasteCollectionService WasteCollectionService[]
+}
+
+model UnitType {
+  id                     Int                      @id @default(autoincrement())
+  unitName               String
+  Waste                  Waste[]
+  WasteCollectionService WasteCollectionService[]
+}
+
+enum WasteCategory {
+  usable
+  nonUsable
+}
+
+model WasteOffer {
+  id                Int                 @id @default(autoincrement())
+  companySeller     Company             @relation(fields: [companySellerId], references: [id])
+  companySellerId   Int
+  waste             Waste               @relation(fields: [wasteId], references: [id])
+  wasteId           Int
+  offerPrice        Decimal
+  units             Decimal
+  pickupLatitude    Decimal
+  pickupLongitude   Decimal
+  createdAt         DateTime            @default(now())
+  status            OfferStatus         @default(available)
+  WastePurchase     WastePurchase[]
+  WasteCounteroffer WasteCounteroffer[]
+}
+
+model WastePurchase {
+  id             Int               @id @default(autoincrement())
+  offer          WasteOffer        @relation(fields: [offerId], references: [id])
+  offerId        Int
+  counteroffer   WasteCounteroffer @relation(fields: [counterofferId], references: [id])
+  counterofferId Int
+  finalPrice     Decimal
+  createdAt      DateTime          @default(now())
+}
+
+model WasteCounteroffer {
+  id             Int                @id @default(autoincrement())
+  offer          WasteOffer         @relation(fields: [offerId], references: [id])
+  offerId        Int
+  buyerCompany   Company            @relation(fields: [buyerCompanyId], references: [id])
+  buyerCompanyId Int
+  counterPrice   Decimal
+  status         CounterofferStatus @default(waiting)
+  createdAt      DateTime           @default(now())
+  WastePurchase  WastePurchase[]
+}
+
+model WasteCollection {
+  id                  Int                    @id @default(autoincrement())
+  fromCompany         Company                @relation(fields: [fromCompanyId], references: [id])
+  fromCompanyId       Int
+  collectionService   WasteCollectionService @relation(fields: [collectionServiceId], references: [id])
+  collectionServiceId Int
+  waste               Waste                  @relation(fields: [wasteId], references: [id])
+  wasteId             Int
+  totalPrice          Decimal
+  collectionDate      DateTime
+  collectionLatitude  Decimal
+  collectionLongitude Decimal
+  createdAt           DateTime               @default(now())
+}
+
+model WasteCollectionService {
+  id                  Int               @id @default(autoincrement())
+  collectionCompany   CollectionCompany @relation(fields: [collectionCompanyId], references: [id])
+  collectionCompanyId Int
+  wasteType           WasteType         @relation(fields: [wasteTypeId], references: [id])
+  wasteTypeId         Int
+  pricePerUnit        Decimal
+  unitType            UnitType          @relation(fields: [unitTypeId], references: [id])
+  unitTypeId          Int
+  WasteCollection     WasteCollection[]
+}
+
+// Enum for CounterOfferStatus
+enum CounterofferStatus {
+  waiting
+  accepted
+  rejected
+}
+
+// Enum for OfferStatus
+enum OfferStatus {
+  available
+  expired
+  sold
+}
