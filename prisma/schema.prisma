@@ -41,8 +41,8 @@ model User {
   password            String
   phone               String
   role                Role               @default(user)
-  company             Company            @relation(fields: [companyId], references: [id])
-  companyId           Int
+  company             Company?           @relation(fields: [companyId], references: [id])
+  companyId           Int?
   CollectionCompany   CollectionCompany? @relation(fields: [collectionCompanyId], references: [id])
   collectionCompanyId Int?
 }

@@ -1,3 +1,5 @@
+'use client'
+
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -6,15 +8,19 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { TableHeader, TableRow, TableHead, TableBody, TableCell, Table } from "@/components/ui/table";
 import { OfferDetails } from "@/components/OfferDetails"
-import { Search } from "lucide-react";
+import { Loader2, Search } from "lucide-react";
+import { useEffect, useState } from "react";
+import axios from "axios";
 
 export default function searchOffers() {
+  const [data, setData] = useState<{ status: string, list: any[] }>({ status: "pending", list: [] })
 
-  const data = [
-    ["154", "Plástico", "Botellas de gaseosa", "$200.000", "20 kg"],
-    ["155", "Orgánico", "Cáscaras de verduras y frutas", "$122.000", "12 kg"],
-    ["4568", "Papel", "Periódicos viejos", "$86.000", "2000 hojas"]
-  ]
+  useEffect(() => {
+    setData((prevData) => ({ ...prevData, status: "loading" }))
+    axios.get("/api/offer/search")
+      .then((res) => setData({ status: "ok", list: res.data.offers }))
+      .catch((err) => setData((prevData) => ({ ...prevData, status: "error" })))
+  }, [])
 
   const colors = [
     "#0011ee", "#00ee33", "#DDDDDD"
@@ -53,27 +59,33 @@ export default function searchOffers() {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {data.map((row, idx) => (
-              <TableRow key={idx}>
-                {row.map((cell, idxC) => (
-                  <TableCell key={idx * 100 + idxC}
-                    className={idxC === 2 || idxC === 3 ? "font-semibold" : ""}
-                  >
-                    {idxC === 1 ? <Badge className={`bg-cyan-500`}>{cell}</Badge> : cell}
+            {
+              data.status === "ok" &&
+              data.list.map((offer, idx) => (
+                <TableRow key={idx}>
+                  <TableCell>{offer.id}</TableCell>
+                  <TableCell>{offer.waste.wasteType.wasteType}</TableCell>
+                  <TableCell>{offer.waste.description}</TableCell>
+                  <TableCell>${offer.offerPrice}</TableCell>
+                  <TableCell>{offer.units} {offer.waste.unitType.unitName}</TableCell>
+                  <TableCell>
+                    <Dialog>
+                      <DialogTrigger asChild>
+                        <Button className="rounded-xl text-xs">Detalles</Button>
+                      </DialogTrigger>
+                      <OfferDetails offerInfo={offer} />
+                    </Dialog>
                   </TableCell>
-                ))}
-                <TableCell>
-                  <Dialog>
-                    <DialogTrigger asChild>
-                      <Button className="rounded-xl text-xs">Detalles</Button>
-                    </DialogTrigger>
-                    <OfferDetails />
-                  </Dialog>
-                </TableCell>
-              </TableRow>
-            ))}
+                </TableRow>
+              ))
+            }
           </TableBody>
         </Table>
+        {data.status === "loading" &&
+          <div className="flex justify-center p-2">
+            <Loader2 className="animate-spin" />
+          </div>
+        }
       </CardContent>
     </Card>
   </div>

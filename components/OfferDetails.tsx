@@ -3,42 +3,49 @@ import { Button } from "./ui/button";
 import { DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "./ui/dialog";
 import { Input } from "./ui/input";
 import { Label } from "./ui/label";
+import { off } from "process";
 
-export function OfferDetails() {
+export function OfferDetails({ offerInfo }: { offerInfo: any }) {
 
   return <DialogContent className="sm:max-w-[425px]">
     <DialogHeader>
       <DialogTitle>Oferta número 4568</DialogTitle>
       <DialogDescription>
-        Hecha el 18-10-2024
+        Hecha el{" "}{new Date(offerInfo.createdAt)
+          .toLocaleDateString("es-LA", {
+            year: 'numeric',
+            month: 'numeric',
+            day: 'numeric',
+          })
+        }
       </DialogDescription>
     </DialogHeader>
     <div className="grid grid-cols-2">
       <div>
         <span className="text-xs font-light">Descripción</span>
         <Separator />
-        <span className="text-lg font-semibold">Periódicos viejos</span>
+        <span className="text-lg font-semibold">{offerInfo.waste.description}</span>
         <Separator className="h-1" />
         <span className="text-xs font-light">Tipo</span>
         <Separator />
-        <span className="text-lg font-semibold">Papel</span>
+        <span className="text-lg font-semibold">{offerInfo.waste.wasteType.wasteType}</span>
       </div>
       <div className="">
         <span className="text-xs font-light">Precio</span>
         <Separator />
-        <span className="text-lg font-semibold">$86.000</span>
+        <span className="text-lg font-semibold">${offerInfo.offerPrice}</span>
         <Separator className="h-1" />
         <span className="text-xs font-light">Cantidad</span>
         <Separator />
         <span className="text-lg font-semibold">
-          2000{" "}
-          <span className="text-sm font-bold">hojas</span>
+          {offerInfo.units}{" "}
+          <span className="text-sm font-bold">{offerInfo.waste.unitType.unitName}</span>
         </span>
       </div>
       <div>
         <span className="text-xs font-light">Ofrecido por</span>
         <Separator />
-        <span className="text-lg font-semibold">Exito</span>
+        <span className="text-lg font-semibold">{offerInfo.companySeller.name}</span>
       </div>
       <div>
         <span className="text-xs font-light">Ubicación</span>
@@ -50,7 +57,14 @@ export function OfferDetails() {
     </div>
     <DialogFooter>
       <div className="flex flex-col justify-end w-full h-full">
-        <span className="m-1 text-sm font-light">Expira el 12-01-2025</span>
+        <span className="m-1 text-sm font-light">Expira el
+          {" "}
+          {new Date(offerInfo.waste.expirationDate)
+            .toLocaleDateString("es-LA", {
+              year: 'numeric',
+              month: 'numeric',
+              day: 'numeric',
+            })}</span>
       </div>
       <Button>Realizar contra oferta</Button>
     </DialogFooter>
