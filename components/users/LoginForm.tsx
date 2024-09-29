@@ -30,6 +30,7 @@ export function LoginForm({ border, onClose }: { border?: boolean, onClose?: () 
     setResponse({ status: "loading", info: "" })
     signIn("credentials", {
       email, password
+      , redirect: false
     }).then(() => setResponse({ status: "ok", info: "" }))
       .catch((err) =>
         setResponse({ status: "error", info: err.response.data ?? "Error al enviar los datos" }))

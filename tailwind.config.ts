@@ -1,4 +1,5 @@
 import type { Config } from "tailwindcss";
+import colors from "./theme/colors";
 
 const config: Config = {
   darkMode: ["class"],
@@ -30,8 +31,7 @@ const config: Config = {
           foreground: 'hsl(var(--popover-foreground))'
         },
         primary: {
-          // DEFAULT: 'hsl(var(--primary))',
-          DEFAULT: '#1F4A59',
+          DEFAULT: 'var(--primary)',
           foreground: 'hsl(var(--primary-foreground))'
         },
         secondary: {

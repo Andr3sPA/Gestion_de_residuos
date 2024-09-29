@@ -1,33 +1,33 @@
 
 const colors = {
-  prosecto: {
-    black: '000000',
-    heavy_metal: '2E312D',
-    aubergine: '300B1C',
-    paco: '3B1F0D',
-    acadia: '191004',
-    zeus: '201E18',
-    heath: '48112A',
-    disco: '921C4F',
-    claret: '731941',
-    brown_derby: '58291C',
-    tuscany: 'B95F2E',
-    sirocco: '6A7A77',
-    apple_blossom: 'B14447',
-    teal_blue: '063C5E',
-    maroon_flush: 'AB1E53',
-    blue_dianne: '1F4A59',
-    meteor: 'BE7815',
-    bismark: '417181',
-    casal: '285869',
-    metallic_copper: '6D371E',
-    cape_palliser: 'A1783E',
-    blue_whale: '05273C',
-    soya_bean: '635A46',
-    mule_fawn: '954431'
-  }
+  acadia: '#191004',
+  apple_blossom: '#B14447',
+  aubergine: '#300B1C',
+  bismark: '#417181',
+  black: '#000000',
+  blue_dianne: '#1F4A59',
+  blue_whale: '#05273C',
+  brown_derby: '#58291C',
+  cape_palliser: '#A1783E',
+  casal: '#285869',
+  claret: '#731941',
+  disco: '#921C4F',
+  heath: '#48112A',
+  heavy_metal: '#2E312D',
+  maroon_flush: '#AB1E53',
+  metallic_copper: '#6D371E',
+  meteor: '#BE7815',
+  mule_fawn: '#954431',
+  paco: '#3B1F0D',
+  sirocco: '#6A7A77',
+  soya_bean: '#635A46',
+  teal_blue: '#063C5E',
+  tuscany: '#B95F2E',
+  zeus: '#201E18',
 }
+//TODO: apply more colors to globals.css
 
+export default colors;
 
 /*
 original colors:

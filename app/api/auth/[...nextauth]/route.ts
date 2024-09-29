@@ -1,5 +1,14 @@
+import { User } from "@prisma/client";
+import { Session } from "next-auth";
 import NextAuth from "next-auth/next";
 import CredentialsProvider from "next-auth/providers/credentials";
+
+interface UserSession extends Session {
+  user?: {
+    id?: string | null;
+    email?: string | null;
+  }
+}
 
 const handler = NextAuth({
   session: {
@@ -8,16 +17,20 @@ const handler = NextAuth({
   callbacks: {
     async session({ session, token }) {
       // Attach the user id to the session
+      const sessionWithUser: UserSession = session
       if (token?.sub) {
-        session.user.id = token.sub;
-        session.user.email=token.email;
+        sessionWithUser.user = {
+          id: token.sub,
+          email: token.email
+        }
       }
       return session;
     },
     async jwt({ token, user }) {
       if (user) {
         token.sub = user.id;
-        token.email=user.email;
+        token.email = user.email;
+        //TODO: set issuer and rest
       }
       return token;
     },
@@ -38,7 +51,7 @@ const handler = NextAuth({
         });
 
         const data = await res.json();
-        const user=data.user;
+        const user = data.user;
         if (data.ok && user) {
           return user;
         }
@@ -48,7 +61,7 @@ const handler = NextAuth({
     })
   ],
   pages: {
-    error: '/auth/error', // Página de error
+    error: '', // Página de error
   }
 });
 
