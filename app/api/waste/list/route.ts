@@ -1,26 +1,22 @@
 import { prismaClient } from "@/prisma/client";
 import { NextRequest, NextResponse } from "next/server";
-import { cookies } from 'next/headers'
-import { decrypt } from '@/app/lib/session'
+import { getToken } from "next-auth/jwt";
 
 
-export async function POST(req: NextRequest) {
-    const session = cookies().get('jwt')?.value
-    const payload = await decrypt(session)
-
-    if (!session || !payload) {
+export async function GET(req: NextRequest) {
+    const token = await getToken({ req })
+    if (!token ) {
         return null
     }
     const user = await prismaClient.user.findUnique({  
         where: {  
-          id: payload.id,  
+          id: token.sub,  
         },  
       })
     
     const wastes = await prismaClient.waste.findMany({  
-    where: { companyId: user?.companyId },  
+    where: { companyOwnerId: user?.companyId },  
     })
     if (!wastes) return NextResponse.json({ error: "internal error" }, { status: 500 })
-    
     return NextResponse.json(wastes, { status: 201 })
 }

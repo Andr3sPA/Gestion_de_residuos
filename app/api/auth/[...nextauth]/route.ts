@@ -1,4 +1,3 @@
-import { User } from "@prisma/client";
 import { Session } from "next-auth";
 import NextAuth from "next-auth/next";
 import CredentialsProvider from "next-auth/providers/credentials";
@@ -67,4 +66,3 @@ const handler = NextAuth({
 
 // Exportar las funciones del manejador para solicitudes GET y POST
 export { handler as GET, handler as POST };
-

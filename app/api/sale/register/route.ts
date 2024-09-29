@@ -1,8 +1,8 @@
 import { prismaClient } from "@/prisma/client";
 import { NextRequest, NextResponse } from "next/server";
-import { cookies } from 'next/headers'
 import { z } from "zod";
-import { decrypt } from '@/app/lib/session'
+import { getToken } from "next-auth/jwt";
+
 
 const offerSchema = z.object({
     offer_id: z.number(),
@@ -11,17 +11,16 @@ const offerSchema = z.object({
 })
 
 export async function POST(req: NextRequest) {
-    const session = cookies().get('jwt')?.value
+  const token = await getToken({ req })
     const { success, data } = offerSchema.safeParse(await req.json())
-    const payload = await decrypt(session)
 
-    if (!session || !payload) {
+    if (!token) {
         return null
     }
 
 
     const user = await prismaClient.user.findUnique({
-        where: { id: payload.id }, // Usamos el userId convertido a string
+        where: { id: token.sub }, // Usamos el userId convertido a string
     });
     const offer = await prismaClient.offer.findUnique({
         where: { id: data?.offer_id }, // Usamos el userId convertido a string

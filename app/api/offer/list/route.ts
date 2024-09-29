@@ -1,19 +1,16 @@
 import { prismaClient } from "@/prisma/client";
 import { NextRequest, NextResponse } from "next/server";
-import { cookies } from 'next/headers'
-import { decrypt } from '@/app/lib/session'
-
+import { getToken } from "next-auth/jwt";
 
 export async function POST(req: NextRequest) {
-    const session = cookies().get('jwt')?.value
-    const payload = await decrypt(session)
+  const token = await getToken({ req })
 
-    if (!session || !payload) {
+    if ( !token) {
         return null
     }
     const user = await prismaClient.user.findUnique({  
         where: {  
-          id: payload.id,  
+          id: token.sub,  
         },  
       })
     
