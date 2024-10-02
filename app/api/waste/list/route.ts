@@ -15,7 +15,11 @@ export async function GET(req: NextRequest) {
       })
     
     const wastes = await prismaClient.waste.findMany({  
-    where: { companyOwnerId: user?.companyId },  
+    where: { companyOwnerId: user?.companyId },   
+     include: {
+      wasteType: true,
+      unitType:true,
+    },  
     })
     if (!wastes) return NextResponse.json({ error: "internal error" }, { status: 500 })
     return NextResponse.json(wastes, { status: 201 })

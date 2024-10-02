@@ -71,14 +71,14 @@ model Waste {
 
 model WasteType {
   id                     Int                      @id @default(autoincrement())
-  wasteType              String
+  wasteType              String                   @unique
   Waste                  Waste[]
   WasteCollectionService WasteCollectionService[]
 }
 
 model UnitType {
   id                     Int                      @id @default(autoincrement())
-  unitName               String
+  unitName               String                   @unique
   Waste                  Waste[]
   WasteCollectionService WasteCollectionService[]
 }
