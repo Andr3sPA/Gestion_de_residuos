@@ -5,8 +5,10 @@ import { getToken } from "next-auth/jwt";
 
 export async function GET(req: NextRequest) {
     const token = await getToken({ req })
-    if (!token ) {
-        return null
+
+
+    if (!token) {
+        return NextResponse.json({ error: "No hay token de sesión" }, { status: 500 });
     }
     const user = await prismaClient.user.findUnique({  
         where: {  
@@ -22,5 +24,6 @@ export async function GET(req: NextRequest) {
     },  
     })
     if (!wastes) return NextResponse.json({ error: "internal error" }, { status: 500 })
+    console.log(wastes)
     return NextResponse.json(wastes, { status: 201 })
 }

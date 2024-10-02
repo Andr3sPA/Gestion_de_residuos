@@ -25,11 +25,11 @@ import {
   TableRow,
 } from "@/components/ui/table";
 
-export function DataTableWaste() {
+export function DataTableOffer() {
   const [data, setData] = useState<Payment[]>([]);
   
   useEffect(() => {
-    axios.get("/api/waste/list")
+    axios.get("/api/offer/list")
       .then(function (response) {
         setData(response.data);
         console.log(response.data);
@@ -64,10 +64,10 @@ export function DataTableWaste() {
     <div className="w-full">
       <div className="flex items-center py-4">
         <Input
-          placeholder="Filter by ID..."
-          value={(table.getColumn("id")?.getFilterValue() as string) ?? ""}
+          placeholder="Filter by Offer ID..."
+          value={(table.getColumn("offerId")?.getFilterValue() as string) ?? ""}
           onChange={(event) =>
-            table.getColumn("id")?.setFilterValue(event.target.value)
+            table.getColumn("offerId")?.setFilterValue(event.target.value)
           }
           className="max-w-sm"
         />
@@ -95,9 +95,7 @@ export function DataTableWaste() {
           <TableBody>
             {table.getRowModel().rows?.length ? (
               table.getRowModel().rows.map((row) => (
-                <TableRow
-                  key={row.id}
-                >
+                <TableRow key={row.id}>
                   {row.getVisibleCells().map((cell) => (
                     <TableCell key={cell.id}>
                       {flexRender(
@@ -146,57 +144,40 @@ export function DataTableWaste() {
 }
 
 export type Payment = {
-  id: number;
+  offerId: number; // Cambiar 'id' a 'offerId'
+  wasteId: number; // Agregar wasteId
   units: number;
-  unitType: {
-    id: number;
-    unitName: string;
+  companySeller: {
+    name: string;
   };
-  wasteType: {
-    id: number;
-    wasteType: string;
-  };
-  description: string;
-  expirationDate: string;
+  offerPrice: string;
   createdAt: string;
+  status: string;
+  expirationDate: string; // Agregar expirationDate
 };
 
 export const columns: ColumnDef<Payment>[] = [
   {
-    accessorKey: "id",
-    header: "ID",
-    cell: ({ row }) => <div>{row.getValue("id")}</div>,
+    accessorKey: "offerId",
+    header: "Offer ID", // Cambiar el encabezado a "Offer ID"
+    cell: ({ row }) => <div>{row.original.id}</div>, // Mostrar el valor original
   },
   {
-    accessorKey: "wasteType",
-    header: ({ column }) => (
-      <Button
-        variant="ghost"
-        onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-      >
-        Waste Type
-      </Button>
-    ),
+    accessorKey: "wasteId",
+    header: "Waste ID", // Encabezado para wasteId
+    cell: ({ row }) => <div>{row.original.waste.id}</div>, // Mostrar el ID de waste
+  },
+  {
+    accessorKey: "companySeller",
+    header: "Company Name",
     cell: ({ row }) => (
-      <div className="capitalize">
-        {row.original.wasteType ? row.original.wasteType.wasteType : "N/A"}
-      </div>
+      <div className="capitalize">{row.original.companySeller.name}</div>
     ),
   },
   {
-    id: "unitType",
-    header: "Unit Type",
-    cell: ({ row }) => {
-      const unitType = row.original.unitType;
-      return (
-        <div className="capitalize">{unitType ? unitType.unitName : "N/A"}</div>
-      );
-    },
-  },
-  {
-    accessorKey: "description",
-    header: "Description",
-    cell: ({ row }) => <div>{row.getValue("description") || "N/A"}</div>,
+    accessorKey: "offerPrice",
+    header: "Offer Price",
+    cell: ({ row }) => <div>{row.getValue("offerPrice")}</div>,
   },
   {
     accessorKey: "units",
@@ -205,6 +186,11 @@ export const columns: ColumnDef<Payment>[] = [
       const units = parseFloat(row.getValue("units"));
       return <div className="text-right font-medium">{units}</div>;
     },
+  },
+  {
+    accessorKey: "status",
+    header: "Status",
+    cell: ({ row }) => <div>{row.getValue("status")}</div>,
   },
   {
     accessorKey: "expirationDate",
@@ -231,3 +217,4 @@ export const columns: ColumnDef<Payment>[] = [
     },
   },
 ];
+
