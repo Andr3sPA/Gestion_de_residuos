@@ -23,6 +23,5 @@ export async function GET(req: NextRequest) {
     }   
     })
     if (!offers) return NextResponse.json({ error: "internal error" }, { status: 500 })
-    console.log(offers)
     return NextResponse.json(offers, { status: 201 })
 }

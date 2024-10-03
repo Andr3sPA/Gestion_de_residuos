@@ -63,14 +63,14 @@ export function DataTableOffer() {
   return (
     <div className="w-full">
       <div className="flex items-center py-4">
-        <Input
-          placeholder="Filter by Offer ID..."
-          value={(table.getColumn("offerId")?.getFilterValue() as string) ?? ""}
-          onChange={(event) =>
-            table.getColumn("offerId")?.setFilterValue(event.target.value)
-          }
-          className="max-w-sm"
-        />
+      <Input
+        placeholder="Filter by Offer ID..."
+        value={(table.getColumn("id")?.getFilterValue() as string) ?? ""}
+        onChange={(event) =>
+          table.getColumn("id")?.setFilterValue(event.target.value)
+        }
+        className="max-w-sm"
+      />
       </div>
       <div className="rounded-md border">
         <Table>
@@ -144,8 +144,8 @@ export function DataTableOffer() {
 }
 
 export type Payment = {
-  offerId: number; // Cambiar 'id' a 'offerId'
-  wasteId: number; // Agregar wasteId
+  id: number; // Aquí mantén 'id' como está en el JSON original
+  wasteId: number;
   units: number;
   companySeller: {
     name: string;
@@ -153,19 +153,19 @@ export type Payment = {
   offerPrice: string;
   createdAt: string;
   status: string;
-  expirationDate: string; // Agregar expirationDate
+  expirationDate: string;
 };
 
 export const columns: ColumnDef<Payment>[] = [
   {
-    accessorKey: "offerId",
-    header: "Offer ID", // Cambiar el encabezado a "Offer ID"
-    cell: ({ row }) => <div>{row.original.id}</div>, // Mostrar el valor original
+    accessorKey: "id", // Usa el nombre original 'id' para el filtro
+    header: "Offer ID",
+    cell: ({ row }) => <div>{row.original.id}</div>, // Usa 'id' aquí también
   },
   {
     accessorKey: "wasteId",
-    header: "Waste ID", // Encabezado para wasteId
-    cell: ({ row }) => <div>{row.original.waste.id}</div>, // Mostrar el ID de waste
+    header: "Waste ID",
+    cell: ({ row }) => <div>{row.original.wasteId}</div>,
   },
   {
     accessorKey: "companySeller",
@@ -200,7 +200,7 @@ export const columns: ColumnDef<Payment>[] = [
       const date = new Date(expirationDate);
       const formattedDate = !isNaN(date.getTime())
         ? date.toLocaleDateString("es-ES")
-        : "N/A"; // Muestra "N/A" si la fecha no es válida
+        : "N/A";
       return <div>{formattedDate}</div>;
     },
   },
@@ -212,9 +212,8 @@ export const columns: ColumnDef<Payment>[] = [
       const date = new Date(createdAt);
       const formattedDate = !isNaN(date.getTime())
         ? date.toLocaleDateString("es-ES")
-        : "N/A"; // Muestra "N/A" si la fecha no es válida
+        : "N/A";
       return <div>{formattedDate}</div>;
     },
   },
 ];
-

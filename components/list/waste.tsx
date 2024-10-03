@@ -24,15 +24,27 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+export type Payment = {
+  id: number; // ID de la oferta
+  wasteType: {
+    wasteType: string; // Tipo de residuo
+  } | null;
+  unitType: {
+    unitName: string; // Tipo de unidad
+  } | null;
+  description: string | null; // Descripción de la oferta
+  units: number; // Unidades disponibles
+  expirationDate: string | null; // Fecha de expiración
+  createdAt: string; // Fecha de creación
+};
 
 export function DataTableWaste() {
   const [data, setData] = useState<Payment[]>([]);
   const [selectedWasteId, setSelectedWasteId] = useState<number | null>(null);
-  const [isDialogOpen, setIsDialogOpen] = useState(false);
-
 
   useEffect(() => {
-    axios.get("/api/waste/list")
+    axios
+      .get("/api/waste/list")
       .then(function (response) {
         setData(response.data);
         console.log(response.data);
@@ -42,11 +54,7 @@ export function DataTableWaste() {
       });
   }, []);
 
-  const [sorting, setSorting] = React.useState<SortingState>([]);
-  const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([]);
-  const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({});
-
-  // Define las columnas dentro del componente
+  // Definir aquí Payment y las columnas
   const columns: ColumnDef<Payment>[] = [
     {
       accessorKey: "id",
@@ -58,14 +66,18 @@ export function DataTableWaste() {
       header: ({ column }) => (
         <Button
           variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          onClick={() =>
+            column.toggleSorting(column.getIsSorted() === "asc")
+          }
         >
           Waste Type
         </Button>
       ),
       cell: ({ row }) => (
         <div className="capitalize">
-          {row.original.wasteType ? row.original.wasteType.wasteType : "N/A"}
+          {row.original.wasteType
+            ? row.original.wasteType.wasteType
+            : "N/A"}
         </div>
       ),
     },
@@ -75,21 +87,27 @@ export function DataTableWaste() {
       cell: ({ row }) => {
         const unitType = row.original.unitType;
         return (
-          <div className="capitalize">{unitType ? unitType.unitName : "N/A"}</div>
+          <div className="capitalize">
+            {unitType ? unitType.unitName : "N/A"}
+          </div>
         );
       },
     },
     {
       accessorKey: "description",
       header: "Description",
-      cell: ({ row }) => <div>{row.getValue("description") || "N/A"}</div>,
+      cell: ({ row }) => (
+        <div>{row.getValue("description") || "N/A"}</div>
+      ),
     },
     {
       accessorKey: "units",
       header: () => <div className="text-right">Units</div>,
       cell: ({ row }) => {
         const units = parseFloat(row.getValue("units"));
-        return <div className="text-right font-medium">{units}</div>;
+        return (
+          <div className="text-right font-medium">{units}</div>
+        );
       },
     },
     {
@@ -122,19 +140,21 @@ export function DataTableWaste() {
       cell: ({ row }) => {
         const wasteId = row.getValue("id") as number;
         return (
-          
           <Button onClick={() => setSelectedWasteId(wasteId)}>
-            
             Ofertar
           </Button>
         );
       },
-    }
+    },
   ];
+
+  const [sorting, setSorting] = React.useState<SortingState>([]);
+  const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([]);
+  const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({});
 
   const table = useReactTable({
     data,
-    columns, // Usa las columnas definidas aquí
+    columns,
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,
     getCoreRowModel: getCoreRowModel(),
@@ -148,11 +168,9 @@ export function DataTableWaste() {
       columnVisibility,
     },
   });
-
   if (selectedWasteId !== null) {
     return <OfferForm wasteId={selectedWasteId} />;
   }
-
   return (
     <div className="w-full">
       <div className="flex items-center py-4">
@@ -170,18 +188,16 @@ export function DataTableWaste() {
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id}>
-                {headerGroup.headers.map((header) => {
-                  return (
-                    <TableHead key={header.id}>
-                      {header.isPlaceholder
-                        ? null
-                        : flexRender(
-                            header.column.columnDef.header,
-                            header.getContext()
-                          )}
-                    </TableHead>
-                  );
-                })}
+                {headerGroup.headers.map((header) => (
+                  <TableHead key={header.id}>
+                    {header.isPlaceholder
+                      ? null
+                      : flexRender(
+                          header.column.columnDef.header,
+                          header.getContext()
+                        )}
+                  </TableHead>
+                ))}
               </TableRow>
             ))}
           </TableHeader>
@@ -201,10 +217,7 @@ export function DataTableWaste() {
               ))
             ) : (
               <TableRow>
-                <TableCell
-                  colSpan={columns.length}
-                  className="h-24 text-center"
-                >
+                <TableCell colSpan={columns.length} className="h-24 text-center">
                   No results.
                 </TableCell>
               </TableRow>
@@ -232,6 +245,10 @@ export function DataTableWaste() {
           </Button>
         </div>
       </div>
+
+      {selectedWasteId !== null && (
+        <OfferForm wasteId={selectedWasteId} />
+      )}
     </div>
   );
 }

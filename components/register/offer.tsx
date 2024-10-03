@@ -26,10 +26,9 @@ const FormSchema = z.object({
   
 interface OfferFormProps {
     wasteId: number; // Prop que recibe el waste_id
-    onClose: () => void; // Función para cerrar el diálogo
 }
   
-export function OfferForm({ wasteId, onClose }: OfferFormProps) {
+export function OfferForm({ wasteId}: OfferFormProps) {
     const form = useForm<z.infer<typeof FormSchema>>({
         resolver: zodResolver(FormSchema),
         defaultValues: {
@@ -48,7 +47,6 @@ export function OfferForm({ wasteId, onClose }: OfferFormProps) {
             .then((response) => {
                 console.log(response);
                 toast({ title: "Oferta registrada con éxito.", description: response.data.message });
-                onClose(); // Cerrar el formulario después del envío exitoso
             })
             .catch((error) => {
                 console.error(error);
