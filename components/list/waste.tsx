@@ -1,17 +1,17 @@
-"use client";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import * as React from "react";
+import { OfferForm } from "../register/offer"; // Asegúrate de que la ruta es correcta
 import {
   ColumnDef,
-  ColumnFiltersState,
   SortingState,
+  ColumnFiltersState,
   VisibilityState,
   flexRender,
   getCoreRowModel,
-  getFilteredRowModel,
   getPaginationRowModel,
   getSortedRowModel,
+  getFilteredRowModel,
   useReactTable,
 } from "@tanstack/react-table";
 import { Button } from "@/components/ui/button";
@@ -27,7 +27,10 @@ import {
 
 export function DataTableWaste() {
   const [data, setData] = useState<Payment[]>([]);
-  
+  const [selectedWasteId, setSelectedWasteId] = useState<number | null>(null);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+
+
   useEffect(() => {
     axios.get("/api/waste/list")
       .then(function (response) {
@@ -43,9 +46,95 @@ export function DataTableWaste() {
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([]);
   const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({});
 
+  // Define las columnas dentro del componente
+  const columns: ColumnDef<Payment>[] = [
+    {
+      accessorKey: "id",
+      header: "ID",
+      cell: ({ row }) => <div>{row.getValue("id")}</div>,
+    },
+    {
+      accessorKey: "wasteType",
+      header: ({ column }) => (
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          Waste Type
+        </Button>
+      ),
+      cell: ({ row }) => (
+        <div className="capitalize">
+          {row.original.wasteType ? row.original.wasteType.wasteType : "N/A"}
+        </div>
+      ),
+    },
+    {
+      id: "unitType",
+      header: "Unit Type",
+      cell: ({ row }) => {
+        const unitType = row.original.unitType;
+        return (
+          <div className="capitalize">{unitType ? unitType.unitName : "N/A"}</div>
+        );
+      },
+    },
+    {
+      accessorKey: "description",
+      header: "Description",
+      cell: ({ row }) => <div>{row.getValue("description") || "N/A"}</div>,
+    },
+    {
+      accessorKey: "units",
+      header: () => <div className="text-right">Units</div>,
+      cell: ({ row }) => {
+        const units = parseFloat(row.getValue("units"));
+        return <div className="text-right font-medium">{units}</div>;
+      },
+    },
+    {
+      accessorKey: "expirationDate",
+      header: "Expiration Date",
+      cell: ({ row }) => {
+        const expirationDate = row.getValue("expirationDate");
+        const date = new Date(expirationDate);
+        const formattedDate = !isNaN(date.getTime())
+          ? date.toLocaleDateString("es-ES")
+          : "N/A"; // Muestra "N/A" si la fecha no es válida
+        return <div>{formattedDate}</div>;
+      },
+    },
+    {
+      accessorKey: "createdAt",
+      header: "Created At",
+      cell: ({ row }) => {
+        const createdAt = row.getValue("createdAt");
+        const date = new Date(createdAt);
+        const formattedDate = !isNaN(date.getTime())
+          ? date.toLocaleDateString("es-ES")
+          : "N/A"; // Muestra "N/A" si la fecha no es válida
+        return <div>{formattedDate}</div>;
+      },
+    },
+    {
+      id: "actions",
+      header: "Actions",
+      cell: ({ row }) => {
+        const wasteId = row.getValue("id") as number;
+        return (
+          
+          <Button onClick={() => setSelectedWasteId(wasteId)}>
+            
+            Ofertar
+          </Button>
+        );
+      },
+    }
+  ];
+
   const table = useReactTable({
     data,
-    columns,
+    columns, // Usa las columnas definidas aquí
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,
     getCoreRowModel: getCoreRowModel(),
@@ -59,6 +148,10 @@ export function DataTableWaste() {
       columnVisibility,
     },
   });
+
+  if (selectedWasteId !== null) {
+    return <OfferForm wasteId={selectedWasteId} />;
+  }
 
   return (
     <div className="w-full">
@@ -95,9 +188,7 @@ export function DataTableWaste() {
           <TableBody>
             {table.getRowModel().rows?.length ? (
               table.getRowModel().rows.map((row) => (
-                <TableRow
-                  key={row.id}
-                >
+                <TableRow key={row.id}>
                   {row.getVisibleCells().map((cell) => (
                     <TableCell key={cell.id}>
                       {flexRender(
@@ -144,90 +235,3 @@ export function DataTableWaste() {
     </div>
   );
 }
-
-export type Payment = {
-  id: number;
-  units: number;
-  unitType: {
-    id: number;
-    unitName: string;
-  };
-  wasteType: {
-    id: number;
-    wasteType: string;
-  };
-  description: string;
-  expirationDate: string;
-  createdAt: string;
-};
-
-export const columns: ColumnDef<Payment>[] = [
-  {
-    accessorKey: "id",
-    header: "ID",
-    cell: ({ row }) => <div>{row.getValue("id")}</div>,
-  },
-  {
-    accessorKey: "wasteType",
-    header: ({ column }) => (
-      <Button
-        variant="ghost"
-        onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-      >
-        Waste Type
-      </Button>
-    ),
-    cell: ({ row }) => (
-      <div className="capitalize">
-        {row.original.wasteType ? row.original.wasteType.wasteType : "N/A"}
-      </div>
-    ),
-  },
-  {
-    id: "unitType",
-    header: "Unit Type",
-    cell: ({ row }) => {
-      const unitType = row.original.unitType;
-      return (
-        <div className="capitalize">{unitType ? unitType.unitName : "N/A"}</div>
-      );
-    },
-  },
-  {
-    accessorKey: "description",
-    header: "Description",
-    cell: ({ row }) => <div>{row.getValue("description") || "N/A"}</div>,
-  },
-  {
-    accessorKey: "units",
-    header: () => <div className="text-right">Units</div>,
-    cell: ({ row }) => {
-      const units = parseFloat(row.getValue("units"));
-      return <div className="text-right font-medium">{units}</div>;
-    },
-  },
-  {
-    accessorKey: "expirationDate",
-    header: "Expiration Date",
-    cell: ({ row }) => {
-      const expirationDate = row.getValue("expirationDate");
-      const date = new Date(expirationDate);
-      const formattedDate = !isNaN(date.getTime())
-        ? date.toLocaleDateString("es-ES")
-        : "N/A"; // Muestra "N/A" si la fecha no es válida
-      return <div>{formattedDate}</div>;
-    },
-  },
-  {
-    accessorKey: "createdAt",
-    header: "Created At",
-    cell: ({ row }) => {
-      const createdAt = row.getValue("createdAt");
-      const date = new Date(createdAt);
-      const formattedDate = !isNaN(date.getTime())
-        ? date.toLocaleDateString("es-ES")
-        : "N/A"; // Muestra "N/A" si la fecha no es válida
-      return <div>{formattedDate}</div>;
-    },
-  },
-];

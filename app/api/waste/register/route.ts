@@ -42,9 +42,7 @@ export async function POST(req: NextRequest) {
 
     const user = await prismaClient.user.findUnique({
         where: { id: token.sub }, // Usamos el userId convertido a string
-        include: {
-            company: true,
-        },
+
     });
     
     const wasteType = await prismaClient.wasteType.findUnique({
