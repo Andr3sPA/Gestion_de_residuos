@@ -33,9 +33,13 @@ export async function POST(req: NextRequest) {
     const waste = await prismaClient.waste.findUnique({
         where: { id: body.waste_id },
         include: {
-            WasteOffer: true
+          WasteOffer: {
+            where: {
+              status: 'available',
+            },
+          },
         },
-    });
+      });
     
     if (!waste || !user) {
         return NextResponse.json({ error: "Waste o User inexistentes" }, { status: 500 });

@@ -4,20 +4,23 @@ import { getToken } from "next-auth/jwt";
 import { z } from "zod";
 
 const counterOfferSchema = z.object({
-    description: z.string(),
     offer_id: z.number(),
     price:z.number()
 })
 
 export async function POST(req: NextRequest) {
-    const { success, data } = counterOfferSchema.safeParse(await req.json())
+    const { success, data,error } = counterOfferSchema.safeParse(await req.json())
     const token = await getToken({ req })
 
-    if (!token) {
-        return null
+    if (!success) {
+        // Imprime los errores en la consola
+        console.error("Errores de validación:", error.errors);
+        return NextResponse.json({ error: error.errors }, { status: 400 });
     }
-
-
+    
+    if (!token) {
+        return NextResponse.json({ error: "No hay token de sesión" }, { status: 500 });
+    }
     const user = await prismaClient.user.findUnique({
         where: { id: token.sub }, // Usamos el userId convertido a string
         include: {
@@ -25,25 +28,22 @@ export async function POST(req: NextRequest) {
         },
     });
 
-    console.log(user);
+    if (!user) {
+        return NextResponse.json({ error: "Usuario inexistente" }, { status: 500 });
+    }
     
 
     if (!success) return NextResponse.json(null, { status: 400 })
 
-    const counterOffer = await prismaClient.counterOffer.create({
+    const counterOffer = await prismaClient.wasteCounteroffer.create({
         data: {
-            description: data.description,
-            price:data.price,
-            companyBuyer: {
+            counterPrice:data.price,
+            buyerCompany: {
                 connect: {
                     id: user?.companyId
                 }
             },
-            buyer: {
-                connect: {
-                    id: user?.id
-                }
-            },
+
             offer: {
                 connect: {
                     id: data.offer_id
