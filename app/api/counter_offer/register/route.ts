@@ -4,53 +4,55 @@ import { getToken } from "next-auth/jwt";
 import { z } from "zod";
 
 const counterOfferSchema = z.object({
-  description: z.string(),
-  offer_id: z.number(),
-  price: z.number()
+    offer_id: z.number(),
+    price:z.number()
 })
 
 export async function POST(req: NextRequest) {
-  const { success, data } = counterOfferSchema.safeParse(await req.json())
-  const token = await getToken({ req })
+    const { success, data,error } = counterOfferSchema.safeParse(await req.json())
+    const token = await getToken({ req })
 
-  if (!token) {
-    return null
-  }
-
-
-  const user = await prismaClient.user.findUnique({
-    where: { id: token.sub }, // Usamos el userId convertido a string
-    include: {
-      company: true,
-    },
-  });
-
-
-  if (!success) return NextResponse.json(null, { status: 400 })
-
-  const counterOffer = await prismaClient.counterOffer.create({
-    data: {
-      description: data.description,
-      price: data.price,
-      companyBuyer: {
-        connect: {
-          id: user?.companyId
-        }
-      },
-      buyer: {
-        connect: {
-          id: user?.id
-        }
-      },
-      offer: {
-        connect: {
-          id: data.offer_id
-        }
-      }
+    if (!success) {
+        // Imprime los errores en la consola
+        console.error("Errores de validación:", error.errors);
+        return NextResponse.json({ error: error.errors }, { status: 400 });
     }
-  })
+    
+    if (!token) {
+        return NextResponse.json({ error: "No hay token de sesión" }, { status: 500 });
+    }
+    const user = await prismaClient.user.findUnique({
+        where: { id: token.sub }, // Usamos el userId convertido a string
+        include: {
+          company: true,
+        },
+    });
 
-  if (!counterOffer) return NextResponse.json({ error: "internal error" }, { status: 500 })
+    if (!user) {
+        return NextResponse.json({ error: "Usuario inexistente" }, { status: 500 });
+    }
+    
 
-  return NextResponse.json("counter offer created", { status: 201 })
+    if (!success) return NextResponse.json(null, { status: 400 })
+
+    const counterOffer = await prismaClient.wasteCounteroffer.create({
+        data: {
+            counterPrice:data.price,
+            buyerCompany: {
+                connect: {
+                    id: user?.companyId
+                }
+            },
+
+            offer: {
+                connect: {
+                    id: data.offer_id
+                }
+            }
+        }
+    })
+
+    if (!counterOffer) return NextResponse.json({ error: "internal error" }, { status: 500 })
+    
+    return NextResponse.json("counter offer created", { status: 201 })
 }
