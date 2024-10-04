@@ -9,9 +9,11 @@ import axios from "axios";
 import { Loader2Icon } from "lucide-react";
 
 export interface Offer {
-  id: number; // Aquí mantén 'id' como está en el JSON original
+  id: number;
   wasteId: number;
-  waste?: any;
+  waste: {
+    expirationDate: string; // Mueve expirationDate dentro del objeto waste
+  };
   units: number;
   companySeller: {
     name: string;
@@ -19,8 +21,7 @@ export interface Offer {
   offerPrice: string;
   createdAt: string;
   status: string;
-  expirationDate: string;
-};
+}
 
 export default function ManageOffers() {
   const offers = useQuery({
@@ -67,10 +68,10 @@ export default function ManageOffers() {
       cell: ({ row }) => <div>{row.getValue("status")}</div>,
     },
     {
-      accessorKey: "expirationDate",
+      accessorKey: "waste.expirationDate", 
       header: "Expiration Date",
       cell: ({ row }) => {
-        const expirationDate = row.getValue("expirationDate") as string;
+        const expirationDate = row.original.waste.expirationDate;
         const date = new Date(expirationDate);
         const formattedDate = !isNaN(date.getTime())
           ? date.toLocaleDateString("es-ES")
