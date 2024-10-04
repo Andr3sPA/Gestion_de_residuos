@@ -2,7 +2,6 @@
 
 import { SimpleCard } from "@/components/SimpleCard";
 import { TableList } from "@/components/TableList";
-import { Button } from "@/components/ui/button";
 import { useQuery } from "@tanstack/react-query";
 import { ColumnDef } from "@tanstack/react-table";
 import axios from "axios";
@@ -26,7 +25,9 @@ export default function ManageOffers() {
   const offers = useQuery({
     queryKey: ["myOffers"],
     queryFn: () => axios.get("/api/offer/list")
-      .then((res) => res.data)
+      .then((res) => {
+        return res.data
+      })
   })
 
   const columns: ColumnDef<Offer>[] = [
@@ -64,13 +65,15 @@ export default function ManageOffers() {
     {
       accessorKey: "status",
       header: "Status",
+      enableGlobalFilter: false,
       cell: ({ row }) => <div>{row.getValue("status")}</div>,
     },
     {
-      accessorKey: "expirationDate",
+      accessorKey: "waste.expirationDate",
       header: "Expiration Date",
+      enableGlobalFilter: false,
       cell: ({ row }) => {
-        const expirationDate = row.getValue("expirationDate") as string;
+        const expirationDate = row.original.waste.expirationDate;
         const date = new Date(expirationDate);
         const formattedDate = !isNaN(date.getTime())
           ? date.toLocaleDateString("es-ES")
@@ -81,13 +84,14 @@ export default function ManageOffers() {
     {
       accessorKey: "createdAt",
       header: "Created At",
+      enableGlobalFilter: false,
       cell: ({ row }) => {
-        const createdAt = row.getValue("createdAt") as string;
+        const createdAt = row.original.createdAt;
         const date = new Date(createdAt);
         const formattedDate = !isNaN(date.getTime())
           ? date.toLocaleDateString("es-ES")
           : "N/A";
-        return <div>{formattedDate}</div>;
+        return <span className="font-thin text-sm">{formattedDate}</span>;
       },
     },
   ]

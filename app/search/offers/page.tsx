@@ -98,7 +98,7 @@ export default function searchOffers() {
   return <div className="flex flex-1 flex-col w-full h-full justify-start items-center" >
     <SimpleCard
       title="Ofertas"
-      desc=" Busca aquí los residuos que ofrecen otras empresas "
+      desc="Busca aquí los residuos que ofrecen otras empresas "
     >
       {offers.isLoading ?
         <div className="flex justify-center p-2">

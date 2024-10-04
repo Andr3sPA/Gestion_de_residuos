@@ -7,10 +7,11 @@ import { TableList } from "@/components/TableList";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import { DialogDescription, DialogTitle } from "@radix-ui/react-dialog";
 import { useQuery } from "@tanstack/react-query";
 import { ColumnDef } from "@tanstack/react-table";
 import axios from "axios";
-import { Loader2Icon, MoreHorizontal, PlusIcon } from "lucide-react";
+import { Loader2Icon, LucideRefreshCw, MoreHorizontal, PlusIcon, RefreshCcwDotIcon, RefreshCcwIcon, RefreshCwIcon } from "lucide-react";
 import { useState } from "react";
 
 interface Waste {
@@ -31,7 +32,7 @@ export default function ManageOffers() {
   const wastes = useQuery({
     queryKey: ['myWastes'],
     queryFn: () => axios.get("/api/waste/list")
-      .then((res) => res.data)
+      .then((res) => res.data),
   })
   const [selectedWasteId, setSelectedWasteId] = useState<number | null>(null)
   const [addWasteOpen, setAddWasteOpen] = useState(false)
@@ -109,7 +110,6 @@ export default function ManageOffers() {
       cell: ({ row }) => {
         const createdAt = row.getValue("createdAt") as string;
         const date = new Date(createdAt);
-        row.index === 0 && console.log(date)
         const formattedDate = !isNaN(date.getTime())
           ? date.toLocaleDateString("es-ES")
           : "N/A"; // Muestra "N/A" si la fecha no es válida
@@ -137,9 +137,6 @@ export default function ManageOffers() {
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
-          // <Button onClick={}>
-          //   Ofertar
-          // </Button>
         );
       },
     },
@@ -153,7 +150,7 @@ export default function ManageOffers() {
 
   return <div>
     {selectedWasteId ?
-      <SimpleCard title="Crear oferta" >
+      <SimpleCard title="Crear oferta">
         <OfferForm
           wasteId={selectedWasteId}
           onCancel={() => setSelectedWasteId(null)}
@@ -162,8 +159,17 @@ export default function ManageOffers() {
       :
       <SimpleCard
         title="Mis residuos"
-        headerActions={
-          <div className="flex justify-end">
+        headerActions={wastes.isSuccess &&
+          <div className="flex justify-end gap-4">
+            <Button
+              variant={"secondary"}
+              disabled={wastes.isRefetching}
+              onClick={() => wastes.refetch()}
+            >
+              <LucideRefreshCw
+                className={`w-5 h-5 ${wastes.isRefetching ? "animate-spin" : ""}`}
+              />
+            </Button>
             <Dialog open={addWasteOpen} onOpenChange={setAddWasteOpen}>
               <DialogTrigger asChild>
                 <Button size={"sm"}>
@@ -171,6 +177,8 @@ export default function ManageOffers() {
                 </Button>
               </DialogTrigger>
               <DialogContent>
+                <DialogTitle className="font-bold text-lg">Añadir nuevo residuo</DialogTitle>
+                <DialogDescription className="sr-only">Crear un nuevo residuo</DialogDescription>
                 <WasteForm onCancel={() => setAddWasteOpen(false)} />
               </DialogContent>
             </Dialog>

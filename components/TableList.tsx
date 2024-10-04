@@ -13,7 +13,6 @@ export function TableList<T>({ columns, data }:
   const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({});
   const [globalFilter, setGlobalFilter] = React.useState('')
 
-
   const table = useReactTable({
     data,
     columns,

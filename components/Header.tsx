@@ -3,7 +3,7 @@
 import { CircleUser, Menu, MenuIcon, Package2 } from "lucide-react";
 import { Button } from "./ui/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "./ui/dropdown-menu";
-import { Sheet, SheetContent, SheetTrigger } from "./ui/sheet";
+import { Sheet, SheetContent, SheetDescription, SheetTitle, SheetTrigger } from "./ui/sheet";
 import Link from "next/link";
 import { LoginForm } from "./users/LoginForm";
 import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
@@ -13,6 +13,7 @@ import { signOut, useSession } from "next-auth/react";
 
 export default function Header() {
   const { data, status } = useSession()
+  const [sideMenuOpen, setSideMenuOpen] = useState(false)
   const router = useRouter()
   const path = usePathname()
 
@@ -62,39 +63,27 @@ export default function Header() {
     router.push(pathStr)
   }
 
+  const navButtons = [
+    ["/", "Inicio"],
+    ["/manage/wastes", "Mis residuos"],
+    ["/manage/offers", "Mis ofertas"],
+    ["/search/offers", "Buscar ofertas"],
+  ]
+
   return <div className="flex w-full flex-col shadow-md">
     <header className="sticky top-0 flex h-16 items-center gap-4 border-b bg-background px-4 md:px-6">
       <nav className="text-nowrap hidden flex-col gap-6 text-lg font-medium md:flex md:flex-row md:items-center md:gap-5 md:text-sm lg:gap-6">
-        <Button variant={"link"}
-          onClick={() => goto("/")}
-          disabled={checkIfPath("/")}
-          className="text-muted-foreground transition-colors hover:text-foreground"
-        >
-          Inicio
-        </Button>
-        <Button variant={"link"}
-          onClick={() => goto("/manage/wastes")}
-          disabled={checkIfPath("/manage/wastes")}
-          className="text-muted-foreground transition-colors hover:text-foreground"
-        >
-          Mis residuos
-        </Button>
-        <Button variant={"link"}
-          onClick={() => goto("/manage/offers")}
-          disabled={checkIfPath("/manage/offers")}
-          className="text-muted-foreground transition-colors hover:text-foreground"
-        >
-          Mis ofertas
-        </Button>
-        <Button variant={"link"}
-          onClick={() => goto("/search/offers")}
-          disabled={checkIfPath("/search/offers")}
-          className="text-muted-foreground transition-colors hover:text-foreground"
-        >
-          Buscar Ofertas
-        </Button>
+        {navButtons.map((btn, idx) =>
+          <Button key={idx} variant={"link"}
+            onClick={() => goto(btn[0])}
+            disabled={checkIfPath(btn[0])}
+            className="text-muted-foreground transition-colors hover:text-foreground"
+          >
+            {btn[1]}
+          </Button>
+        )}
       </nav>
-      <Sheet>
+      <Sheet open={sideMenuOpen} onOpenChange={setSideMenuOpen}>
         <SheetTrigger asChild>
           <Button
             variant="outline"
@@ -105,20 +94,19 @@ export default function Header() {
             <span className="sr-only">Toggle navigation menu</span>
           </Button>
         </SheetTrigger>
-        <SheetContent side="left">
-          <nav className="grid gap-6 text-lg font-medium">
-            <Link
-              href="/"
-              className="text-muted-foreground hover:text-foreground"
-            >
-              Inicio
-            </Link>
-            <Link
-              href="#"
-              className="text-muted-foreground hover:text-foreground"
-            >
-              Ofertas
-            </Link>
+        <SheetContent side="left" className="flex flex-col gap-4 w-fit">
+          <SheetTitle>Menú</SheetTitle>
+          <SheetDescription className="sr-only">Navigation menu</SheetDescription>
+          <nav className="grid gap-6 w-fit pr-16 text-lg font-medium">
+            {navButtons.map((btn, idx) =>
+              <Button key={idx} variant={"ghost"}
+                onClick={() => { goto(btn[0]); setSideMenuOpen(false) }}
+                disabled={checkIfPath(btn[0])}
+                className="text-muted-foreground justify-start transition-colors hover:text-foreground"
+              >
+                {btn[1]}
+              </Button>
+            )}
           </nav>
         </SheetContent>
       </Sheet>

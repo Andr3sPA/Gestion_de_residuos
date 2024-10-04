@@ -58,7 +58,7 @@ export function WasteForm({ onCancel }: { onCancel?: () => void }) {
     // Verifica que expirationDate sea un objeto Date
     console.log("Datos antes de enviar:", data);
 
-    axios.post('api/waste/register', {
+    axios.post('/api/waste/register', {
       description: data.description,
       units: data.units,
       expirationDate: data.expirationDate,
