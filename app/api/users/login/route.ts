@@ -35,8 +35,9 @@ export async function POST(req: NextRequest) {
   return ok({
     user: {
       id: user.id,
+      name: `${user.firstName} ${user.lastName}`,
       email: user.email,
-      role:user.role
+      role: user.role
     }
   })
 }

@@ -19,7 +19,7 @@ export async function POST(req: NextRequest) {
 
   if (!success) return NextResponse.json(null, { status: 400 })
 
-  if (!isStrongPassword(data.password)) return NextResponse.json({ error: "La contraseña no cumple con los requisitos mínimos" }, { status: 400 })
+  if (!isStrongPassword(data.password, { minLength: 8, minNumbers: 1, minLowercase: 1, minUppercase: 1, minSymbols: 0 })) return NextResponse.json({ error: "La contraseña no cumple con los requisitos mínimos" }, { status: 400 })
 
   const company = await prismaClient.company.findUnique({ where: { code: data.companyCode } })
   if (!company) {

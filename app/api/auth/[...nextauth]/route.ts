@@ -1,11 +1,13 @@
 import { Session } from "next-auth";
 import NextAuth from "next-auth/next";
 import CredentialsProvider from "next-auth/providers/credentials";
+import { useEffect } from "react";
 
 interface UserSession extends Session {
   user?: {
     id?: string | null;
     email?: string | null;
+    name?: string | null;
   }
 }
 
@@ -20,15 +22,17 @@ const handler = NextAuth({
       if (token?.sub) {
         sessionWithUser.user = {
           id: token.sub,
-          email: token.email
+          email: token.email,
+          name: token.name
         }
       }
-      return session;
+      return sessionWithUser;
     },
     async jwt({ token, user }) {
       if (user) {
         token.sub = user.id;
         token.email = user.email;
+        token.name = user.name
         //TODO: set issuer and rest
       }
       return token;
@@ -38,7 +42,7 @@ const handler = NextAuth({
     CredentialsProvider({
       name: 'Credentials',
       credentials: {
-        username: { label: "Username", type: "text", placeholder: "jsmith" },
+        username: { label: "Email", type: "text", placeholder: "jsmith@mail.com" },
         password: { label: "Password", type: "password" }
       },
       async authorize(credentials, req) {

@@ -8,7 +8,7 @@ import Link from "next/link";
 import { LoginForm } from "./users/LoginForm";
 import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
 import { usePathname, useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { signOut, useSession } from "next-auth/react";
 
 export default function Header() {
@@ -28,7 +28,13 @@ export default function Header() {
       {userButton}
     </DropdownMenuTrigger>
     <DropdownMenuContent align="end">
-      <DropdownMenuLabel>Cuenta</DropdownMenuLabel>
+      <DropdownMenuLabel className="grid grid-rows-2">
+        <span>Cuenta</span>
+        <span className="font-extralight font-xs">
+          {data && data.user && data.user.name ?
+            data.user.name : "noc"}
+        </span>
+      </DropdownMenuLabel>
       <DropdownMenuSeparator />
       {/* <DropdownMenuItem disabled className="cursor-pointer" */}
       {/*   onClick={() => router.push("/settings")}>Ajustes</DropdownMenuItem> */}
@@ -65,6 +71,13 @@ export default function Header() {
           className="text-muted-foreground transition-colors hover:text-foreground"
         >
           Inicio
+        </Button>
+        <Button variant={"link"}
+          onClick={() => goto("/manage/wastes")}
+          disabled={checkIfPath("/manage/wastes")}
+          className="text-muted-foreground transition-colors hover:text-foreground"
+        >
+          Mis residuos
         </Button>
         <Button variant={"link"}
           onClick={() => goto("/manage/offers")}
