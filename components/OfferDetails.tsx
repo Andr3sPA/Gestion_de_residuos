@@ -66,16 +66,16 @@ export function OfferDetails({ offerInfo }: { offerInfo: any }) {
               month: 'numeric',
               day: 'numeric',
             })}</span>
-        </div>
-        <Popover>
-          <PopoverTrigger asChild>
-            <Button>Realizar contraoferta</Button>
-          </PopoverTrigger>
-          <PopoverContent className="w-full p-4">
-            {/* Formulario CounterOfferForm dentro del Popover */}
-            <CounterOfferForm offerId={offerInfo.id} />
-          </PopoverContent>
-        </Popover>
+      </div>
+      <Popover>
+        <PopoverTrigger asChild>
+          <Button>Realizar contraoferta</Button>
+        </PopoverTrigger>
+        <PopoverContent className="w-full p-4">
+          {/* Formulario CounterOfferForm dentro del Popover */}
+          <CounterOfferForm offerId={offerInfo.id} />
+        </PopoverContent>
+      </Popover>
     </DialogFooter>
   </DialogContent>
 }

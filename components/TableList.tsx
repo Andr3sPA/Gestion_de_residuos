@@ -12,7 +12,6 @@ export function TableList<T>({ columns, data }:
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([]);
   const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({});
   const [globalFilter, setGlobalFilter] = React.useState('')
-
   const table = useReactTable({
     data,
     columns,
@@ -27,9 +26,11 @@ export function TableList<T>({ columns, data }:
       sorting,
       columnFilters,
       columnVisibility,
-      globalFilter
+      globalFilter,
     },
   });
+
+  const [triangleUp, triangleDown] = [<span>&#9652;</span>, <span>&#9662;</span>]
 
   return (
     <div className="w-full">
@@ -42,7 +43,7 @@ export function TableList<T>({ columns, data }:
         />
       </div>
       <div className="rounded-md border">
-        <Table>
+        <Table >
           <TableHeader className="bg-accent">
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id}>
@@ -50,9 +51,22 @@ export function TableList<T>({ columns, data }:
                   <TableHead key={header.id}>
                     {header.isPlaceholder
                       ? null
-                      : flexRender(
-                        header.column.columnDef.header,
-                        header.getContext()
+                      : (
+                        !header.column.columnDef.enableSorting ?
+                          flexRender(
+                            header.column.columnDef.header,
+                            header.getContext())
+                          :
+                          <Button variant={"ghost"} className="p-0"
+                            onClick={header.column.getToggleSortingHandler()}>
+                            {flexRender(
+                              header.column.columnDef.header,
+                              header.getContext())
+                            }
+                            {header.column.getIsSorted() && (header.column.getIsSorted() === "desc" ?
+                              triangleUp : triangleDown)
+                            }
+                          </Button>
                       )}
                   </TableHead>
                 ))}
@@ -83,28 +97,30 @@ export function TableList<T>({ columns, data }:
           </TableBody>
         </Table>
       </div>
-      <div className="flex items-center justify-end space-x-2 py-4">
-        <div className="space-x-2">
-          <Button
-            variant="outline"
-            className={!table.getCanPreviousPage() ? "hidden" : ""}
-            size="sm"
-            onClick={() => table.previousPage()}
-            disabled={!table.getCanPreviousPage()}
-          >
-            <IconLeft />
-          </Button>
-          <Button
-            variant="outline"
-            className={!table.getCanPreviousPage() ? "hidden" : ""}
-            size="sm"
-            onClick={() => table.nextPage()}
-            disabled={!table.getCanNextPage()}
-          >
-            <IconRight />
-          </Button>
+      {(table.getCanPreviousPage() || table.getCanNextPage()) &&
+        <div className="flex items-center justify-end space-x-2 py-4">
+          <div className="space-x-2">
+            <Button
+              variant="outline"
+              className={!table.getCanPreviousPage() ? "hidden" : ""}
+              size="sm"
+              onClick={() => table.previousPage()}
+              disabled={!table.getCanPreviousPage()}
+            >
+              <IconLeft />
+            </Button>
+            <Button
+              variant="outline"
+              className={!table.getCanPreviousPage() ? "hidden" : ""}
+              size="sm"
+              onClick={() => table.nextPage()}
+              disabled={!table.getCanNextPage()}
+            >
+              <IconRight />
+            </Button>
+          </div>
         </div>
-      </div>
+      }
     </div>
   );
 }

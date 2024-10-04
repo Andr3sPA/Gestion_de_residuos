@@ -6,7 +6,7 @@ export function SimpleCard({ className, title, desc, headerActions, children }:
   { className?: string, title: string, desc?: string, headerActions?: ReactNode, children: ReactNode }
 ) {
 
-  const mergedClasses = twMerge("w-fit p-4 border-2 shadow-md", className ?? "")
+  const mergedClasses = twMerge("w-fit p-4 border-2 shadow-md scale-50 sm:scale-75 md:scale-100", className ?? "")
 
   return <Card className={mergedClasses}>
     <CardHeader className="px-7 grid grid-cols-2">

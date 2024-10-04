@@ -51,49 +51,7 @@ export default function searchOffers() {
           <OfferDetails offerInfo={row.original} />
         </Dialog>
     }
-    // {offer.id}
-    // {offer.waste.wasteType.wasteType}}
-    // {offer.waste.description}}
-    // ${offer.offerPrice}}
-    // {offer.units} {offer.waste.unitType.unitName}}
   ]
-
-  // <Table>
-  //   <TableHeader>
-  //     <TableRow>
-  //       <TableHead>ID</TableHead>
-  //       <TableHead>Tipo</TableHead>
-  //       <TableHead>Descripción</TableHead>
-  //       <TableHead>Precio total</TableHead>
-  //       <TableHead>Cantidad</TableHead>
-  //       <TableHead>
-  //         <span className="sr-only">Detalles</span>
-  //       </TableHead>
-  //     </TableRow>
-  //   </TableHeader>
-  //   <TableBody>
-  //     {
-  //       data.status === "ok" &&
-  //       data.list.map((offer, idx) => (
-  //         <TableRow key={idx}>
-  //           <TableCell>{offer.id}</TableCell>
-  //           <TableCell>{offer.waste.wasteType.wasteType}</TableCell>
-  //           <TableCell>{offer.waste.description}</TableCell>
-  //           <TableCell>${offer.offerPrice}</TableCell>
-  //           <TableCell>{offer.units} {offer.waste.unitType.unitName}</TableCell>
-  //           <TableCell>
-  //             <Dialog>
-  //               <DialogTrigger asChild>
-  //                 <Button className="rounded-xl text-xs">Detalles</Button>
-  //               </DialogTrigger>
-  //               <OfferDetails offerInfo={offer} />
-  //             </Dialog>
-  //           </TableCell>
-  //         </TableRow>
-  //       ))
-  //     }
-  //   </TableBody>
-  // </Table>
 
   return <div className="flex flex-1 flex-col w-full h-full justify-start items-center" >
     <SimpleCard

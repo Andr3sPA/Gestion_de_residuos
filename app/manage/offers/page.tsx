@@ -2,6 +2,7 @@
 
 import { SimpleCard } from "@/components/SimpleCard";
 import { TableList } from "@/components/TableList";
+import { Button } from "@/components/ui/button";
 import { useQuery } from "@tanstack/react-query";
 import { ColumnDef } from "@tanstack/react-table";
 import axios from "axios";
@@ -11,7 +12,11 @@ export interface Offer {
   id: number;
   wasteId: number;
   waste: {
+    description: string;
     expirationDate: string; // Mueve expirationDate dentro del objeto waste
+    unitType: {
+      unitName: string
+    }
   };
   units: number;
   companySeller: {
@@ -34,33 +39,32 @@ export default function ManageOffers() {
   const columns: ColumnDef<Offer>[] = [
     {
       accessorKey: "id", // Usa el nombre original 'id' para el filtro
-      header: "Offer ID",
+      header: "ID",
+      enableSorting: true,
       cell: ({ row }) => <div>{row.original.id}</div>, // Usa 'id' aquí también
     },
     {
-      accessorKey: "wasteId",
-      header: "Waste ID",
-      cell: ({ row }) => <div>{row.original.wasteId}</div>,
-    },
-    {
-      accessorKey: "companySeller",
-      header: "Company Name",
-      cell: ({ row }) => (
-        <div className="capitalize">{row.original.companySeller.name}</div>
-      ),
+      accessorKey: "waste.description",
+      header: "Description",
+      enableSorting: true,
     },
     {
       accessorKey: "offerPrice",
       header: "Offer Price",
-      cell: ({ row }) => <div>{row.getValue("offerPrice")}</div>,
+      enableSorting: true,
+      sortingFn: "alphanumeric",
+      cell: ({ row }) => <div className="text-right">{row.original.offerPrice}</div>,
     },
     {
       accessorKey: "units",
-      header: () => <div className="text-right">Units</div>,
       enableSorting: true,
+      sortingFn: "alphanumeric",
+      header: () => <div className="text-right">Units</div>,
       cell: ({ row }) => {
-        const units = parseFloat(row.getValue("units"));
-        return <div className="text-right font-medium">{units}</div>;
+        return <div className="text-right font-medium">
+          {row.original.units}
+          <span className="font-light text-xs">{" "}{row.original.waste.unitType.unitName}</span>
+        </div>;
       },
     },
     {
@@ -83,20 +87,18 @@ export default function ManageOffers() {
       },
     },
     {
-      accessorKey: "createdAt",
-      header: "Created At",
-      enableGlobalFilter: false,
+      id: "actions",
       cell: ({ row }) => {
-        const createdAt = row.original.createdAt;
-        const date = new Date(createdAt);
-        const formattedDate = !isNaN(date.getTime())
-          ? date.toLocaleDateString("es-ES")
-          : "N/A";
-        return <span className="font-thin text-sm">{formattedDate}</span>;
-      },
-    },
+        return <Button size={"sm"}>
+          Details
+        </Button>
+      }
+    }
   ]
-  return <SimpleCard title="Mis ofertas">
+  return <SimpleCard
+    title="Mis ofertas"
+    desc="Visualiza aquí las ofertas hechas por tu empresa."
+  >
     {offers.isLoading ?
       <Loader2Icon className="animate-spin" />
       :

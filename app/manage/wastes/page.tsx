@@ -41,20 +41,13 @@ export default function ManageOffers() {
     {
       accessorKey: "id",
       header: "ID",
+      enableSorting: true,
       cell: ({ row }) => <div>{row.getValue("id")}</div>,
     },
     {
       accessorKey: "wasteType",
-      header: ({ column }) => (
-        <Button
-          variant="ghost"
-          onClick={() =>
-            column.toggleSorting(column.getIsSorted() === "asc")
-          }
-        >
-          Waste Type
-        </Button>
-      ),
+      header: "Waste Type",
+      enableSorting: true,
       cell: ({ row }) => (
         <div className="capitalize">
           {row.original.wasteType
@@ -66,6 +59,8 @@ export default function ManageOffers() {
     {
       id: "unitType",
       header: "Unit Type",
+      accessorKey: "unitType",
+      enableSorting: true,
       cell: ({ row }) => {
         const unitType = row.original.unitType;
         return (
@@ -78,12 +73,15 @@ export default function ManageOffers() {
     {
       accessorKey: "description",
       header: "Description",
+      enableSorting: true,
       cell: ({ row }) => (
         <div>{row.getValue("description") || "N/A"}</div>
       ),
     },
     {
       accessorKey: "units",
+      enableSorting: true,
+      sortingFn: "alphanumeric",
       header: () => <div className="text-right">Units</div>,
       cell: ({ row }) => {
         const units = parseFloat(row.getValue("units"));
@@ -95,6 +93,7 @@ export default function ManageOffers() {
     {
       accessorKey: "expirationDate",
       header: "Expiration Date",
+      enableGlobalFilter: false,
       cell: ({ row }) => {
         const expirationDate = row.getValue("expirationDate") as string;
         const date = new Date(expirationDate);
@@ -107,6 +106,7 @@ export default function ManageOffers() {
     {
       accessorKey: "createdAt",
       header: "Created At",
+      enableGlobalFilter: false,
       cell: ({ row }) => {
         const createdAt = row.getValue("createdAt") as string;
         const date = new Date(createdAt);
@@ -119,6 +119,7 @@ export default function ManageOffers() {
     {
       id: "actions",
       header: "Actions",
+      enableGlobalFilter: false,
       cell: ({ row }) => {
         const wasteId = row.original.id;
         return (
@@ -148,45 +149,43 @@ export default function ManageOffers() {
     <TableList columns={columns} data={wastes.data} />
 
 
-  return <div>
-    {selectedWasteId ?
-      <SimpleCard title="Crear oferta">
-        <OfferForm
-          wasteId={selectedWasteId}
-          onCancel={() => setSelectedWasteId(null)}
-        />
-      </SimpleCard>
-      :
-      <SimpleCard
-        title="Mis residuos"
-        headerActions={wastes.isSuccess &&
-          <div className="flex justify-end gap-4">
-            <Button
-              variant={"secondary"}
-              disabled={wastes.isRefetching}
-              onClick={() => wastes.refetch()}
-            >
-              <LucideRefreshCw
-                className={`w-5 h-5 ${wastes.isRefetching ? "animate-spin" : ""}`}
-              />
-            </Button>
-            <Dialog open={addWasteOpen} onOpenChange={setAddWasteOpen}>
-              <DialogTrigger asChild>
-                <Button size={"sm"}>
-                  <PlusIcon />
-                </Button>
-              </DialogTrigger>
-              <DialogContent>
-                <DialogTitle className="font-bold text-lg">Añadir nuevo residuo</DialogTitle>
-                <DialogDescription className="sr-only">Crear un nuevo residuo</DialogDescription>
-                <WasteForm onCancel={() => setAddWasteOpen(false)} />
-              </DialogContent>
-            </Dialog>
-          </div>
-        }
-      >
-        {table}
-      </SimpleCard >
-    }
-  </div >
+  return selectedWasteId ?
+    <SimpleCard title="Crear oferta">
+      <OfferForm
+        wasteId={selectedWasteId}
+        onCancel={() => setSelectedWasteId(null)}
+      />
+    </SimpleCard>
+    :
+    <SimpleCard
+      title="Mis residuos"
+      desc="Gestiona aquí los residuos de tu empresa"
+      headerActions={wastes.isSuccess &&
+        <div className="flex justify-end gap-4">
+          <Button
+            variant={"secondary"}
+            disabled={wastes.isRefetching}
+            onClick={() => wastes.refetch()}
+          >
+            <LucideRefreshCw
+              className={`w-5 h-5 ${wastes.isRefetching ? "animate-spin" : ""}`}
+            />
+          </Button>
+          <Dialog open={addWasteOpen} onOpenChange={setAddWasteOpen}>
+            <DialogTrigger asChild>
+              <Button size={"sm"}>
+                <PlusIcon />
+              </Button>
+            </DialogTrigger>
+            <DialogContent>
+              <DialogTitle className="font-bold text-lg">Añadir nuevo residuo</DialogTitle>
+              <DialogDescription className="sr-only">Crear un nuevo residuo</DialogDescription>
+              <WasteForm onCancel={() => setAddWasteOpen(false)} />
+            </DialogContent>
+          </Dialog>
+        </div>
+      }
+    >
+      {table}
+    </SimpleCard >
 }
