@@ -5,10 +5,11 @@ import { Button } from "@/components/ui/button";
 import { TableList } from "@/components/TableList";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
-import { Loader2Icon } from "lucide-react";
+import { Loader2Icon, StepBackIcon } from "lucide-react";
 import { SimpleCard } from "@/components/SimpleCard";
 import { useState } from "react";
-import { WasteForm } from "@/components/register/waste";
+import { OfferForm } from "@/components/register/offer";
+import { IconLeft } from "react-day-picker";
 
 interface Waste {
   id: number; // ID de la oferta
@@ -132,11 +133,18 @@ export default function ManageOffers() {
     <TableList columns={columns} data={wastes.data} />
 
 
-  return <SimpleCard title="Mis residuos">
+  return <div>
     {selectedWasteId ?
-      <WasteForm />
+      <SimpleCard title="Crear oferta" >
+        <OfferForm
+          wasteId={selectedWasteId}
+          onCancel={() => setSelectedWasteId(null)}
+        />
+      </SimpleCard>
       :
-      table
+      <SimpleCard title="Mis residuos">
+        {table}
+      </SimpleCard>
     }
-  </SimpleCard>
+  </div>
 }

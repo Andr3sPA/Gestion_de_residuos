@@ -3,11 +3,15 @@ import { TableList } from "./TableList";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "./ui/card";
 import { Input } from "./ui/input";
 import { ReactNode } from "react";
+import { twMerge } from "tailwind-merge";
 
-export function SimpleCard({ title, desc, children }:
-  { title: string, desc?: string, children: ReactNode }
+export function SimpleCard({ className, title, desc, children }:
+  { className?: string, title: string, desc?: string, children: ReactNode }
 ) {
-  return <Card className="w-fit p-4 border-2 shadow-md">
+
+  const mergedClasses = twMerge("w-fit p-4 border-2 shadow-md", className ?? "")
+
+  return <Card className={mergedClasses}>
     <CardHeader className="px-7 grid grid-cols-2">
       <div>
         <CardTitle>{title}</CardTitle>
