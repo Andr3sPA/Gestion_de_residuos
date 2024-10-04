@@ -1,18 +1,14 @@
 'use client'
 
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Loader2, LoaderIcon, Search } from "lucide-react";
+import { Loader2 } from "lucide-react";
 import axios from "axios";
 import { useQuery } from "@tanstack/react-query";
 import { ColumnDef } from "@tanstack/react-table";
 import { Offer } from "@/app/manage/offers/page";
-import { off } from "process";
 import { TableList } from "@/components/TableList";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogTrigger } from "@/components/ui/dialog";
 import { OfferDetails } from "@/components/OfferDetails";
-import { Suspense } from "react";
 import { SimpleCard } from "@/components/SimpleCard";
 
 export default function searchOffers() {

@@ -15,6 +15,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { toast } from "@/hooks/use-toast";
+import { Separator } from "@radix-ui/react-dropdown-menu";
 
 const FormSchema = z.object({
   waste_id: z.number(),
@@ -57,104 +58,111 @@ export function OfferForm({ wasteId, onCancel }: OfferFormProps) {
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-        <FormField
-          control={form.control}
-          name="waste_id"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Waste ID</FormLabel>
-              <FormControl>
-                <Input
-                  type="number"
-                  placeholder="ID de residuo"
-                  {...field}
-                  value={field.value}
-                  onChange={(e) => field.onChange(e.target.valueAsNumber)}
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="price"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Precio</FormLabel>
-              <FormControl>
-                <Input
-                  type="number"
-                  placeholder="Precio de la oferta"
-                  {...field}
-                  value={field.value}
-                  onChange={(e) => field.onChange(e.target.valueAsNumber)}
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="units"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Unidades</FormLabel>
-              <FormControl>
-                <Input
-                  type="number"
-                  placeholder="Número de unidades"
-                  {...field}
-                  value={field.value}
-                  onChange={(e) => field.onChange(e.target.valueAsNumber)}
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="pickupLatitude"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Latitud de Recogida</FormLabel>
-              <FormControl>
-                <Input
-                  type="number"
-                  placeholder="Latitud"
-                  {...field}
-                  value={field.value}
-                  onChange={(e) => field.onChange(e.target.valueAsNumber)}
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="pickupLongitude"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Longitud de Recogida</FormLabel>
-              <FormControl>
-                <Input
-                  type="number"
-                  placeholder="Longitud"
-                  {...field}
-                  value={field.value}
-                  onChange={(e) => field.onChange(e.target.valueAsNumber)}
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <Button onClick={onCancel} variant={"secondary"}>Regresar</Button>
-        <Button type="submit">Registrar Oferta</Button>
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+        <div className="grid grid-cols-2 gap-6">
+          <FormField
+            control={form.control}
+            name="waste_id"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Waste ID</FormLabel>
+                <FormControl>
+                  <Input
+                    type="number"
+                    placeholder="ID de residuo"
+                    {...field}
+                    value={field.value}
+                    onChange={(e) => field.onChange(e.target.valueAsNumber)}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="price"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Precio</FormLabel>
+                <FormControl>
+                  <Input
+                    type="number"
+                    placeholder="Precio de la oferta"
+                    {...field}
+                    value={field.value}
+                    onChange={(e) => field.onChange(e.target.valueAsNumber)}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="units"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Unidades</FormLabel>
+                <FormControl>
+                  <Input
+                    type="number"
+                    placeholder="Número de unidades"
+                    {...field}
+                    value={field.value}
+                    onChange={(e) => field.onChange(e.target.valueAsNumber)}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          {/*TODO: change to map pick */}
+          <FormField
+            control={form.control}
+            name="pickupLatitude"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Latitud de Recogida</FormLabel>
+                <FormControl>
+                  <Input
+                    type="number"
+                    placeholder="Latitud"
+                    {...field}
+                    value={field.value}
+                    onChange={(e) => field.onChange(e.target.valueAsNumber)}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="pickupLongitude"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Longitud de Recogida</FormLabel>
+                <FormControl>
+                  <Input
+                    type="number"
+                    placeholder="Longitud"
+                    {...field}
+                    value={field.value}
+                    onChange={(e) => field.onChange(e.target.valueAsNumber)}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </div>
+        <div className="flex justify-evenly">
+          {onCancel &&
+            <Button onClick={onCancel} variant={"secondary"}>Regresar</Button>
+          }
+          <Button type="submit">Registrar Oferta</Button>
+        </div>
       </form>
     </Form>
   );

@@ -1,15 +1,17 @@
 'use client'
 
-import { ColumnDef } from "@tanstack/react-table";
-import { Button } from "@/components/ui/button";
-import { TableList } from "@/components/TableList";
-import { useQuery } from "@tanstack/react-query";
-import axios from "axios";
-import { Loader2Icon, StepBackIcon } from "lucide-react";
-import { SimpleCard } from "@/components/SimpleCard";
-import { useState } from "react";
 import { OfferForm } from "@/components/register/offer";
-import { IconLeft } from "react-day-picker";
+import { WasteForm } from "@/components/register/waste";
+import { SimpleCard } from "@/components/SimpleCard";
+import { TableList } from "@/components/TableList";
+import { Button } from "@/components/ui/button";
+import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import { useQuery } from "@tanstack/react-query";
+import { ColumnDef } from "@tanstack/react-table";
+import axios from "axios";
+import { Loader2Icon, MoreHorizontal, PlusIcon } from "lucide-react";
+import { useState } from "react";
 
 interface Waste {
   id: number; // ID de la oferta
@@ -32,6 +34,7 @@ export default function ManageOffers() {
       .then((res) => res.data)
   })
   const [selectedWasteId, setSelectedWasteId] = useState<number | null>(null)
+  const [addWasteOpen, setAddWasteOpen] = useState(false)
 
   const columns: ColumnDef<Waste>[] = [
     {
@@ -119,9 +122,24 @@ export default function ManageOffers() {
       cell: ({ row }) => {
         const wasteId = row.original.id;
         return (
-          <Button onClick={() => setSelectedWasteId(wasteId)}>
-            Ofertar
-          </Button>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant={"ghost"}>
+                <MoreHorizontal />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" >
+              <DropdownMenuItem className="hover:cursor-pointer" onClick={() => setSelectedWasteId(wasteId)}>
+                Ofertar
+              </DropdownMenuItem>
+              <DropdownMenuItem className="hover:cursor-pointer">
+                Editar
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+          // <Button onClick={}>
+          //   Ofertar
+          // </Button>
         );
       },
     },
@@ -142,9 +160,25 @@ export default function ManageOffers() {
         />
       </SimpleCard>
       :
-      <SimpleCard title="Mis residuos">
+      <SimpleCard
+        title="Mis residuos"
+        headerActions={
+          <div className="flex justify-end">
+            <Dialog open={addWasteOpen} onOpenChange={setAddWasteOpen}>
+              <DialogTrigger asChild>
+                <Button size={"sm"}>
+                  <PlusIcon />
+                </Button>
+              </DialogTrigger>
+              <DialogContent>
+                <WasteForm onCancel={() => setAddWasteOpen(false)} />
+              </DialogContent>
+            </Dialog>
+          </div>
+        }
+      >
         {table}
-      </SimpleCard>
+      </SimpleCard >
     }
-  </div>
+  </div >
 }
