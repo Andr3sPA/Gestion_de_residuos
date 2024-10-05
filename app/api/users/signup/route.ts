@@ -9,8 +9,7 @@ const signupSchema = z.object({
   lastName: z.string(),
   email: z.string().email(),
   password: z.string(),
-  phone: z.string(),
-  companyCode: z.string()
+  companyId: z.number()
 })
 
 export async function POST(req: NextRequest) {
@@ -21,9 +20,9 @@ export async function POST(req: NextRequest) {
 
   if (!isStrongPassword(data.password, { minLength: 8, minNumbers: 1, minLowercase: 1, minUppercase: 1, minSymbols: 0 })) return NextResponse.json({ error: "La contraseña no cumple con los requisitos mínimos" }, { status: 400 })
 
-  const company = await prismaClient.company.findUnique({ where: { code: data.companyCode } })
+  const company = await prismaClient.company.findUnique({ where: { id: data.companyId } })
   if (!company) {
-    return NextResponse.json({ error: `La empresa con código '${data.companyCode}' no existe` }, { status: 400 })
+    return NextResponse.json({ error: `La empresa con id '${data.companyId}' no existe` }, { status: 400 })
   }
 
   const user = await prismaClient.user.create({
@@ -32,7 +31,6 @@ export async function POST(req: NextRequest) {
       lastName: data.lastName,
       email: data.email,
       password: await bcrypt.hash(data.password, 10),
-      phone: data.phone,
       company: {
         connect: {
           id: company.id

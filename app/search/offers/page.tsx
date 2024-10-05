@@ -11,10 +11,10 @@ import { Dialog, DialogTrigger } from "@/components/ui/dialog";
 import { OfferDetails } from "@/components/OfferDetails";
 import { SimpleCard } from "@/components/SimpleCard";
 
-export default function searchOffers() {
+export default function searchAuctions() {
   const offers = useQuery({
     queryKey: ["allOffers"],
-    queryFn: () => axios.get("/api/offer/search")
+    queryFn: () => axios.get("/api/auctions/search")
       .then((res) => res.data.offers)
   })
 

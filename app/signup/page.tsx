@@ -16,6 +16,8 @@ import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
 import { useToast } from "@/hooks/use-toast";
 import { Toaster } from "@/components/ui/toaster";
+import { Combobox } from "@/components/Combobox";
+import { useQuery } from "@tanstack/react-query";
 
 const signupSchema = z.object({
   firstName: z.string().min(3, {
@@ -32,15 +34,24 @@ const signupSchema = z.object({
     message: "La contraseña debe tener al menos 8 caracteres \
     y contener al menos una letra mayúscula, una minúscula y un número"
   }),
-  phone: z.string(),
-  companyCode: z.string().min(4, { message: "Ingrese al menos 4 caracteres" }),
-
+  companyId: z.string().refine((id) => id.length > 0, { message: "Elija una empresa" })
 })
 
 export default function Signup() {
   const router = useRouter()
   const { status } = useSession()
   const { toast } = useToast()
+  const companies = useQuery({
+    queryKey: ["companies"],
+    queryFn: () => axios.get("/api/companies/list")
+      .then((res) => {
+        console.log(res.data.companies)
+        return res.data.companies.map((c: any) => ({
+          value: c.id,
+          label: c.name
+        }))
+      })
+  })
 
   useEffect(() => {
     // redirect if already authenticated
@@ -56,8 +67,6 @@ export default function Signup() {
       lastName: "",
       email: "",
       password: "",
-      phone: "",
-      companyCode: ""
     }
   })
   const [res, setRes] = useState({ status: "pending", info: "" })
@@ -70,8 +79,6 @@ export default function Signup() {
       lastName: values.lastName,
       email: values.email,
       password: values.password,
-      phone: values.phone,
-      companyCode: values.companyCode
     }).then(() => {
       setRes({ status: "ok", info: "" })
       router.push("/")
@@ -93,10 +100,7 @@ export default function Signup() {
     ["lastName", "Apellidos", "string"],
     ["email", "Email", "email"],
     ["password", "Contraseña", "password"],
-    ["phone", "Número de contacto", "string"],
-    ["companyCode", "Código de la empresa a la que pertenece", "string"]
   ]
-
 
   type signupKey = keyof typeof signupSchema.shape
 
@@ -128,6 +132,30 @@ export default function Signup() {
               )}
             />
           ))}
+          <FormField
+            control={form.control}
+            name="companyId"
+            render={({ field }) => (
+              <FormItem id="companyId" className="flex flex-col mt-4 mb-2">
+                <FormLabel htmlFor="companyId">
+                  Empresa
+                </FormLabel>
+                <FormControl id="companyId">
+                  {/*FIXME: Combobox not showing value*/}
+                  <Combobox
+                    value={field.value}
+                    list={companies.data ?? []}
+                    setValue={(value) => {
+                      console.log(value);
+                      console.log("Form Watch CompanyId:", form.watch("companyId"));
+                      form.setValue("companyId", value)
+                    }}
+                  />
+                </FormControl>
+                <FormMessage className="text-xs max-w-sm" />
+              </FormItem>
+            )}
+          />
           <Separator className="h-8" />
           <div className="flex w-full justify-around">
             <Button variant={"secondary"}>
@@ -140,7 +168,6 @@ export default function Signup() {
               }
             </Button>
           </div>
-
         </form>
       </FormProvider>
     </CardContent>

@@ -1,14 +1,13 @@
 'use client'
 
-import { CircleUser, Menu, MenuIcon, Package2 } from "lucide-react";
+import { CircleUser, Menu } from "lucide-react";
 import { Button } from "./ui/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "./ui/dropdown-menu";
 import { Sheet, SheetContent, SheetDescription, SheetTitle, SheetTrigger } from "./ui/sheet";
-import Link from "next/link";
 import { LoginForm } from "./users/LoginForm";
 import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
 import { usePathname, useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { signOut, useSession } from "next-auth/react";
 
 export default function Header() {
@@ -66,8 +65,8 @@ export default function Header() {
   const navButtons = [
     ["/", "Inicio"],
     ["/manage/wastes", "Mis residuos"],
-    ["/manage/offers", "Mis ofertas"],
-    ["/search/offers", "Buscar ofertas"],
+    ["/manage/auctions", "Vender"],
+    ["/search/auctions", "Comprar"],
   ]
 
   return <div className="flex w-full flex-col shadow-md">

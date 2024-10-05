@@ -2,7 +2,7 @@ import { prismaClient } from "@/prisma/client";
 import bcrypt from "bcrypt";
 import { NextRequest } from "next/server";
 import { z } from "zod";
-import { badReq, ok } from "../../utils/responses";
+import { badReq, ok } from "../../(utils)/responses";
 
 // Define a schema to validate the login request
 const loginReqSchema = z.object({

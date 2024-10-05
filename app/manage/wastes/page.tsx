@@ -31,7 +31,7 @@ interface Waste {
 export default function ManageOffers() {
   const wastes = useQuery({
     queryKey: ['myWastes'],
-    queryFn: () => axios.get("/api/waste/list")
+    queryFn: () => axios.get("/api/wastes/list")
       .then((res) => res.data),
   })
   const [selectedWasteId, setSelectedWasteId] = useState<number | null>(null)

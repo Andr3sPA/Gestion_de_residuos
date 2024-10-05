@@ -13,20 +13,23 @@ import { Label } from "@/components/ui/label"
 import { useState } from "react"
 import { Loader2 } from "lucide-react"
 import { isEmail } from "validator"
-import { Form } from "../ui/form"
+import { Form, FormMessage } from "../ui/form"
 import { signIn, useSession } from "next-auth/react"
 
-export function LoginForm({ border, onClose }: { border?: boolean, onClose?: () => void }) {
+export function LoginForm({ size = "sm", border, onClose }:
+  { size?: "sm" | "md" | "lg", border?: boolean, onClose?: () => void }) {
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
   const [response, setResponse] = useState({ status: "pending", info: "" })
-  const { data, status } = useSession()
 
   const validFields = email.length > 0 && password.length > 8 && isEmail(email)
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
-
+    if (!validFields) {
+      setResponse({ status: "error", info: "Ingresa un correo válido y una contraseña de al menos 8 carácteres" })
+      return
+    }
     setResponse({ status: "loading", info: "" })
     signIn("credentials", {
       email, password
@@ -37,9 +40,14 @@ export function LoginForm({ border, onClose }: { border?: boolean, onClose?: () 
   }
 
   border = border ?? true
+  const extraClassName = size === "sm" ? "p-0" :
+    (size === "md" ? "md:w-1/3 p-2" : "md:w-1/2 p-2")
+  const formFieldsSpacing = size === "sm" ? "gap-4"
+    :
+    (size === "md" ? "gap-8" : "gap-12")
 
   return (
-    <Card className={"mx-auto max-w-sm" + (!border ? " border-none shadow-none" : "")}>
+    <Card className={"mx-auto " + extraClassName + (!border ? " border-none shadow-none" : "")}>
       <CardHeader>
         <CardTitle className="text-xl">Ingresar</CardTitle>
         <CardDescription>
@@ -47,7 +55,7 @@ export function LoginForm({ border, onClose }: { border?: boolean, onClose?: () 
         </CardDescription>
       </CardHeader>
       <CardContent>
-        <form onSubmit={handleSubmit} className="grid gap-4">
+        <form onSubmit={handleSubmit} className={"grid " + formFieldsSpacing}>
           <div className="grid gap-2">
             <Label htmlFor="email">Email</Label>
             <Input
@@ -63,9 +71,6 @@ export function LoginForm({ border, onClose }: { border?: boolean, onClose?: () 
           <div className="grid gap-2">
             <div className="flex items-center">
               <Label htmlFor="password">Contraseña</Label>
-              {/* <Link href="#" className="ml-auto inline-block text-sm underline"> */}
-              {/*   Forgot your password? */}
-              {/* </Link> */}
             </div>
             <Input id="password"
               type="password"
@@ -74,6 +79,9 @@ export function LoginForm({ border, onClose }: { border?: boolean, onClose?: () 
               value={password}
             />
           </div>
+          {response.status === "error" &&
+            <div className="text-destructive text-sm">{response.info}</div>
+          }
           <Button disabled={response.status === "loading"} type="submit" className="w-full">
             {response.status === "loading" ?
               <Loader2 className="animate-spin" /> : "Login"
@@ -88,6 +96,6 @@ export function LoginForm({ border, onClose }: { border?: boolean, onClose?: () 
           </Link>
         </div>
       </CardContent>
-    </Card>
+    </Card >
   )
 }
