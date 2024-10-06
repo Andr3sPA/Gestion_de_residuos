@@ -35,11 +35,11 @@ export default function searchAuctions() {
           : "N/A";
         return <div>{formattedDate}</div>;
       },
-    },     
+    },
     {
       accessorKey: "conditions",
       header: "Condiciones"
-    },      
+    },
     {
       accessorKey: "waste.description",
       header: "Descripción"
@@ -56,13 +56,7 @@ export default function searchAuctions() {
     {
       accessorKey: "",
       id: "details",
-      cell: ({ row }) =>
-        <Dialog>
-          <DialogTrigger asChild>
-            <Button className="rounded-xl text-xs">Detalles</Button>
-          </DialogTrigger>
-          <AuctionDetails offerInfo={row.original} />
-        </Dialog>
+      cell: ({ row }) => <AuctionDetails offerInfo={row.original} />
     }
   ]
 
