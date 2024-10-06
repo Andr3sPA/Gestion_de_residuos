@@ -5,7 +5,7 @@ import { Input } from "./ui/input";
 import { Label } from "./ui/label";
 import { off } from "process";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { CounterOfferForm } from "./register/counterOffer";
+import { OfferForm } from "./register/offer";
 export function OfferDetails({ offerInfo }: { offerInfo: any }) {
 
   return <DialogContent className="sm:max-w-[425px]">
@@ -73,7 +73,7 @@ export function OfferDetails({ offerInfo }: { offerInfo: any }) {
         </PopoverTrigger>
         <PopoverContent className="w-full p-4">
           {/* Formulario CounterOfferForm dentro del Popover */}
-          <CounterOfferForm offerId={offerInfo.id} />
+          <OfferForm offerId={offerInfo.id} />
         </PopoverContent>
       </Popover>
     </DialogFooter>

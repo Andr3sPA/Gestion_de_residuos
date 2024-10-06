@@ -11,7 +11,7 @@ const loginReqSchema = z.object({
 });
 
 // Handle POST requests for user login
-export async function POST(req: NextRequest) {
+export async function POST(req: NextRequest) {z
   // Validate the incoming request data
   const { success: isValid, data } = loginReqSchema.safeParse(await req.json());
 

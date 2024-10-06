@@ -14,9 +14,9 @@ const signupSchema = z.object({
 
 export async function POST(req: NextRequest) {
   const body = await req.json()
-  const { success, data } = signupSchema.safeParse(body)
+  const { success, data,error } = signupSchema.safeParse(body)
 
-  if (!success) return NextResponse.json(null, { status: 400 })
+  if (!success) return NextResponse.json(error.errors, { status: 400 })
 
   if (!isStrongPassword(data.password, { minLength: 8, minNumbers: 1, minLowercase: 1, minUppercase: 1, minSymbols: 0 })) return NextResponse.json({ error: "La contraseña no cumple con los requisitos mínimos" }, { status: 400 })
 

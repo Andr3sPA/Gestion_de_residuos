@@ -1,13 +1,12 @@
-"use client"
+"use client";
+
 import axios from "axios";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { format } from "date-fns";
-import { CalendarIcon } from "lucide-react";
 import { z } from "zod";
+import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Calendar } from "@/components/ui/calendar";
 import {
   Form,
   FormControl,
@@ -16,67 +15,123 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
-import { Input } from "@/components/ui/input";
+import { toast } from "@/hooks/use-toast";
 import {
   Select,
   SelectContent,
+  SelectGroup,
   SelectItem,
+  SelectLabel,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
+} from "@/components/ui/select"; // Importar el componente Select
+import { Combobox } from "@/components/ui/combobox";
 
-// Esquema de validación utilizando Zod
 const FormSchema = z.object({
-  description: z.string().min(1, { message: "La descripción es obligatoria." }),
+  description: z.string().min(1, { message: "La descripción es requerida." }),
   units: z.number().positive({ message: "Las unidades deben ser un número positivo." }),
-  expirationDate: z.date({ required_error: "La fecha de expiración es obligatoria." }),
-  nameWasteType: z.string().min(1, { message: "El tipo de residuo es obligatorio." }),
-  nameUnitType: z.string().min(1, { message: "El tipo de unidad es obligatorio." }),
-  category: z.enum(["usable", "nonUsable"], { required_error: "La categoría es obligatoria." }),
+  unitType: z.string().min(1, { message: "El tipo de unidad es requerido." }),
+  wasteType: z.string().min(1, { message: "El tipo de residuo es requerido." }),
+  category: z.string().min(1, { message: "La categoría es requerida." }), // Cambiado de status a category
 });
 
-export function WasteForm({ onCancel }: { onCancel?: () => void }) {
+interface WasteFormProps {
+  onCancel?: () => void;
+}
+
+export function WasteForm({ onCancel }: WasteFormProps) {
+  const [wasteTypes, setWasteTypes] = useState<{ value: string; label: string }[]>([]);
+  const [unitTypes, setUnitTypes] = useState<{ value: string; label: string }[]>([]);
+  const [selectedWasteType, setSelectedWasteType] = useState("");
+  const [selectedUnitType, setSelectedUnitType] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState(""); // Nuevo estado para categoría
+
+  useEffect(() => {
+    axios.get('/api/wastes/register')
+      .then((response) => {
+        setWasteTypes(response.data.wasteTypes.map(type => ({ value: type.name, label: type.name })));
+        setUnitTypes(response.data.unitTypes.map(type => ({ value: type.name, label: type.name })));
+      })
+      .catch((error) => {
+        console.error("Error fetching waste and unit types:", error);
+      });
+  }, []);
+
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
       description: "",
       units: 0,
-      expirationDate: new Date(), // Establece la fecha actual como valor por defecto
-      nameWasteType: "",
-      nameUnitType: "",
-      category: "usable", // Por defecto
+      unitType: "",
+      wasteType: "",
+      category: "", // Cambiado de status a category
     },
   });
 
   function onSubmit(data: z.infer<typeof FormSchema>) {
-    // Verifica que expirationDate sea un objeto Date
     console.log("Datos antes de enviar:", data);
 
-    axios.post('/api/waste/register', {
-      description: data.description,
-      units: data.units,
-      expirationDate: data.expirationDate,
-      nameWasteType: data.nameWasteType,
-      nameUnitType: data.nameUnitType,
-      category: data.category,
-    })
+    // Mapeo del valor del estado a la categoría
+    data.category = selectedCategory;
+
+    axios.post('/api/wastes/register', data)
       .then((response) => {
         console.log(response);
-      }, (error) => {
-        console.log(error);
+        toast({ title: "Residuo registrado con éxito.", description: response.data.message });
+      })
+      .catch((error) => {
+        console.error(error);
+        toast({ title: "Error al registrar el residuo.", description: error.message });
       });
   }
 
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-        <div className="grid grid-cols-2 gap-8">
-          {/* Descripción */}
+        <div className="grid grid-cols-2 gap-6">
+          {/* Combobox para Waste Type */}
+          <FormField
+            control={form.control}
+            name="wasteType"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Tipo de Residuo</FormLabel>
+                <Combobox
+                  placeholder="Tipo de Residuo"
+                  list={wasteTypes}
+                  value={selectedWasteType}
+                  setValue={(option) => {
+                    setSelectedWasteType(option);
+                    field.onChange(option);
+                  }}
+                />
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          {/* Combobox para Unit Type */}
+          <FormField
+            control={form.control}
+            name="unitType"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Tipo de Unidad</FormLabel>
+                <Combobox
+                  placeholder="Tipo de Unidad"
+                  list={unitTypes}
+                  value={selectedUnitType}
+                  setValue={(option) => {
+                    setSelectedUnitType(option);
+                    field.onChange(option);
+                  }}
+                />
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          {/* Campo de Descripción */}
           <FormField
             control={form.control}
             name="description"
@@ -84,7 +139,11 @@ export function WasteForm({ onCancel }: { onCancel?: () => void }) {
               <FormItem>
                 <FormLabel>Descripción</FormLabel>
                 <FormControl>
-                  <Input placeholder="Descripción del residuo" {...field} />
+                  <Input
+                    type="text"
+                    placeholder="Descripción del residuo"
+                    {...field}
+                  />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -103,8 +162,8 @@ export function WasteForm({ onCancel }: { onCancel?: () => void }) {
                     type="number"
                     placeholder="Número de unidades"
                     {...field}
-                    value={field.value} // Establece un valor por defecto si es null o undefined
-                    onChange={(e) => field.onChange(e.target.valueAsNumber)} // Utiliza valueAsNumber para convertir el valor a número
+                    value={field.value}
+                    onChange={(e) => field.onChange(e.target.valueAsNumber)}
                   />
                 </FormControl>
                 <FormMessage />
@@ -112,89 +171,26 @@ export function WasteForm({ onCancel }: { onCancel?: () => void }) {
             )}
           />
 
-          {/* Fecha de Expiración */}
-          <FormField
-            control={form.control}
-            name="expirationDate"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Fecha de Expiración</FormLabel>
-                <Popover>
-                  <PopoverTrigger asChild>
-                    <FormControl>
-                      <Button
-                        variant={"outline"}
-                        className="w-full pl-3 text-left font-normal"
-                      >
-                        {field.value ? format(field.value, "PPP") : "Selecciona una fecha"}
-                        <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-                      </Button>
-                    </FormControl>
-                  </PopoverTrigger>
-                  <PopoverContent className="w-auto p-0" align="start">
-                    <Calendar
-                      mode="single"
-                      selected={field.value}
-                      onSelect={(date) => {
-                        if (date) {
-                          field.onChange(date); // Asegúrate de que esto sea un objeto Date
-                        }
-                      }}
-                      initialFocus
-                    />
-                  </PopoverContent>
-                </Popover>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-
-          {/* Tipo de Residuo */}
-          <FormField
-            control={form.control}
-            name="nameWasteType"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Tipo de Residuo</FormLabel>
-                <FormControl>
-                  <Input placeholder="Tipo de residuo" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-
-          {/* Tipo de Unidad */}
-          <FormField
-            control={form.control}
-            name="nameUnitType"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Tipo de Unidad</FormLabel>
-                <FormControl>
-                  <Input placeholder="Tipo de unidad" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-
-          {/* Categoría de Residuo */}
+          {/* Select para la categoría */}
           <FormField
             control={form.control}
             name="category"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Categoría de Residuo</FormLabel>
-                <Select onValueChange={field.onChange} defaultValue={field.value}>
-                  <FormControl>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Selecciona una categoría" />
-                    </SelectTrigger>
-                  </FormControl>
+                <FormLabel>Categoría</FormLabel>
+                <Select onValueChange={(value) => {
+                  setSelectedCategory(value);  // Actualiza la categoría seleccionada
+                  field.onChange(value);  // Notifica a react-hook-form
+                }}>
+                  <SelectTrigger className="w-[180px]">
+                    <SelectValue placeholder="Selecciona una categoría" />
+                  </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="usable">Usable</SelectItem>
-                    <SelectItem value="nonUsable">No usable</SelectItem>
+                    <SelectGroup>
+                      <SelectLabel>Categorías</SelectLabel>
+                      <SelectItem value="usable">Usable</SelectItem>
+                      <SelectItem value="nonUsable">No usable</SelectItem>
+                    </SelectGroup>
                   </SelectContent>
                 </Select>
                 <FormMessage />
@@ -203,15 +199,16 @@ export function WasteForm({ onCancel }: { onCancel?: () => void }) {
           />
         </div>
 
-        {/* Botón de Enviar */}
         <div className="flex justify-evenly">
-          {onCancel &&
-            <Button type="button" variant="secondary" onClick={onCancel}>Cancelar</Button>
-          }
-          <Button type="submit">Registrar Residuo</Button>
+          <Button type="submit" className="w-2/5">Registrar Residuo</Button>
+          {onCancel && (
+            <Button variant="secondary" className="w-2/5" onClick={onCancel} type="button">
+              Cancelar
+            </Button>
+          )}
+
         </div>
       </form>
     </Form>
   );
 }
-

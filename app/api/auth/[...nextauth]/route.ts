@@ -1,7 +1,7 @@
+import axios from "axios";
 import { Session } from "next-auth";
 import NextAuth from "next-auth/next";
 import CredentialsProvider from "next-auth/providers/credentials";
-import { useEffect } from "react";
 
 interface UserSession extends Session {
   user?: {
@@ -47,15 +47,12 @@ const handler = NextAuth({
     },
     async authorize(credentials, req) {
       // Realizar la solicitud a la API para validar las credenciales
-      const res = await fetch("/api/users/login", {
-        method: 'POST',
-        body: JSON.stringify(credentials),
-        headers: { "Content-Type": "application/json" }
-      });
 
-      const data = await res.json();
+      const res = await axios.post("http://localhost:3000/api/users/login", credentials);
+
+      const data = res.data;
       const user = data.user;
-      if (data.ok && user) {
+      if (user) {
         return user;
       }
 

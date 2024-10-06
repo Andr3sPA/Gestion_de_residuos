@@ -4,12 +4,12 @@ import { Loader2 } from "lucide-react";
 import axios from "axios";
 import { useQuery } from "@tanstack/react-query";
 import { ColumnDef } from "@tanstack/react-table";
-import { Offer } from "@/app/manage/offers/page";
 import { TableList } from "@/components/TableList";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogTrigger } from "@/components/ui/dialog";
 import { OfferDetails } from "@/components/OfferDetails";
 import { SimpleCard } from "@/components/SimpleCard";
+import { Offer } from "@/app/manage/auctions/page";
 
 export default function searchAuctions() {
   const offers = useQuery({

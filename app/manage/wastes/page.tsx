@@ -1,41 +1,41 @@
 'use client'
 
-import { OfferForm } from "@/components/register/offer";
+import { AuctionForm } from "@/components/register/auction";
 import { WasteForm } from "@/components/register/waste";
 import { SimpleCard } from "@/components/SimpleCard";
 import { TableList } from "@/components/TableList";
 import { Button } from "@/components/ui/button";
-import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
-import { DialogDescription, DialogTitle } from "@radix-ui/react-dialog";
+import { Dialog,DialogTitle, DialogContent, DialogTrigger } from "@/components/ui/dialog";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { useQuery } from "@tanstack/react-query";
 import { ColumnDef } from "@tanstack/react-table";
 import axios from "axios";
-import { Loader2Icon, LucideRefreshCw, MoreHorizontal, PlusIcon, RefreshCcwDotIcon, RefreshCcwIcon, RefreshCwIcon } from "lucide-react";
+import { Loader2Icon, LucideRefreshCw, MoreHorizontal, PlusIcon } from "lucide-react";
 import { useState } from "react";
 
 interface Waste {
-  id: number; // ID de la oferta
+  id: number;
   wasteType: {
-    wasteType: string; // Tipo de residuo
+    name: string;
   } | null;
   unitType: {
-    unitName: string; // Tipo de unidad
+    name: string;
   } | null;
-  description: string | null; // Descripción de la oferta
-  units: number; // Unidades disponibles
-  expirationDate: string | null; // Fecha de expiración
-  createdAt: string; // Fecha de creación
-};
+  description: string | null;
+  units: number;
+  category: string; // Nueva propiedad
+  createdAt: string;
+}
 
 export default function ManageOffers() {
   const wastes = useQuery({
     queryKey: ['myWastes'],
     queryFn: () => axios.get("/api/wastes/list")
       .then((res) => res.data),
-  })
-  const [selectedWasteId, setSelectedWasteId] = useState<number | null>(null)
-  const [addWasteOpen, setAddWasteOpen] = useState(false)
+  });
+
+  const [selectedWasteId, setSelectedWasteId] = useState<number | null>(null);
+  const [addWasteOpen, setAddWasteOpen] = useState(false);
 
   const columns: ColumnDef<Waste>[] = [
     {
@@ -45,13 +45,13 @@ export default function ManageOffers() {
       cell: ({ row }) => <div>{row.getValue("id")}</div>,
     },
     {
-      accessorKey: "wasteType",
+      accessorKey: "WasteType",
       header: "Waste Type",
       enableSorting: true,
       cell: ({ row }) => (
         <div className="capitalize">
           {row.original.wasteType
-            ? row.original.wasteType.wasteType
+            ? row.original.wasteType.name
             : "N/A"}
         </div>
       ),
@@ -65,7 +65,7 @@ export default function ManageOffers() {
         const unitType = row.original.unitType;
         return (
           <div className="capitalize">
-            {unitType ? unitType.unitName : "N/A"}
+            {unitType ? unitType.name : "N/A"}
           </div>
         );
       },
@@ -91,17 +91,12 @@ export default function ManageOffers() {
       },
     },
     {
-      accessorKey: "expirationDate",
-      header: "Expiration Date",
-      enableGlobalFilter: false,
-      cell: ({ row }) => {
-        const expirationDate = row.getValue("expirationDate") as string;
-        const date = new Date(expirationDate);
-        const formattedDate = !isNaN(date.getTime())
-          ? date.toLocaleDateString("es-ES")
-          : "N/A"; // Muestra "N/A" si la fecha no es válida
-        return <div>{formattedDate}</div>;
-      },
+      accessorKey: "category", // Nueva columna
+      header: "Category",
+      enableSorting: true,
+      cell: ({ row }) => (
+        <div>{row.getValue("category")}</div>
+      ),
     },
     {
       accessorKey: "createdAt",
@@ -112,7 +107,7 @@ export default function ManageOffers() {
         const date = new Date(createdAt);
         const formattedDate = !isNaN(date.getTime())
           ? date.toLocaleDateString("es-ES")
-          : "N/A"; // Muestra "N/A" si la fecha no es válida
+          : "N/A";
         return <div>{formattedDate}</div>;
       },
     },
@@ -129,7 +124,7 @@ export default function ManageOffers() {
                 <MoreHorizontal />
               </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" >
+            <DropdownMenuContent align="end">
               <DropdownMenuItem className="hover:cursor-pointer" onClick={() => setSelectedWasteId(wasteId)}>
                 Ofertar
               </DropdownMenuItem>
@@ -143,21 +138,18 @@ export default function ManageOffers() {
     },
   ];
 
-  const table = wastes.isLoading ?
-    <Loader2Icon className="animate-spin" />
-    :
-    <TableList columns={columns} data={wastes.data} />
+  const table = wastes.isLoading
+    ? <Loader2Icon className="animate-spin" />
+    : <TableList columns={columns} data={wastes.data} />;
 
-
-  return selectedWasteId ?
-    <SimpleCard title="Crear oferta">
-      <OfferForm
+  return selectedWasteId
+    ? <SimpleCard title="Crear oferta">
+      <AuctionForm
         wasteId={selectedWasteId}
         onCancel={() => setSelectedWasteId(null)}
       />
     </SimpleCard>
-    :
-    <SimpleCard
+    : <SimpleCard
       title="Mis residuos"
       desc="Gestiona aquí los residuos de tu empresa"
       headerActions={wastes.isSuccess &&
@@ -179,7 +171,6 @@ export default function ManageOffers() {
             </DialogTrigger>
             <DialogContent>
               <DialogTitle className="font-bold text-lg">Añadir nuevo residuo</DialogTitle>
-              <DialogDescription className="sr-only">Crear un nuevo residuo</DialogDescription>
               <WasteForm onCancel={() => setAddWasteOpen(false)} />
             </DialogContent>
           </Dialog>
@@ -187,5 +178,5 @@ export default function ManageOffers() {
       }
     >
       {table}
-    </SimpleCard >
+    </SimpleCard>;
 }

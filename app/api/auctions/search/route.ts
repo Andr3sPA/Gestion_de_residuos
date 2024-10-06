@@ -32,8 +32,12 @@ export async function GET(req: NextRequest) {
       pickupLongitude: true,
       createdAt: true,
       status: true,
+      conditions:true,
+      contact:true,
+      expiresAt:true,
       waste: {
         select: {
+          category:true,
           description: true,
           wasteType: {
             select: {
@@ -55,6 +59,6 @@ export async function GET(req: NextRequest) {
       }
     },
   })
-
-  return ok({ offers: auctions })
+  
+  return ok({ auctions })
 }

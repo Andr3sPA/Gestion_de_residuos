@@ -1,5 +1,4 @@
 'use client'
-
 import { SimpleCard } from "@/components/SimpleCard";
 import { TableList } from "@/components/TableList";
 import { Button } from "@/components/ui/button";
@@ -27,7 +26,7 @@ export interface Offer {
   status: string;
 }
 
-export default function ManageAuctions() {
+export function ManageAuctions() {
   const auctions = useQuery({
     queryKey: ["myOffers"],
     queryFn: () => axios.get("/api/auctions/list")
