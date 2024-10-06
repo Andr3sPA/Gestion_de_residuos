@@ -38,6 +38,7 @@ export async function GET(req: NextRequest) {
   const auction = await prismaClient.auction.findUnique({
     where: {
       id: data.auction_id,
+      status:"available"
     },
     select: {
       companySellerId: true,
@@ -53,21 +54,6 @@ export async function GET(req: NextRequest) {
   });
 
   if (!auction) return NextResponse.json({ error: "internal error" }, { status: 500 });
-  
-  const offer = await prismaClient.offer.findMany({
-    where: {
-      status: "accepted",
-      auctionId: data.auction_id,
-    },
-    include: {
-      companyBuyer: true,
-    },
-  });
-
-
-  if (offer.length > 0) {
-    return NextResponse.json({ offers: offer, hasOffers: false }, { status: 200 });
-  }
   
   if (auction.companySellerId != user.companyId) return unauthorized();
   

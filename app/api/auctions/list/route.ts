@@ -22,7 +22,9 @@ export async function GET(req: NextRequest) {
   if (!user.companyId) return unauthorized("El usuario no pertenece a ninguna empresa")
 
   const auctions = await prismaClient.auction.findMany({
-    where: { companySellerId: user.companyId },
+    where: { companySellerId: user.companyId,
+      status:"available"
+     },
     include: {
       companySeller: true,
       waste: {

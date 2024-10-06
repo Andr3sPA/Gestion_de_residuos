@@ -81,30 +81,28 @@ export function ManageOffers({ auctionId }: OfferFormProps) {
       header: "Estado",
       enableSorting: true,
     },
-    ...(auctions.data?.hasOffers ? [
-      {
-        id: "actions-accept",
-        cell: ({ row }) => (
-          <Button
-            onClick={() => handleSendData({ auction_id: auctionId, offer_id: row.original.id, status: "accepted" })}
-            size={"sm"}
-          >
-            Aceptar
-          </Button>
-        ),
-      },
-      {
-        id: "actions-reject",
-        cell: ({ row }) => (
-          <Button
-            onClick={() => handleSendData({ auction_id: auctionId, offer_id: row.original.id, status: "rejected" })}
-            size={"sm"}
-          >
-            Rechazar
-          </Button>
-        ),
-      },
-    ] : []),
+    {
+      id: "actions-accept",
+      cell: ({ row }) => (
+        <Button
+          onClick={() => handleSendData({ auction_id: auctionId, offer_id: row.original.id, status: "accepted" })}
+          size={"sm"}
+        >
+          Aceptar
+        </Button>
+      ),
+    },
+    {
+      id: "actions-reject",
+      cell: ({ row }) => (
+        <Button
+          onClick={() => handleSendData({ auction_id: auctionId, offer_id: row.original.id, status: "rejected" })}
+          size={"sm"}
+        >
+          Rechazar
+        </Button>
+      ),
+    },
   ];
 
   return (

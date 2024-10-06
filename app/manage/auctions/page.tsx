@@ -119,7 +119,7 @@ export default function ManageAuctions() {
         </AlertDialogTrigger>
         <AlertDialogContent className="w-full max-w-5xl max-h-full">
           <AlertDialogHeader>
-          <AlertDialogTitle>Ofertas</AlertDialogTitle>
+          <AlertDialogTitle></AlertDialogTitle>
             <AlertDialogDescription>
               <ManageOffers auctionId={row.original.id} />
             </AlertDialogDescription>
