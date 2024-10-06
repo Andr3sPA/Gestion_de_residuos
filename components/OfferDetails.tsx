@@ -1,12 +1,9 @@
 import { Separator } from "@radix-ui/react-dropdown-menu";
 import { Button } from "./ui/button";
 import { DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "./ui/dialog";
-import { Input } from "./ui/input";
-import { Label } from "./ui/label";
-import { off } from "process";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { OfferForm } from "./register/offer";
-export function OfferDetails({ offerInfo }: { offerInfo: any }) {
+export function AuctionDetails({ offerInfo }: { offerInfo: any }) {
 
   return <DialogContent className="sm:max-w-[425px]">
     <DialogHeader>

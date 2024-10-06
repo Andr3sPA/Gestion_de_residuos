@@ -13,8 +13,7 @@ import { Label } from "@/components/ui/label"
 import { useState } from "react"
 import { Loader2 } from "lucide-react"
 import { isEmail } from "validator"
-import { Form, FormMessage } from "../ui/form"
-import { signIn, useSession } from "next-auth/react"
+import { signIn } from "next-auth/react"
 
 export function LoginForm({ size = "sm", border, onClose }:
   { size?: "sm" | "md" | "lg", border?: boolean, onClose?: () => void }) {
@@ -34,9 +33,13 @@ export function LoginForm({ size = "sm", border, onClose }:
     signIn("credentials", {
       email, password
       , redirect: false
-    }).then(() => setResponse({ status: "ok", info: "" }))
-      .catch((err) =>
-        setResponse({ status: "error", info: err.response.data ?? "Error al enviar los datos" }))
+    }).then((res) => {
+      if (res && (res.error || !res.ok)) {
+        setResponse({ status: "error", info: res?.error?.indexOf("400") !== -1 ? "Email o contrseña incorrectos" : "Error al enviar los datos" })
+      } else {
+        setResponse({ status: "ok", info: "" })
+      }
+    })
   }
 
   border = border ?? true

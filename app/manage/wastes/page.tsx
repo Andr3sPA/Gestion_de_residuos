@@ -5,7 +5,7 @@ import { WasteForm } from "@/components/register/waste";
 import { SimpleCard } from "@/components/SimpleCard";
 import { TableList } from "@/components/TableList";
 import { Button } from "@/components/ui/button";
-import { Dialog,DialogTitle, DialogContent, DialogTrigger } from "@/components/ui/dialog";
+import { Dialog, DialogTitle, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { useQuery } from "@tanstack/react-query";
 import { ColumnDef } from "@tanstack/react-table";
@@ -27,7 +27,7 @@ interface Waste {
   createdAt: string;
 }
 
-export default function ManageOffers() {
+export default function ManageWastes() {
   const wastes = useQuery({
     queryKey: ['myWastes'],
     queryFn: () => axios.get("/api/wastes/list")

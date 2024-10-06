@@ -16,7 +16,7 @@ import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
 import { useToast } from "@/hooks/use-toast";
 import { Toaster } from "@/components/ui/toaster";
-import { Combobox } from "@/components/Combobox";
+import { Combobox, ComboboxItem } from "@/components/Combobox";
 import { useQuery } from "@tanstack/react-query";
 
 const signupSchema = z.object({
@@ -34,7 +34,7 @@ const signupSchema = z.object({
     message: "La contraseña debe tener al menos 8 caracteres \
     y contener al menos una letra mayúscula, una minúscula y un número"
   }),
-  companyId: z.string().refine((id) => id.length > 0, { message: "Elija una empresa" })
+  companyId: z.coerce.string().refine((id) => id.length > 0, { message: "Elija una empresa" })
 })
 
 export default function Signup() {
@@ -45,11 +45,12 @@ export default function Signup() {
     queryKey: ["companies"],
     queryFn: () => axios.get("/api/companies/list")
       .then((res) => {
-        console.log(res.data.companies)
-        return res.data.companies.map((c: any) => ({
-          value: c.id,
+        const newL = res.data.companies.map((c: any) => ({
+          id: c.id,
           label: c.name
         }))
+        console.log(newL)
+        return newL
       })
   })
 
@@ -67,19 +68,17 @@ export default function Signup() {
       lastName: "",
       email: "",
       password: "",
+      companyId: ""
     }
   })
   const [res, setRes] = useState({ status: "pending", info: "" })
 
   const onSubmit = (values: z.infer<typeof signupSchema>) => {
 
+    console.log(values);
+
     setRes({ status: "loading", info: "" })
-    axios.post("/api/users/signup", {
-      firstName: values.firstName,
-      lastName: values.lastName,
-      email: values.email,
-      password: values.password,
-    }).then(() => {
+    axios.post("/api/users/signup", values).then(() => {
       setRes({ status: "ok", info: "" })
       router.push("/")
     }).catch((err) => {
@@ -141,14 +140,12 @@ export default function Signup() {
                   Empresa
                 </FormLabel>
                 <FormControl id="companyId">
-                  {/*FIXME: Combobox not showing value*/}
                   <Combobox
-                    value={field.value}
                     list={companies.data ?? []}
-                    setValue={(value) => {
-                      console.log(value);
-                      console.log("Form Watch CompanyId:", form.watch("companyId"));
-                      form.setValue("companyId", value)
+                    onSelect={(item) => {
+                      form.setValue("companyId", item ? item.id : "")
+                      console.log(form.watch("companyId"));
+
                     }}
                   />
                 </FormControl>

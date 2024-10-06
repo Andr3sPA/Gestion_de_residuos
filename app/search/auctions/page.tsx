@@ -7,24 +7,24 @@ import { ColumnDef } from "@tanstack/react-table";
 import { TableList } from "@/components/TableList";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogTrigger } from "@/components/ui/dialog";
-import { OfferDetails } from "@/components/OfferDetails";
+import { AuctionDetails } from "@/components/OfferDetails";
 import { SimpleCard } from "@/components/SimpleCard";
-import { Offer } from "@/app/manage/auctions/page";
+import { Auction } from "@/app/manage/auctions/page";
 
 export default function searchAuctions() {
-  const offers = useQuery({
-    queryKey: ["allOffers"],
+  const auctions = useQuery({
+    queryKey: ["allAuctions"],
     queryFn: () => axios.get("/api/auctions/search")
-      .then((res) => res.data.offers)
+      .then((res) => res.data.auctions)
   })
 
-  const columns: ColumnDef<Offer>[] = [
+  const columns: ColumnDef<Auction>[] = [
     {
       accessorKey: "id",
       header: "ID",
     },
     {
-      accessorKey: "waste.wasteType.wasteType",
+      accessorKey: "waste.wasteType.name",
       header: "Tipo"
     },
     {
@@ -32,13 +32,13 @@ export default function searchAuctions() {
       header: "Descripción"
     },
     {
-      accessorKey: "offerPrice",
+      accessorKey: "initialPrice",
       header: "Precio",
     },
     {
       accessorKey: "units",
       header: "Cantidad",
-      cell: ({ row }) => `${row.original.units} ${row.original.waste.unitType.unitName}`
+      cell: ({ row }) => `${row.original.units} ${row.original.waste.unitType.name}`
     },
     {
       accessorKey: "",
@@ -48,7 +48,7 @@ export default function searchAuctions() {
           <DialogTrigger asChild>
             <Button className="rounded-xl text-xs">Detalles</Button>
           </DialogTrigger>
-          <OfferDetails offerInfo={row.original} />
+          <AuctionDetails offerInfo={row.original} />
         </Dialog>
     }
   ]
@@ -58,12 +58,12 @@ export default function searchAuctions() {
       title="Ofertas"
       desc="Busca aquí los residuos que ofrecen otras empresas "
     >
-      {offers.isLoading ?
+      {auctions.isLoading ?
         <div className="flex justify-center p-2">
           <Loader2 className="animate-spin" />
         </div>
         :
-        <TableList columns={columns} data={offers.data} />
+        <TableList columns={columns} data={auctions.data} />
       }
     </SimpleCard>
   </div >

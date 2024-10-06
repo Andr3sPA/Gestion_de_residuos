@@ -7,35 +7,35 @@ import { ColumnDef } from "@tanstack/react-table";
 import axios from "axios";
 import { Loader2Icon } from "lucide-react";
 
-export interface Offer {
+export interface Auction {
   id: number;
   wasteId: number;
   waste: {
     description: string;
     expirationDate: string; // Mueve expirationDate dentro del objeto waste
     unitType: {
-      unitName: string
+      name: string
     }
   };
   units: number;
   companySeller: {
     name: string;
   };
-  offerPrice: string;
+  initialPrice: string;
   createdAt: string;
   status: string;
 }
 
-export function ManageAuctions() {
+export default function ManageAuctions() {
   const auctions = useQuery({
-    queryKey: ["myOffers"],
+    queryKey: ["myAuctions"],
     queryFn: () => axios.get("/api/auctions/list")
       .then((res) => {
         return res.data
       })
   })
 
-  const columns: ColumnDef<Offer>[] = [
+  const columns: ColumnDef<Auction>[] = [
     {
       accessorKey: "id", // Usa el nombre original 'id' para el filtro
       header: "ID",
@@ -48,11 +48,11 @@ export function ManageAuctions() {
       enableSorting: true,
     },
     {
-      accessorKey: "offerPrice",
-      header: "Offer Price",
+      accessorKey: "initialPrice",
+      header: "Price",
       enableSorting: true,
       sortingFn: "alphanumeric",
-      cell: ({ row }) => <div className="text-right">{row.original.offerPrice}</div>,
+      cell: ({ row }) => <div className="text-right">{row.original.initialPrice}</div>,
     },
     {
       accessorKey: "units",
@@ -62,7 +62,7 @@ export function ManageAuctions() {
       cell: ({ row }) => {
         return <div className="text-right font-medium">
           {row.original.units}
-          <span className="font-light text-xs">{" "}{row.original.waste.unitType.unitName}</span>
+          <span className="font-light text-xs">{" "}{row.original.waste.unitType.name}</span>
         </div>;
       },
     },
