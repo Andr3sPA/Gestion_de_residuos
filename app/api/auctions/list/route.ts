@@ -21,17 +21,18 @@ export async function GET(req: NextRequest) {
   if (!user) return unauthorized()
   if (!user.companyId) return unauthorized("El usuario no pertenece a ninguna empresa")
 
-  const offers = await prismaClient.auction.findMany({
+  const auctions = await prismaClient.auction.findMany({
     where: { companySellerId: user.companyId },
     include: {
       companySeller: true,
       waste: {
         include: {
-          unitType: true
+          unitType: true,
+          wasteType:true
         }
       },
     }
   })
-  if (!offers) return NextResponse.json({ error: "internal error" }, { status: 500 })
-  return NextResponse.json(offers, { status: 201 })
+  if (!auctions) return NextResponse.json({ error: "internal error" }, { status: 500 })
+  return NextResponse.json(auctions, { status: 201 })
 }

@@ -16,20 +16,20 @@ import {
 import { toast } from "@/hooks/use-toast";
 
 const FormSchema = z.object({
-  auctionId: z.number().optional(), // Cambiamos offer_id para que sea opcional
+  auctionId: z.number().optional(), // Cambiamos auctionId para que sea opcional
   price: z.number().positive({ message: "El precio debe ser un número positivo." }),
   contact: z.string().min(1, { message: "El campo de contacto es obligatorio." }), // Campo de contacto
 });
 
 interface CounterOfferFormProps {
-  offerId?: number; // Hacemos que offerId sea opcional
+  auctionId?: number; // Hacemos que auctionId sea opcional
 }
 
-export function OfferForm({ offerId: auctionId }: CounterOfferFormProps) {
+export function OfferForm({ auctionId }: CounterOfferFormProps) {
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
-      auctionId: auctionId || undefined, // Si no hay offerId, el campo es editable
+      auctionId: auctionId || undefined, // Si no hay auctionId, el campo es editable
       price: 0,
       contact: '', // Valor por defecto para el campo de contacto
     },
@@ -63,9 +63,7 @@ export function OfferForm({ offerId: auctionId }: CounterOfferFormProps) {
                   type="number"
                   placeholder="ID de la oferta"
                   {...field}
-                  value={field.value || ""}
-                  onChange={(e) => field.onChange(e.target.valueAsNumber)}
-                  disabled={!!auctionId} // Si offerId fue pasado, el campo será no editable
+                  disabled={!!auctionId} // Si auctionId fue pasado, el campo será no editable
                 />
               </FormControl>
               <FormMessage />
@@ -83,8 +81,6 @@ export function OfferForm({ offerId: auctionId }: CounterOfferFormProps) {
                   type="number"
                   placeholder="Precio de la contraoferta"
                   {...field}
-                  value={field.value}
-                  onChange={(e) => field.onChange(e.target.valueAsNumber)}
                 />
               </FormControl>
               <FormMessage />
@@ -102,8 +98,6 @@ export function OfferForm({ offerId: auctionId }: CounterOfferFormProps) {
                   type="text"
                   placeholder="Ingrese su contacto"
                   {...field}
-                  value={field.value}
-                  onChange={field.onChange} // Cambiamos el valor del campo
                 />
               </FormControl>
               <FormMessage />

@@ -24,6 +24,7 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 
+// Esquema de validación con Zod
 const FormSchema = z.object({
   waste_id: z.number(),
   price: z.number().positive({ message: "El precio debe ser un número positivo." }),
@@ -31,7 +32,8 @@ const FormSchema = z.object({
   pickupLatitude: z.number(),
   pickupLongitude: z.number(),
   expiresAt: z.date({ required_error: "La fecha de expiración es obligatoria." }),
-  contact: z.string().min(1, { message: "El campo de contacto es obligatorio." }), // Campo de contacto
+  contact: z.string().min(1, { message: "El campo de contacto es obligatorio." }),
+  conditions: z.string().min(1, { message: "Las condiciones son obligatorias." }), // Nuevo campo de condiciones
 });
 
 interface OfferFormProps {
@@ -49,7 +51,8 @@ export function AuctionForm({ wasteId, onCancel }: OfferFormProps) {
       pickupLatitude: 0,
       pickupLongitude: 0,
       expiresAt: new Date(),
-      contact: '', // Valor por defecto para el campo de contacto
+      contact: '', 
+      conditions: '', // Valor por defecto para condiciones
     },
   });
 
@@ -71,6 +74,7 @@ export function AuctionForm({ wasteId, onCancel }: OfferFormProps) {
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
         <div className="grid grid-cols-2 gap-6">
+          {/* Waste ID */}
           <FormField
             control={form.control}
             name="waste_id"
@@ -90,6 +94,7 @@ export function AuctionForm({ wasteId, onCancel }: OfferFormProps) {
               </FormItem>
             )}
           />
+          {/* Precio */}
           <FormField
             control={form.control}
             name="price"
@@ -145,6 +150,7 @@ export function AuctionForm({ wasteId, onCancel }: OfferFormProps) {
               </FormItem>
             )}
           />
+          {/* Unidades */}
           <FormField
             control={form.control}
             name="units"
@@ -217,7 +223,27 @@ export function AuctionForm({ wasteId, onCancel }: OfferFormProps) {
                     placeholder="Ingrese su contacto"
                     {...field}
                     value={field.value}
-                    onChange={field.onChange} // Cambiamos el valor del campo
+                    onChange={field.onChange}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          {/* Campo de Condiciones */}
+          <FormField
+            control={form.control}
+            name="conditions"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Condiciones</FormLabel>
+                <FormControl>
+                  <Input
+                    type="text"
+                    placeholder="Ingrese las condiciones"
+                    {...field}
+                    value={field.value}
+                    onChange={field.onChange}
                   />
                 </FormControl>
                 <FormMessage />
@@ -226,11 +252,11 @@ export function AuctionForm({ wasteId, onCancel }: OfferFormProps) {
           />
         </div>
         <div className="flex justify-evenly">
-        {onCancel && (
-          <Button variant="secondary" className="w-2/5" onClick={onCancel} type="button">
-            Cancelar
-          </Button>
-        )}
+          {onCancel && (
+            <Button variant="secondary" className="w-2/5" onClick={onCancel} type="button">
+              Cancelar
+            </Button>
+          )}
 
           <Button type="submit">Registrar Oferta</Button>
         </div>
@@ -238,4 +264,3 @@ export function AuctionForm({ wasteId, onCancel }: OfferFormProps) {
     </Form>
   );
 }
-

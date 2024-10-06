@@ -10,12 +10,16 @@ import { Loader2Icon } from "lucide-react";
 export interface Auction {
   id: number;
   wasteId: number;
+  conditions:string;
+  expiresAt: string; // Mueve expirationDate dentro del objeto waste
   waste: {
     description: string;
-    expirationDate: string; // Mueve expirationDate dentro del objeto waste
     unitType: {
       name: string
-    }
+    },
+    wasteType: {
+      name: string
+    },
   };
   units: number;
   companySeller: {
@@ -48,6 +52,16 @@ export default function ManageAuctions() {
       enableSorting: true,
     },
     {
+      accessorKey: "conditions",
+      header: "Condiciones",
+      enableSorting: true,
+    },
+    {
+      accessorKey: "waste.wasteType.name",
+      header: "Tipo de residuo",
+      enableSorting: true,
+    },
+    {
       accessorKey: "initialPrice",
       header: "Price",
       enableSorting: true,
@@ -73,12 +87,12 @@ export default function ManageAuctions() {
       cell: ({ row }) => <div>{row.getValue("status")}</div>,
     },
     {
-      accessorKey: "waste.expirationDate",
+      accessorKey: "expiresAt",
       header: "Expiration Date",
       enableGlobalFilter: false,
       cell: ({ row }) => {
-        const expirationDate = row.original.waste.expirationDate;
-        const date = new Date(expirationDate);
+        const expiresAt = row.original.expiresAt;
+        const date = new Date(expiresAt);
         const formattedDate = !isNaN(date.getTime())
           ? date.toLocaleDateString("es-ES")
           : "N/A";
@@ -89,14 +103,14 @@ export default function ManageAuctions() {
       id: "actions",
       cell: ({ row }) => {
         return <Button size={"sm"}>
-          Details
+          Ofertas
         </Button>
       }
     }
   ]
   return <SimpleCard
-    title="Mis ofertas"
-    desc="Visualiza aquí las ofertas hechas por tu empresa."
+    title="Mis subastas"
+    desc="Visualiza aquí las subastas hechas por tu empresa."
   >
     {(auctions.isLoading) ?
       <Loader2Icon className="animate-spin" />

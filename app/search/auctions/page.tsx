@@ -20,13 +20,26 @@ export default function searchAuctions() {
 
   const columns: ColumnDef<Auction>[] = [
     {
-      accessorKey: "id",
-      header: "ID",
-    },
-    {
       accessorKey: "waste.wasteType.name",
       header: "Tipo"
     },
+    {
+      accessorKey: "expiresAt",
+      header: "Expiration Date",
+      enableGlobalFilter: false,
+      cell: ({ row }) => {
+        const expiresAt = row.original.expiresAt;
+        const date = new Date(expiresAt);
+        const formattedDate = !isNaN(date.getTime())
+          ? date.toLocaleDateString("es-ES")
+          : "N/A";
+        return <div>{formattedDate}</div>;
+      },
+    },     
+    {
+      accessorKey: "conditions",
+      header: "Condiciones"
+    },      
     {
       accessorKey: "waste.description",
       header: "Descripción"
@@ -55,7 +68,7 @@ export default function searchAuctions() {
 
   return <div className="flex flex-1 flex-col w-full h-full justify-start items-center" >
     <SimpleCard
-      title="Ofertas"
+      title="Subastas"
       desc="Busca aquí los residuos que ofrecen otras empresas "
     >
       {auctions.isLoading ?

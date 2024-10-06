@@ -202,10 +202,10 @@ export function WasteForm({ onCancel }: WasteFormProps) {
         <div className="flex justify-evenly">
           <Button type="submit" className="w-2/5">Registrar Residuo</Button>
           {onCancel && (
-            <Button variant="secondary" className="w-2/5" onClick={onCancel} type="button">
-              Cancelar
-            </Button>
-          )}
+          <Button variant="secondary" className="w-2/5" onClick={onCancel} type="button">
+            Cancelar
+          </Button>
+        )}
 
         </div>
       </form>
