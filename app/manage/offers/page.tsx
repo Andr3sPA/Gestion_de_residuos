@@ -74,7 +74,7 @@ export function ManageOffers({ auctionId }: OfferFormProps) {
   ];
 
   return (
-    <SimpleCard title="Mis subastas" desc="Visualiza aquí las subastas hechas por tu empresa.">
+    <SimpleCard title={`Ofertas de la subasta ${auctionId}`} desc="Visualiza aquí las ofertas hechas">
       {auctions.isLoading ? (
         <Loader2Icon className="animate-spin" />
       ) : (
