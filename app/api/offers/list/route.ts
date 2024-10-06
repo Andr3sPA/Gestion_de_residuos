@@ -42,6 +42,9 @@ export async function GET(req: NextRequest) {
     select: {
       companySellerId: true,
       offers: {
+        where:{
+          status:"waiting",
+        },
         include: {
           companyBuyer: true,
         },
