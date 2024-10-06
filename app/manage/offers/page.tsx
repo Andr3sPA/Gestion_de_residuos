@@ -1,5 +1,3 @@
-'use client'
-
 import { SimpleCard } from "@/components/SimpleCard";
 import { TableList } from "@/components/TableList";
 import { Button } from "@/components/ui/button";
@@ -7,6 +5,13 @@ import { useQuery } from "@tanstack/react-query";
 import { ColumnDef } from "@tanstack/react-table";
 import axios from "axios";
 import { Loader2Icon } from "lucide-react";
+import { useState } from "react";
+
+interface Purchase {
+  auction_id: number; 
+  offer_id: number;
+  status: string;
+}
 
 export interface Offer {
   id: number;
@@ -17,17 +22,28 @@ export interface Offer {
   };
   offerPrice: string;
 }
+
 interface OfferFormProps {
-    auctionId?: number; // Hacemos que auctionId sea opcional
-  }
+  auctionId?: number; // Hacemos que auctionId sea opcional
+}
+
 export function ManageOffers({ auctionId }: OfferFormProps) {
+  const [selectedPurchase, setSelectedPurchase] = useState<Purchase | null>(null);
+
+  const handleSendData = async (purchase: Purchase) => {
+    setSelectedPurchase(purchase);
+    try {
+      const response = await axios.post("/api/purchases/register", purchase);
+      console.log("Datos enviados exitosamente:", response.data);
+    } catch (error) {
+      console.error("Error al enviar los datos:", error);
+    }
+  };
 
   const auctions = useQuery({
-    queryKey: ["myAuctions", auctionId], // Añades auctionId al queryKey para que se vuelva a hacer la query si cambia
-    queryFn: () => axios.get(`/api/offers/list?auction_id=${auctionId}`) // Incluyes auction_id en la URL como query param
-      .then((res) => {
-        return res.data;
-      }),
+    queryKey: ["myAuctions", auctionId],
+    queryFn: () => axios.get(`/api/offers/list?auction_id=${auctionId}`)
+      .then((res) => res.data),
   });
 
   const columns: ColumnDef<Offer>[] = [
@@ -59,18 +75,36 @@ export function ManageOffers({ auctionId }: OfferFormProps) {
       sortingFn: "alphanumeric",
       cell: ({ row }) => <div className="text-right">{row.original.offerPrice}</div>,
     },
+    // Condicionalmente agregamos columnas basadas en hasOffers
     {
-      id: "actions-accept",
-      cell: ({ row }) => {
-        return <Button size={"sm"}>Aceptar</Button>;
-      },
+      accessorKey: "status",
+      header: "Estado",
+      enableSorting: true,
     },
-    {
-      id: "actions-reject",
-      cell: ({ row }) => {
-        return <Button size={"sm"}>Rechazar</Button>;
+    ...(auctions.data?.hasOffers ? [
+      {
+        id: "actions-accept",
+        cell: ({ row }) => (
+          <Button
+            onClick={() => handleSendData({ auction_id: auctionId, offer_id: row.original.id, status: "accepted" })}
+            size={"sm"}
+          >
+            Aceptar
+          </Button>
+        ),
       },
-    },
+      {
+        id: "actions-reject",
+        cell: ({ row }) => (
+          <Button
+            onClick={() => handleSendData({ auction_id: auctionId, offer_id: row.original.id, status: "rejected" })}
+            size={"sm"}
+          >
+            Rechazar
+          </Button>
+        ),
+      },
+    ] : []),
   ];
 
   return (
@@ -78,7 +112,7 @@ export function ManageOffers({ auctionId }: OfferFormProps) {
       {auctions.isLoading ? (
         <Loader2Icon className="animate-spin" />
       ) : (
-        !auctions.isError && <TableList columns={columns} data={auctions.data} />
+        !auctions.isError && <TableList columns={columns} data={auctions.data?.offers || []} />
       )}
       {auctions.isError && <div>{auctions.error.message}</div>}
     </SimpleCard>

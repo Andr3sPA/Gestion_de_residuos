@@ -9,6 +9,7 @@ const offerSchema = z.object({
 });
 
 // Retorna las ofertas realizadas por la empresa del usuario
+// Retorna las ofertas realizadas por la empresa del usuario
 export async function GET(req: NextRequest) {
   const token = await getToken({ req });
   const { searchParams } = new URL(req.url);
@@ -17,7 +18,6 @@ export async function GET(req: NextRequest) {
   const { success, data, error } = offerSchema.safeParse({ auction_id: parseInt(auction_id || "0") });
 
   if (!success) {
-    // Imprime los errores en la consola
     console.error("Errores de validación:", error.errors);
     return NextResponse.json({ error: error.errors }, { status: 400 });
   }
@@ -40,7 +40,7 @@ export async function GET(req: NextRequest) {
       id: data.auction_id,
     },
     select: {
-      companySellerId:true,
+      companySellerId: true,
       offers: {
         include: {
           companyBuyer: true,
@@ -48,8 +48,25 @@ export async function GET(req: NextRequest) {
       },
     },
   });
-  if(auction.companySellerId!=user.companyId)return unauthorized();
-  if (!auction) return NextResponse.json({ error: "internal error" }, { status: 500 });
 
-  return NextResponse.json(auction.offers, { status: 200 });
+  if (!auction) return NextResponse.json({ error: "internal error" }, { status: 500 });
+  
+  const offer = await prismaClient.offer.findMany({
+    where: {
+      status: "accepted",
+      auctionId: data.auction_id,
+    },
+    include: {
+      companyBuyer: true,
+    },
+  });
+
+
+  if (offer.length > 0) {
+    return NextResponse.json({ offers: offer, hasOffers: false }, { status: 200 });
+  }
+  
+  if (auction.companySellerId != user.companyId) return unauthorized();
+  
+  return NextResponse.json({ offers: auction.offers, hasOffers:true }, { status: 200 });
 }

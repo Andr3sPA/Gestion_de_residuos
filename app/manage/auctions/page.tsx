@@ -117,16 +117,17 @@ export default function ManageAuctions() {
         <AlertDialogTrigger asChild>
           <Button variant="outline">ofertas</Button>
         </AlertDialogTrigger>
-        <AlertDialogContent>
+        <AlertDialogContent className="w-full max-w-5xl max-h-full">
           <AlertDialogHeader>
-            <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+          <AlertDialogTitle>Ofertas</AlertDialogTitle>
             <AlertDialogDescription>
               <ManageOffers auctionId={row.original.id} />
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel>Cancel</AlertDialogCancel>
-            <AlertDialogAction>Continue</AlertDialogAction>
+            <AlertDialogCancel className="bg-red-500 text-white hover:bg-red-600 border-2 border-red-700 shadow-lg transition duration-300 ease-in-out">
+              Cancel
+              </AlertDialogCancel>
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>

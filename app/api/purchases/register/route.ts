@@ -50,7 +50,7 @@ export async function POST(req: NextRequest) {
         id: data.offer_id,
       },
     });
-    return NextResponse.json("counter offer rejected", { status: 201 });
+    return NextResponse.json("offer rejected", { status: 201 });
   } else if (data.status == "accepted") {
     const offer = await prismaClient.offer.update({
       data: {
@@ -68,7 +68,27 @@ export async function POST(req: NextRequest) {
         id: data.auction_id,
       },
     });
-
+    const waste = await prismaClient.waste.update({
+      data:{
+        units: {
+          decrement: auction.units,
+        },
+      },
+      where: {
+          id:auction.wasteId,
+      },
+    })
+    const offers = await prismaClient.offer.updateMany({
+      data:{
+        status:"rejected"
+      },
+      where: {
+        auctionId:auction.id,
+        NOT: {
+          id: offer.id
+        }
+      },
+    })
     const purchase = await prismaClient.purchase.create({
       data: {
         finalPrice: offer.offerPrice,
@@ -88,6 +108,6 @@ export async function POST(req: NextRequest) {
     if (!purchase)
       return NextResponse.json({ error: "internal error" }, { status: 500 });
 
-    return NextResponse.json("counter offer accepted", { status: 201 });
+    return NextResponse.json("offer accepted", { status: 201 });
   }
 }
