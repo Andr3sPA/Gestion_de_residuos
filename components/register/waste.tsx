@@ -42,15 +42,15 @@ interface WasteFormProps {
 export function WasteForm({ onCancel }: WasteFormProps) {
   const { data: wasteTypesData, isLoading: isLoadingWasteTypes } = useQuery({
     queryKey: ['wasteTypes'],
-    queryFn: () => axios.get("/api/wastes/register").then(res => 
-      res.data.wasteTypes.map((type: any) => ({ id: type.id, label: type.name }))
+    queryFn: () => axios.get("/api/wastes/register").then(res =>
+      res.data.wasteTypes.map((type: any) => ({ id: type.name, label: type.name }))
     ),
   });
 
   const { data: unitTypesData, isLoading: isLoadingUnitTypes } = useQuery({
     queryKey: ['unitTypes'],
-    queryFn: () => axios.get("/api/wastes/register").then(res => 
-      res.data.unitTypes.map((type: any) => ({ id: type.id, label: type.name }))
+    queryFn: () => axios.get("/api/wastes/register").then(res =>
+      res.data.unitTypes.map((type: any) => ({ id: type.name, label: type.name }))
     ),
   });
 
