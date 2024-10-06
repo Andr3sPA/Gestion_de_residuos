@@ -64,7 +64,7 @@ export function AuctionDetails({ offerInfo }: { offerInfo: any }) {
           </span>
         </div>
         <Popover>
-          <PopoverTrigger>
+          <PopoverTrigger asChild>
             <Button>Realizar oferta</Button>
           </PopoverTrigger>
           <PopoverContent className="w-full p-4">

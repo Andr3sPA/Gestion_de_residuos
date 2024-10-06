@@ -6,7 +6,18 @@ import { useQuery } from "@tanstack/react-query";
 import { ColumnDef } from "@tanstack/react-table";
 import axios from "axios";
 import { Loader2Icon } from "lucide-react";
-
+import {ManageOffers} from "@/app/manage/offers/page";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog"
 export interface Auction {
   id: number;
   wasteId: number;
@@ -102,9 +113,23 @@ export default function ManageAuctions() {
     {
       id: "actions",
       cell: ({ row }) => {
-        return <Button size={"sm"}>
-          Ofertas
-        </Button>
+        return     <AlertDialog>
+        <AlertDialogTrigger asChild>
+          <Button variant="outline">ofertas</Button>
+        </AlertDialogTrigger>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+            <AlertDialogDescription>
+              <ManageOffers auctionId={row.original.id} />
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction>Continue</AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
       }
     }
   ]

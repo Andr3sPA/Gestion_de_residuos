@@ -21,11 +21,11 @@ const FormSchema = z.object({
   contact: z.string().min(1, { message: "El campo de contacto es obligatorio." }), // Campo de contacto
 });
 
-interface CounterOfferFormProps {
+interface OfferFormProps {
   auctionId?: number; // Hacemos que auctionId sea opcional
 }
 
-export function OfferForm({ auctionId }: CounterOfferFormProps) {
+export function OfferForm({ auctionId }: OfferFormProps) {
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
@@ -38,7 +38,13 @@ export function OfferForm({ auctionId }: CounterOfferFormProps) {
   function onSubmit(data: z.infer<typeof FormSchema>) {
     console.log("Datos antes de enviar:", data);
 
-    axios.post('/api/counter_offer/register', data)
+    // Convertir el precio a número
+    const payload = {
+      ...data,
+      price: Number(data.price), // Asegúrate de que sea un número
+    };
+
+    axios.post('/api/offers/register', payload)
       .then((response) => {
         console.log(response);
         toast({ title: "Contraoferta registrada con éxito.", description: response.data.message });
@@ -79,8 +85,10 @@ export function OfferForm({ auctionId }: CounterOfferFormProps) {
               <FormControl>
                 <Input
                   type="number"
-                  placeholder="Precio de la contraoferta"
+                  placeholder="Precio"
                   {...field}
+                  value={field.value}
+                  onChange={(e) => field.onChange(e.target.valueAsNumber)}
                 />
               </FormControl>
               <FormMessage />
@@ -104,9 +112,8 @@ export function OfferForm({ auctionId }: CounterOfferFormProps) {
             </FormItem>
           )}
         />
-        <Button type="submit">Registrar Contraoferta</Button>
+        <Button type="submit">Registrar oferta</Button>
       </form>
     </Form>
   );
 }
-
