@@ -1,5 +1,8 @@
+import { User } from "@prisma/client";
 import axios from "axios";
 import { Session } from "next-auth";
+import { AdapterUser } from "next-auth/adapters";
+import { JWT } from "next-auth/jwt";
 import NextAuth from "next-auth/next";
 import CredentialsProvider from "next-auth/providers/credentials";
 
@@ -8,7 +11,16 @@ interface UserSession extends Session {
     id?: string | null;
     email?: string | null;
     name?: string | null;
+    role?: string | null;
   }
+}
+
+interface JWTWithRole extends JWT {
+  role?: string | null
+}
+
+interface UserWithRole extends AdapterUser {
+  role?: string | null
 }
 
 const handler = NextAuth({
@@ -16,23 +28,26 @@ const handler = NextAuth({
     strategy: 'jwt',
   },
   callbacks: {
-    async session({ session, token }) {
+    async session({ session, token }: { session: UserSession, token: JWTWithRole }) {
       // Attach the user id to the session
       const sessionWithUser: UserSession = session
+
       if (token?.sub) {
         sessionWithUser.user = {
           id: token.sub,
           email: token.email,
-          name: token.name
+          name: token.name,
+          role: token.role
         }
       }
       return sessionWithUser;
     },
-    async jwt({ token, user }) {
+    async jwt({ token, user }: { token: JWTWithRole, user: any }) {
       if (user) {
         token.sub = user.id;
         token.email = user.email;
         token.name = user.name
+        token.role = user.role
         //TODO: set issuer and rest
       }
       return token;

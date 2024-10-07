@@ -47,7 +47,7 @@ const config: Config = {
           foreground: 'hsl(var(--accent-foreground))'
         },
         destructive: {
-          DEFAULT: 'hsl(var(--destructive))',
+          DEFAULT: 'var(--destructive)',
           foreground: 'hsl(var(--destructive-foreground))'
         },
         border: 'hsl(var(--border))',
@@ -59,6 +59,11 @@ const config: Config = {
           '3': 'hsl(var(--chart-3))',
           '4': 'hsl(var(--chart-4))',
           '5': 'hsl(var(--chart-5))'
+        },
+        badge: {
+          "neutral": "#f97316",
+          "ok": "#22b34e",
+          "error": "#ef4444"
         }
       },
     }
