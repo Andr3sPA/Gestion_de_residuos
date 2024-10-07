@@ -35,7 +35,6 @@ export async function GET(req: NextRequest) {
         status: 'asc' 
       }
   });
-
   if (!offers) return NextResponse.json({ error: "internal error" }, { status: 500 });
   return NextResponse.json({ offers }, { status: 200 });
 }
