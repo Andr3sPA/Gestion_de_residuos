@@ -19,6 +19,18 @@ model Company {
   offers      Offer[]
 }
 
+model Notification {
+  id          Int              @id @default(autoincrement())
+  type        NotificationType
+  description String
+  offer       Offer?           @relation(fields: [offerId], references: [id])
+  offerId     Int?
+  auction     Auction?         @relation(fields: [auctionId], references: [id])
+  auctionId   Int?
+  read        Boolean
+  createdAt   DateTime         @default(now())
+}
+
 model User {
   id               Int              @id @default(autoincrement())
   company          Company?         @relation(fields: [companyId], references: [id])
@@ -92,6 +104,7 @@ model Auction {
   status          AuctionStatus  @default(available)
   offers          Offer[]
   Purchase        Purchase[]
+  notifications   Notification[]
 }
 
 model Purchase {
@@ -129,4 +142,9 @@ enum OfferStatus {
   waiting
   accepted
   rejected
+}
+
+enum NotificationType {
+  offer_status_changed
+  auction_has_new_offer
 }
