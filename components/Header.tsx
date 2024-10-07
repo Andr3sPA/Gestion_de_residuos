@@ -35,7 +35,6 @@ export default function Header() {
   const navButtons = [
     ["/", "Inicio"],
     ["/manage/wastes", "Mis residuos"],
-    ["/manage/auctions", "Vender"],
     ["/search/auctions", "Comprar"],
   ];
 

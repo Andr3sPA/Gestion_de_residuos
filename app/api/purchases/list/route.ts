@@ -96,7 +96,6 @@ export async function GET(req: NextRequest) {
       },
     });
   }
-  console.log(purchases)
   // Verificamos si hay resultados
   if (!purchases) {
     return NextResponse.json({ error: "internal error" }, { status: 500 });
