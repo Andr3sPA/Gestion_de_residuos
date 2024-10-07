@@ -1,7 +1,6 @@
 import { Button } from "./ui/button";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "./ui/dialog";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { OfferForm } from "./register/offer";
 import { Separator } from "@radix-ui/react-select";
 import { PopoverArrow } from "@radix-ui/react-popover";
 import { useState } from "react";

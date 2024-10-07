@@ -53,7 +53,7 @@ export async function POST(req: NextRequest) {
   const notification = await prismaClient.notification.create({
     data: {
       type: "auction_has_new_offer",
-      description: `La subasta ${data.auctionId} tiene una nueva oferta`, // Usa una template string
+      description: `La subasta con id ${data.auctionId} tiene una nueva oferta`, // Usa una template string
       auction: {
         connect: {
           id: data.auctionId,
