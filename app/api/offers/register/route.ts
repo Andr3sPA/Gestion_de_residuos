@@ -50,7 +50,7 @@ export async function POST(req: NextRequest) {
       }
     }
   })
-  const notification= await prismaClient.notification.create({
+  const notification= await prismaClient.create({
     data:{
         notificationType:"auction_has_new_offer"
     }
