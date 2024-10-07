@@ -1,20 +1,18 @@
 "use client";
 import axios from "axios";
 import * as React from "react"
-import { Minus, Plus } from "lucide-react"
-import { Bar, BarChart, ResponsiveContainer } from "recharts"
- 
-import { Button } from "@/components/ui/button"
-import {
-  Drawer,
-  DrawerClose,
-  DrawerContent,
-  DrawerDescription,
-  DrawerFooter,
-  DrawerHeader,
-  DrawerTitle,
-  DrawerTrigger,
-} from "@/components/ui/drawer"
+ import { Button } from "@/components/ui/button"
+ import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog"
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -69,7 +67,7 @@ interface OfferFormProps {
 }
 
 export function WasteWithAuctionForm({ onCancel }: OfferFormProps) {
-  const { data, status } = useSession()
+
   const { data: wasteTypesData, isLoading: isLoadingWasteTypes } = useQuery({
       queryKey: ['wasteTypes'],
       queryFn: () => axios.get("/api/wastes/register").then(res =>
@@ -83,7 +81,7 @@ export function WasteWithAuctionForm({ onCancel }: OfferFormProps) {
         res.data.unitTypes.map((type: any) => ({ id: type.name, label: type.name }))
       ),
     });
-     
+  const { data, status } = useSession();     
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
@@ -96,7 +94,7 @@ export function WasteWithAuctionForm({ onCancel }: OfferFormProps) {
     pickupLatitude: 0,
     pickupLongitude: 0,
     expiresAt: new Date(),
-    contact: data.user.email || '', 
+    contact: status === "authenticated" && data?.user?.email ? data.user.email : '', 
     conditions: '', // Valor por defecto para condiciones
     },
   });
@@ -118,15 +116,17 @@ export function WasteWithAuctionForm({ onCancel }: OfferFormProps) {
     return <p>Cargando...</p>; // Mostrar un estado de carga
   }
   return (
-    <Drawer>
-  <DrawerTrigger>Open</DrawerTrigger>
-  <DrawerContent>
-    <DrawerHeader>
-      <DrawerTitle>Are you absolutely sure?</DrawerTitle>
-      <DrawerDescription>This action cannot be undone.</DrawerDescription>
+    <AlertDialog>
+      <AlertDialogTrigger asChild>
+        <Button variant="outline">Subastar</Button>
+      </AlertDialogTrigger>
+      <AlertDialogContent>
+        <AlertDialogHeader>
+          <AlertDialogTitle>Crear subasta</AlertDialogTitle>
+          <AlertDialogDescription>
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-        <div className="grid grid-cols-2 gap-6">
+    <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-2"> 
+    <div className="grid grid-cols-3 gap-6">
         {/* Combobox para Waste Type */}
         <FormField
           control={form.control}
@@ -364,24 +364,18 @@ export function WasteWithAuctionForm({ onCancel }: OfferFormProps) {
             )}
           />
         </div>
-        <div className="flex justify-evenly">
-          {onCancel && (
-            <Button variant="secondary" className="w-2/5" onClick={onCancel} type="button">
-              Cancelar
-            </Button>
-          )}
 
+        <div className="flex justify-evenly">
+        <AlertDialogFooter>
           <Button type="submit">Registrar Subasta</Button>
+          <AlertDialogCancel>Cancel</AlertDialogCancel>
+          </AlertDialogFooter>
         </div>
       </form>
     </Form>
-    </DrawerHeader>
-    <DrawerFooter>
-      <DrawerClose>
-        <Button variant="outline">Cancel</Button>
-      </DrawerClose>
-    </DrawerFooter>
-  </DrawerContent>
-</Drawer>
+    </AlertDialogDescription>
+    </AlertDialogHeader>
+      </AlertDialogContent>
+    </AlertDialog>
   );
 }
