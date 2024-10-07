@@ -50,8 +50,12 @@ export async function POST(req: NextRequest) {
       }
     }
   })
-
-  if (!offer) return NextResponse.json({ error: "internal error" }, { status: 500 })
+  const notification= await prismaClient.notification.create({
+    data:{
+        notificationType:"auction_has_new_offer"
+    }
+  })
+  if (!offer || !notification) return NextResponse.json({ error: "internal error" }, { status: 500 })
 
   return NextResponse.json("counter offer created", { status: 201 })
 }
