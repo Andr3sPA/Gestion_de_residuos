@@ -1,18 +1,7 @@
 "use client";
 import axios from "axios";
-import * as React from "react"
- import { Button } from "@/components/ui/button"
- import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogTrigger,
-} from "@/components/ui/alert-dialog"
+import * as React from "react";
+import { Button } from "@/components/ui/button";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -22,14 +11,14 @@ import { Calendar } from "@/components/ui/calendar";
 import { CalendarIcon } from "lucide-react";
 import { format } from "date-fns";
 import {
-    Select,
-    SelectContent,
-    SelectGroup,
-    SelectItem,
-    SelectLabel,
-    SelectTrigger,
-    SelectValue,
-  } from "@/components/ui/select";
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import {
   Form,
   FormControl,
@@ -47,6 +36,7 @@ import {
 import { useQuery } from "@tanstack/react-query";
 import { Combobox } from "@/components/Combobox";
 import { useSession } from "next-auth/react";
+
 // Esquema de validación con Zod
 const FormSchema = z.object({
   price: z.number().positive({ message: "El precio debe ser un número positivo." }),
@@ -66,36 +56,36 @@ interface OfferFormProps {
   onCancel?: () => void;
 }
 
-export function WasteWithAuctionForm({ onCancel }: OfferFormProps) {
-
+export default function WasteWithAuctionForm({ onCancel }: OfferFormProps) {
   const { data: wasteTypesData, isLoading: isLoadingWasteTypes } = useQuery({
-      queryKey: ['wasteTypes'],
-      queryFn: () => axios.get("/api/wastes/register").then(res =>
-        res.data.wasteTypes.map((type: any) => ({ id: type.name, label: type.name }))
-      ),
-    });
-  
-    const { data: unitTypesData, isLoading: isLoadingUnitTypes } = useQuery({
-      queryKey: ['unitTypes'],
-      queryFn: () => axios.get("/api/wastes/register").then(res =>
-        res.data.unitTypes.map((type: any) => ({ id: type.name, label: type.name }))
-      ),
-    });
-  const { data, status } = useSession();     
+    queryKey: ['wasteTypes'],
+    queryFn: () => axios.get("/api/wastes/register").then(res =>
+      res.data.wasteTypes.map((type: any) => ({ id: type.name, label: type.name }))
+    ),
+  });
+
+  const { data: unitTypesData, isLoading: isLoadingUnitTypes } = useQuery({
+    queryKey: ['unitTypes'],
+    queryFn: () => axios.get("/api/wastes/register").then(res =>
+      res.data.unitTypes.map((type: any) => ({ id: type.name, label: type.name }))
+    ),
+  });
+
+  const { data, status } = useSession();
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
-    description: "",
-    unitType: "",
-    wasteType: "",
-    category: "",        
-    price: 0,
-    units: 0,
-    pickupLatitude: 0,
-    pickupLongitude: 0,
-    expiresAt: new Date(),
-    contact: status === "authenticated" && data?.user?.email ? data.user.email : '', 
-    conditions: '', // Valor por defecto para condiciones
+      description: "",
+      unitType: "",
+      wasteType: "",
+      category: "",
+      price: 0,
+      units: 0,
+      pickupLatitude: 0,
+      pickupLongitude: 0,
+      expiresAt: new Date(),
+      contact: status === "authenticated" && data?.user?.email ? data.user.email : '',
+      conditions: '', // Valor por defecto para condiciones
     },
   });
 
@@ -112,58 +102,53 @@ export function WasteWithAuctionForm({ onCancel }: OfferFormProps) {
         toast({ title: "Error al registrar la subasta.", description: error.message });
       });
   }
+
   if (isLoadingWasteTypes || isLoadingUnitTypes) {
     return <p>Cargando...</p>; // Mostrar un estado de carga
   }
-  return (
-    <AlertDialog>
-      <AlertDialogTrigger>
-        Subastar
-      </AlertDialogTrigger>
-      <AlertDialogContent>
-        <AlertDialogHeader>
-          <AlertDialogTitle>Crear subasta</AlertDialogTitle>
-          <AlertDialogDescription>
-    <Form {...form}>
-    <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-2"> 
-    <div className="grid grid-cols-3 gap-6">
-        {/* Combobox para Waste Type */}
-        <FormField
-          control={form.control}
-          name="wasteType"
-          render={({ field }) => (
-            <FormItem className="flex flex-col">
-              <FormLabel htmlFor="wasteType">Tipo de Residuo</FormLabel>
-              <Combobox
-                list={wasteTypesData ?? []}
-                onSelect={(option) => {
-                  form.setValue("wasteType", option ? option.id : "");
-                  console.log(form.watch("wasteType")); // Verifica el cambio de valor
-                }}
-              />
-              <FormMessage />
-            </FormItem>
-          )}
-        />
 
-        {/* Combobox para Unit Type */}
-        <FormField
-          control={form.control}
-          name="unitType"
-          render={({ field }) => (
-            <FormItem className="flex flex-col">
-              <FormLabel htmlFor="unitType">Tipo de Unidad</FormLabel>
-              <Combobox
-                list={unitTypesData ?? []}
-                onSelect={(option) => {
-                  form.setValue("unitType", option ? option.id : "");
-                  console.log(form.watch("unitType")); // Verifica el cambio de valor
-                }}
-              />
-              <FormMessage />
-            </FormItem>
-          )}
-        />       
+  return (
+    <Form {...form}>
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-2">
+        <div className="grid grid-cols-3 gap-6">
+          {/* Combobox para Waste Type */}
+          <FormField
+            control={form.control}
+            name="wasteType"
+            render={({ field }) => (
+              <FormItem className="flex flex-col">
+                <FormLabel htmlFor="wasteType">Tipo de Residuo</FormLabel>
+                <Combobox
+                  list={wasteTypesData ?? []}
+                  onSelect={(option) => {
+                    form.setValue("wasteType", option ? option.id : "");
+                    console.log(form.watch("wasteType")); // Verifica el cambio de valor
+                  }}
+                />
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          {/* Combobox para Unit Type */}
+          <FormField
+            control={form.control}
+            name="unitType"
+            render={({ field }) => (
+              <FormItem className="flex flex-col">
+                <FormLabel htmlFor="unitType">Tipo de Unidad</FormLabel>
+                <Combobox
+                  list={unitTypesData ?? []}
+                  onSelect={(option) => {
+                    form.setValue("unitType", option ? option.id : "");
+                    console.log(form.watch("unitType")); // Verifica el cambio de valor
+                  }}
+                />
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
           {/* Campo de Descripción */}
           <FormField
             control={form.control}
@@ -182,6 +167,7 @@ export function WasteWithAuctionForm({ onCancel }: OfferFormProps) {
               </FormItem>
             )}
           />
+
           {/* Select para la categoría */}
           <FormField
             control={form.control}
@@ -190,8 +176,7 @@ export function WasteWithAuctionForm({ onCancel }: OfferFormProps) {
               <FormItem>
                 <FormLabel>Categoría</FormLabel>
                 <Select onValueChange={(value) => field.onChange(value)}>
-                  {/* Aumenta el ancho o usa w-full para ocupar todo el espacio disponible */}
-                  <SelectTrigger className="w-[250px]"> {/* Puedes ajustar este valor según sea necesario */}
+                  <SelectTrigger className="w-[250px]">
                     <SelectValue placeholder="Selecciona una categoría" />
                   </SelectTrigger>
                   <SelectContent>
@@ -206,7 +191,7 @@ export function WasteWithAuctionForm({ onCancel }: OfferFormProps) {
               </FormItem>
             )}
           />
-    
+
           {/* Precio */}
           <FormField
             control={form.control}
@@ -227,6 +212,7 @@ export function WasteWithAuctionForm({ onCancel }: OfferFormProps) {
               </FormItem>
             )}
           />
+
           {/* Fecha de Expiración */}
           <FormField
             control={form.control}
@@ -263,6 +249,7 @@ export function WasteWithAuctionForm({ onCancel }: OfferFormProps) {
               </FormItem>
             )}
           />
+
           {/* Unidades */}
           <FormField
             control={form.control}
@@ -283,6 +270,7 @@ export function WasteWithAuctionForm({ onCancel }: OfferFormProps) {
               </FormItem>
             )}
           />
+
           {/* Latitud de Recogida */}
           <FormField
             control={form.control}
@@ -303,6 +291,7 @@ export function WasteWithAuctionForm({ onCancel }: OfferFormProps) {
               </FormItem>
             )}
           />
+
           {/* Longitud de Recogida */}
           <FormField
             control={form.control}
@@ -323,6 +312,7 @@ export function WasteWithAuctionForm({ onCancel }: OfferFormProps) {
               </FormItem>
             )}
           />
+
           {/* Campo de Contacto */}
           <FormField
             control={form.control}
@@ -343,6 +333,7 @@ export function WasteWithAuctionForm({ onCancel }: OfferFormProps) {
               </FormItem>
             )}
           />
+
           {/* Campo de Condiciones */}
           <FormField
             control={form.control}
@@ -366,16 +357,10 @@ export function WasteWithAuctionForm({ onCancel }: OfferFormProps) {
         </div>
 
         <div className="flex justify-evenly">
-        <AlertDialogFooter>
           <Button type="submit">Registrar Subasta</Button>
-          <AlertDialogCancel>Cancel</AlertDialogCancel>
-          </AlertDialogFooter>
+          {onCancel && <Button type="button" onClick={onCancel}>Cancelar</Button>}
         </div>
       </form>
     </Form>
-    </AlertDialogDescription>
-    </AlertDialogHeader>
-      </AlertDialogContent>
-    </AlertDialog>
   );
 }

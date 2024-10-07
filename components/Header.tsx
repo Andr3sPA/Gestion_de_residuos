@@ -1,21 +1,30 @@
 "use client";
 
-import { Menu } from "lucide-react";
-import { Button } from "./ui/button";
+import * as React from "react";
+import Link from "next/link";
+import { cn } from "@/lib/utils";
 import {
-  Sheet,
-  SheetContent,
-  SheetDescription,
-  SheetTitle,
-  SheetTrigger,
-} from "./ui/sheet";
+  NavigationMenu,
+  NavigationMenuItem,
+  NavigationMenuLink,
+  NavigationMenuList,
+  NavigationMenuTrigger,
+  NavigationMenuContent,
+  navigationMenuTriggerStyle,
+} from "../components/ui/navigation-menu";
 import { usePathname, useRouter } from "next/navigation";
 import { useState } from "react";
 import { useSession } from "next-auth/react";
 import { LoginMenu } from "./users/LoginMenu";
 import { ProfileMenu } from "./users/ProfileMenu";
 import NotificationComponent from "./Notifications";
-import { WasteWithAuctionForm } from "./register/waste&auction";
+
+const navButtons = [
+  { title: "Inicio", href: "/" },
+  { title: "Mis residuos", href: "/manage/wastes" },
+  { title: "Vender", href: "/createAuction" },
+  { title: "Comprar", href: "/search/auctions" },
+];
 
 export default function Header() {
   const { status } = useSession();
@@ -33,70 +42,74 @@ export default function Header() {
     router.push(pathStr);
   };
 
-  const navButtons = [
-    ["/", "Inicio"],
-    ["/manage/wastes", "Mis residuos"],
-    ["/search/auctions", "Comprar"],
-  ];
-
   return (
     <div className="flex w-full flex-col shadow-md">
       <header className="sticky top-0 flex h-16 items-center gap-4 border-b bg-background px-4 md:px-6">
-        <nav className="text-nowrap hidden flex-col gap-6 text-lg font-medium md:flex md:flex-row md:items-center md:gap-5 md:text-sm lg:gap-6">
-          {navButtons.map((btn, idx) => (
-            <Button
-              key={idx}
-              variant={"link"}
-              onClick={() => goto(btn[0])}
-              disabled={checkIfPath(btn[0])}
-              className="text-muted-foreground transition-colors hover:text-foreground"
-            >
-              {btn[1]}
-            </Button>
-          ))}
-          <WasteWithAuctionForm/>
-        </nav>
-        <Sheet open={sideMenuOpen} onOpenChange={setSideMenuOpen}>
-          <SheetTrigger asChild>
-            <Button
-              variant="outline"
-              size="icon"
-              className="shrink-0 md:hidden"
-            >
-              <Menu className="h-5 w-5" />
-              <span className="sr-only">Toggle navigation menu</span>
-            </Button>
-          </SheetTrigger>
-          <SheetContent side="left" className="flex flex-col gap-4 w-fit">
-            <SheetTitle>Menú</SheetTitle>
-            <SheetDescription className="sr-only">
-              Navigation menu
-            </SheetDescription>
-            <nav className="grid gap-6 w-fit pr-16 text-lg font-medium">
-              {navButtons.map((btn, idx) => (
-                <Button
-                  key={idx}
-                  variant={"ghost"}
-                  onClick={() => {
-                    goto(btn[0]);
-                    setSideMenuOpen(false);
-                  }}
-                  disabled={checkIfPath(btn[0])}
-                  className="text-muted-foreground justify-start transition-colors hover:text-foreground"
-                >
-                  {btn[1]}
-                </Button>
-              ))}
-            </nav>
-          </SheetContent>
-        </Sheet>
+        <NavigationMenu>
+          <NavigationMenuList>
+            {navButtons.map((btn) => (
+              <NavigationMenuItem key={btn.title}>
+                <NavigationMenuLink asChild>
+                  <a
+                    href={btn.href}
+                    className={cn(
+                      "block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
+                    )}
+                  >
+                    <div className="text-sm font-medium leading-none">{btn.title}</div>
+                  </a>
+                </NavigationMenuLink>
+              </NavigationMenuItem>
+            ))}
+            <NavigationMenuItem>
+              <NavigationMenuTrigger>Mis actividades</NavigationMenuTrigger>
+              <NavigationMenuContent>
+                <ul className="grid gap-3 p-6 md:w-[400px] lg:w-[500px] lg:grid-cols-1">
+                  <ListItem href="/records/offersRecord" title="Mis ofertas">
+                  </ListItem>
+                  <ListItem href="/manage/auctions" title="Mis subastas">
+                  </ListItem>
+                  <ListItem href="/records/salesRecord" title="Mis ventas">
+                  </ListItem>
+                  <ListItem href="/records/shoppingRecord" title="Mis compras">
+                  </ListItem>
+                </ul>
+              </NavigationMenuContent>
+            </NavigationMenuItem>
+          </NavigationMenuList>
+        </NavigationMenu>
         <div className="flex w-full items-center gap-4 md:ml-auto md:gap-2 lg:gap-4">
           <div className="ml-auto flex-1 sm:flex-initial"></div>
-          <NotificationComponent></NotificationComponent>
-          {/* <NotificationComponent /> */}
+          <NotificationComponent />
           {loggedIn ? <ProfileMenu /> : <LoginMenu />}
         </div>
       </header>
     </div>
   );
 }
+
+const ListItem = React.forwardRef<
+  React.ElementRef<"a">,
+  React.ComponentPropsWithoutRef<"a">
+>(({ className, title, children, ...props }, ref) => {
+  return (
+    <li>
+      <NavigationMenuLink asChild>
+        <a
+          ref={ref}
+          className={cn(
+            "block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground",
+            className
+          )}
+          {...props}
+        >
+          <div className="text-sm font-medium leading-none">{title}</div>
+          <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
+            {children}
+          </p>
+        </a>
+      </NavigationMenuLink>
+    </li>
+  );
+});
+ListItem.displayName = "ListItem";
