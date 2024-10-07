@@ -24,7 +24,7 @@ export function Combobox({ placeholder, list, onSelect }:
           aria-expanded={open}
           className="justify-between w-auto"
         >
-          {selectedLabel ?? "Select framework..."}
+          {selectedLabel ?? "Seleccione una opción"}
           <CaretSortIcon className="ml-2 h-4 w-4 shrink-0 opacity-50" />
         </Button>
       </PopoverTrigger>

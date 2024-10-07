@@ -1,58 +1,21 @@
 'use client'
 
-import { CircleUser, Menu } from "lucide-react";
+import { Menu } from "lucide-react";
 import { Button } from "./ui/button";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "./ui/dropdown-menu";
 import { Sheet, SheetContent, SheetDescription, SheetTitle, SheetTrigger } from "./ui/sheet";
-import { LoginForm } from "./users/LoginForm";
-import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
 import { usePathname, useRouter } from "next/navigation";
 import { useState } from "react";
-import { signOut, useSession } from "next-auth/react";
+import { useSession } from "next-auth/react";
+import { LoginMenu } from "./users/LoginMenu";
+import { ProfileMenu } from "./users/ProfileMenu";
 
 export default function Header() {
-  const { data, status } = useSession()
+  const { status } = useSession()
   const [sideMenuOpen, setSideMenuOpen] = useState(false)
   const router = useRouter()
   const path = usePathname()
 
   const loggedIn = status === "authenticated"
-
-  const userButton = <Button variant="secondary" size="icon" className="rounded-full">
-    <CircleUser className="h-5 w-5" />
-    <span className="sr-only">Toggle user menu</span>
-  </Button>
-
-  const menuLoggedIn = <DropdownMenu>
-    <DropdownMenuTrigger asChild>
-      {userButton}
-    </DropdownMenuTrigger>
-    <DropdownMenuContent align="end">
-      <DropdownMenuLabel className="grid grid-rows-2">
-        <span>Cuenta</span>
-        <span className="font-extralight font-xs">
-          {data && data.user && data.user.name ?
-            data.user.name : "noc"}
-        </span>
-      </DropdownMenuLabel>
-      <DropdownMenuSeparator />
-      {/* <DropdownMenuItem disabled className="cursor-pointer" */}
-      {/*   onClick={() => router.push("/settings")}>Ajustes</DropdownMenuItem> */}
-      <DropdownMenuSeparator />
-      <DropdownMenuItem className="cursor-pointer" onClick={() => signOut()}>Cerrar sesión</DropdownMenuItem>
-    </DropdownMenuContent>
-  </DropdownMenu>
-
-  const [open, setOpen] = useState(false)
-
-  const menuLogin = <Popover open={open} onOpenChange={setOpen}>
-    <PopoverTrigger asChild>
-      {userButton}
-    </PopoverTrigger>
-    <PopoverContent>
-      <LoginForm onClose={() => setOpen(false)} border={false} />
-    </PopoverContent>
-  </Popover>
 
   const checkIfPath = (pathStr: string) => {
     return path === pathStr
@@ -112,7 +75,7 @@ export default function Header() {
       <div className="flex w-full items-center gap-4 md:ml-auto md:gap-2 lg:gap-4">
         <div className="ml-auto flex-1 sm:flex-initial">
         </div>
-        {loggedIn ? menuLoggedIn : menuLogin}
+        {loggedIn ? <ProfileMenu /> : <LoginMenu />}
       </div>
     </header>
   </div>

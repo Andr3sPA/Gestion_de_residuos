@@ -42,8 +42,8 @@ export function TableList<T>({ columns, data }:
           className="max-w-sm"
         />
       </div>
-      <div className="rounded-md border">
-        <Table >
+      <div className="rounded-md border overflow-x-auto">
+        <Table className="overflow-x-scroll">
           <TableHeader className="bg-accent">
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id}>
@@ -73,7 +73,7 @@ export function TableList<T>({ columns, data }:
               </TableRow>
             ))}
           </TableHeader>
-          <TableBody>
+          <TableBody >
             {table.getRowModel().rows?.length ? (
               table.getRowModel().rows.map((row) => (
                 <TableRow key={row.id}>
