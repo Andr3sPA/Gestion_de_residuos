@@ -33,7 +33,7 @@ export function TableList<T>({ columns, data }:
   const [triangleUp, triangleDown] = [<span>&#9652;</span>, <span>&#9662;</span>]
 
   return (
-    <div className="w-full">
+    <div className="w-full p-1">
       <div className="flex items-center py-4">
         <Input
           placeholder="Buscar..."
