@@ -17,24 +17,29 @@ export async function GET(req: NextRequest) {
   });
 
   if (!user) return unauthorized();
-  if (!user.companyId) return unauthorized("El usuario no pertenece a ninguna empresa");
+  if (!user.companyId)
+    return unauthorized("El usuario no pertenece a ninguna empresa");
 
   const offers = await prismaClient.offer.findMany({
     where: {
-        OR: [
-          { status: 'waiting' },
-          { status: 'rejected' }
-        ],
-        companyBuyerId:user.companyId
+      OR: [{ status: "waiting" }, { status: "rejected" }],
+      companyBuyerId: user.companyId,
+    },
+    include: {
+      companyBuyer: true,
+      auction: {
+        include: {
+          companySeller: true,
+          waste: true,
+        },
       },
-      include: {
-        companyBuyer: true,
-        auction:true
-      },
-      orderBy: {
-        status: 'asc' 
-      }
+    },
+    orderBy: {
+      status: "asc",
+    },
   });
-  if (!offers) return NextResponse.json({ error: "internal error" }, { status: 500 });
+
+  if (!offers)
+    return NextResponse.json({ error: "internal error" }, { status: 500 });
   return NextResponse.json({ offers }, { status: 200 });
 }

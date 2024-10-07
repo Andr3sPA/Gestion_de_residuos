@@ -1,4 +1,4 @@
-'use client'
+"use client";
 
 import { Loader2 } from "lucide-react";
 import axios from "axios";
@@ -14,14 +14,14 @@ import { Auction } from "@/app/manage/auctions/page";
 export default function searchAuctions() {
   const auctions = useQuery({
     queryKey: ["allAuctions"],
-    queryFn: () => axios.get("/api/auctions/search")
-      .then((res) => res.data.auctions)
-  })
+    queryFn: () =>
+      axios.get("/api/auctions/search").then((res) => res.data.auctions),
+  });
 
   const columns: ColumnDef<Auction>[] = [
     {
       accessorKey: "waste.wasteType.name",
-      header: "Tipo"
+      header: "Tipo",
     },
     {
       accessorKey: "expiresAt",
@@ -38,11 +38,11 @@ export default function searchAuctions() {
     },
     {
       accessorKey: "conditions",
-      header: "Condiciones"
+      header: "Condiciones",
     },
     {
       accessorKey: "waste.description",
-      header: "Descripción"
+      header: "Descripción",
     },
     {
       accessorKey: "initialPrice",
@@ -51,30 +51,31 @@ export default function searchAuctions() {
     {
       accessorKey: "units",
       header: "Cantidad",
-      cell: ({ row }) => `${row.original.units} ${row.original.waste.unitType.name}`
+      cell: ({ row }) =>
+        `${row.original.units} ${row.original.waste.unitType.name}`,
     },
     {
       accessorKey: "",
       id: "details",
-      cell: ({ row }) => <AuctionDetails offerInfo={row.original} />
-    }
-  ]
+      cell: ({ row }) => <AuctionDetails offerInfo={row.original} />,
+    },
+  ];
 
-  return <div className="flex flex-1 flex-col w-full h-full justify-start items-center" >
-    <SimpleCard
-      title="Subastas"
-      desc="Busca aquí los residuos que ofrecen otras empresas "
-    >
-      {auctions.isLoading ?
-        <div className="flex justify-center p-2">
-          <Loader2 className="animate-spin" />
-        </div>
-        :
-        <TableList columns={columns} data={auctions.data} />
-      }
-    </SimpleCard>
-  </div >
+  return (
+    <div className="flex flex-1 flex-col w-full h-full justify-start items-center">
+      <SimpleCard
+        className="m-2"
+        title="Subastas"
+        desc="Busca aquí los residuos que ofrecen otras empresas "
+      >
+        {auctions.isLoading ? (
+          <div className="flex justify-center p-2">
+            <Loader2 className="animate-spin" />
+          </div>
+        ) : (
+          <TableList columns={columns} data={auctions.data} />
+        )}
+      </SimpleCard>
+    </div>
+  );
 }
-
-
-

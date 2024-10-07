@@ -1,4 +1,4 @@
-'use client'
+"use client";
 import { SimpleCard } from "@/components/SimpleCard";
 import { TableList } from "@/components/TableList";
 import { Button } from "@/components/ui/button";
@@ -7,14 +7,16 @@ import { ColumnDef } from "@tanstack/react-table";
 import axios from "axios";
 import { Loader2Icon } from "lucide-react";
 import { Offer } from "@/app/manage/offers/page";
+import { Badge } from "@/components/ui/badge";
 
 export function ManageMyOffers() {
   const offers = useQuery({
     queryKey: ["myOffers"],
-    queryFn: () => axios.get("/api/offers/listMyOffers")
-    .then((res) => res.data),
-      })
-
+    queryFn: () =>
+      axios.get("/api/offers/listMyOffers").then((res) => {
+        return res.data.offers;
+      }),
+  });
 
   const columns: ColumnDef<Offer>[] = [
     {
@@ -47,23 +49,25 @@ export function ManageMyOffers() {
       accessorKey: "status",
       header: "Estado",
       enableSorting: true,
+      cell: ({ row }) => {
+        return <Badge variant={"outline"}>{row.original.status}</Badge>;
+      },
     },
   ];
-  
+
   return (
-<SimpleCard
-    title="Mis Ofertas"
-    desc="Visualiza aquí todas las ofertas hechas por tu empresa."
-  >
-    {(offers.isLoading) ?
-      <Loader2Icon className="animate-spin" />
-      :
-      (
-        !offers.isError &&
-        <TableList columns={columns} data={offers.data || []} />
-      )
-    }
-    {offers.isError && offers.error.message}
-  </SimpleCard>
+    <SimpleCard
+      title="Mis Ofertas"
+      desc="Visualiza aquí todas las ofertas hechas por tu empresa."
+    >
+      {offers.isLoading ? (
+        <Loader2Icon className="animate-spin" />
+      ) : (
+        !offers.isError && (
+          <TableList columns={columns} data={offers.data || []} />
+        )
+      )}
+      {offers.isError && offers.error.message}
+    </SimpleCard>
   );
-} 
+}
