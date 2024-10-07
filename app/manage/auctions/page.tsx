@@ -1,4 +1,4 @@
-'use client'
+"use client";
 import { SimpleCard } from "@/components/SimpleCard";
 import { TableList } from "@/components/TableList";
 import { Button } from "@/components/ui/button";
@@ -6,21 +6,21 @@ import { useQuery } from "@tanstack/react-query";
 import { ColumnDef } from "@tanstack/react-table";
 import axios from "axios";
 import { Loader2Icon } from "lucide-react";
-import {ManageOffers} from "@/app/manage/offers/page";
+import { ManageOffers } from "@/app/manage/offers/page";
 
 export interface Auction {
   id: number;
   wasteId: number;
-  conditions:string;
+  conditions: string;
   expiresAt: string; // Mueve expirationDate dentro del objeto waste
   waste: {
     description: string;
     unitType: {
-      name: string
-    },
+      name: string;
+    };
     wasteType: {
-      name: string
-    },
+      name: string;
+    };
   };
   units: number;
   companySeller: {
@@ -34,11 +34,11 @@ export interface Auction {
 export default function ManageAuctions() {
   const auctions = useQuery({
     queryKey: ["myAuctions"],
-    queryFn: () => axios.get("/api/auctions/list")
-      .then((res) => {
-        return res.data
-      })
-  })
+    queryFn: () =>
+      axios.get("/api/auctions/list").then((res) => {
+        return res.data;
+      }),
+  });
 
   const columns: ColumnDef<Auction>[] = [
     {
@@ -67,7 +67,9 @@ export default function ManageAuctions() {
       header: "Price",
       enableSorting: true,
       sortingFn: "alphanumeric",
-      cell: ({ row }) => <div className="text-right">{row.original.initialPrice}</div>,
+      cell: ({ row }) => (
+        <div className="text-right">{row.original.initialPrice}</div>
+      ),
     },
     {
       accessorKey: "units",
@@ -75,10 +77,15 @@ export default function ManageAuctions() {
       sortingFn: "alphanumeric",
       header: () => <div className="text-right">Units</div>,
       cell: ({ row }) => {
-        return <div className="text-right font-medium">
-          {row.original.units}
-          <span className="font-light text-xs">{" "}{row.original.waste.unitType.name}</span>
-        </div>;
+        return (
+          <div className="text-right font-medium">
+            {row.original.units}
+            <span className="font-light text-xs">
+              {" "}
+              {row.original.waste.unitType.name}
+            </span>
+          </div>
+        );
       },
     },
     {
@@ -102,22 +109,23 @@ export default function ManageAuctions() {
     },
     {
       id: "actions",
-      cell: ({ row }) => <ManageOffers auctionId={row.original.id} />
-      
-    }
-  ]
-  return <SimpleCard
-    title="Mis subastas"
-    desc="Visualiza aquí las subastas hechas por tu empresa."
-  >
-    {(auctions.isLoading) ?
-      <Loader2Icon className="animate-spin" />
-      :
-      (
-        !auctions.isError &&
-        <TableList columns={columns} data={auctions.data || []} />
-      )
-    }
-    {auctions.isError && auctions.error.message}
-  </SimpleCard>
+      cell: ({ row }) => <ManageOffers auctionId={row.original.id} />,
+    },
+  ];
+  return (
+    <SimpleCard
+      className="m-2"
+      title="Mis subastas"
+      desc="Visualiza aquí las subastas hechas por tu empresa."
+    >
+      {auctions.isLoading ? (
+        <Loader2Icon className="animate-spin" />
+      ) : (
+        !auctions.isError && (
+          <TableList columns={columns} data={auctions.data || []} />
+        )
+      )}
+      {auctions.isError && auctions.error.message}
+    </SimpleCard>
+  );
 }

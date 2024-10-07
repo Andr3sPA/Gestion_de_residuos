@@ -1,3 +1,5 @@
+"use client";
+
 import { SimpleCard } from "@/components/SimpleCard";
 import { TableList } from "@/components/TableList";
 import { Button } from "@/components/ui/button";
@@ -16,9 +18,9 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
   AlertDialogTrigger,
-} from "@/components/ui/alert-dialog"
+} from "@/components/ui/alert-dialog";
 interface Purchase {
-  auction_id: number; 
+  auction_id: number;
   offer_id: number;
   status: string;
 }
@@ -26,25 +28,25 @@ interface Purchase {
 export interface Offer {
   id: number;
   contact: string;
-  status:string;
-  auction:{
-    companySeller:{
-      name:string
-      description:string
-    }
-    waste:{
-      wasteType:string
-      category:string
-      description:string
-      unitType:string
-    }
-    initialPrice:number
-    conditions:string
-    units:number
-    status:string
-    contact:string
-    id:number
-  }
+  status: string;
+  auction: {
+    companySeller: {
+      name: string;
+      description: string;
+    };
+    waste: {
+      wasteType: string;
+      category: string;
+      description: string;
+      unitType: string;
+    };
+    initialPrice: number;
+    conditions: string;
+    units: number;
+    status: string;
+    contact: string;
+    id: number;
+  };
   companyBuyer: {
     name: string;
     description: string;
@@ -53,11 +55,13 @@ export interface Offer {
 }
 
 interface OfferFormProps {
-  auctionId?: number; // Hacemos que auctionId sea opcional
+  auctionId: number; // Hacemos que auctionId sea opcional
 }
 
 export function ManageOffers({ auctionId }: OfferFormProps) {
-  const [selectedPurchase, setSelectedPurchase] = useState<Purchase | null>(null);
+  const [selectedPurchase, setSelectedPurchase] = useState<Purchase | null>(
+    null,
+  );
 
   const handleSendData = async (purchase: Purchase) => {
     setSelectedPurchase(purchase);
@@ -71,8 +75,10 @@ export function ManageOffers({ auctionId }: OfferFormProps) {
 
   const auctions = useQuery({
     queryKey: ["myAuctions", auctionId],
-    queryFn: () => axios.get(`/api/offers/list?auction_id=${auctionId}`)
-      .then((res) => res.data),
+    queryFn: () =>
+      axios
+        .get(`/api/offers/list?auction_id=${auctionId}`)
+        .then((res) => res.data),
   });
 
   const columns: ColumnDef<Offer>[] = [
@@ -102,7 +108,9 @@ export function ManageOffers({ auctionId }: OfferFormProps) {
       header: "Precio",
       enableSorting: true,
       sortingFn: "alphanumeric",
-      cell: ({ row }) => <div className="text-right">{row.original.offerPrice}</div>,
+      cell: ({ row }) => (
+        <div className="text-right">{row.original.offerPrice}</div>
+      ),
     },
     {
       accessorKey: "status",
@@ -113,7 +121,13 @@ export function ManageOffers({ auctionId }: OfferFormProps) {
       id: "actions-accept",
       cell: ({ row }) => (
         <Button
-          onClick={() => handleSendData({ auction_id: auctionId, offer_id: row.original.id, status: "accepted" })}
+          onClick={() =>
+            handleSendData({
+              auction_id: auctionId,
+              offer_id: row.original.id,
+              status: "accepted",
+            })
+          }
           size={"sm"}
         >
           Aceptar
@@ -124,7 +138,13 @@ export function ManageOffers({ auctionId }: OfferFormProps) {
       id: "actions-reject",
       cell: ({ row }) => (
         <Button
-          onClick={() => handleSendData({ auction_id: auctionId, offer_id: row.original.id, status: "rejected" })}
+          onClick={() =>
+            handleSendData({
+              auction_id: auctionId,
+              offer_id: row.original.id,
+              status: "rejected",
+            })
+          }
           size={"sm"}
         >
           Rechazar
@@ -135,28 +155,28 @@ export function ManageOffers({ auctionId }: OfferFormProps) {
 
   return (
     <AlertDialog>
-        <AlertDialogTrigger asChild>
-          <Button variant="outline">ofertas</Button>
-        </AlertDialogTrigger>
-        <AlertDialogContent className="w-full max-w-5xl max-h-full">
-          <AlertDialogHeader>
+      <AlertDialogTrigger asChild>
+        <Button variant="outline">ofertas</Button>
+      </AlertDialogTrigger>
+      <AlertDialogContent className="w-full max-w-full max-h-full">
+        <AlertDialogHeader className="w-full overflow-scroll max-w-full">
           <AlertDialogTitle>Ofertas de la subasta {auctionId}</AlertDialogTitle>
-            <AlertDialogDescription>
-                {auctions.isLoading ? (
-                  <Loader2Icon className="animate-spin" />
-                ) : (
-                  !auctions.isError && <TableList columns={columns} data={auctions.data?.offers || []} />
-                )}
-                {auctions.isError && <div>{auctions.error.message}</div>}
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel className="bg-red-500 text-white hover:bg-red-600 border-2 border-red-700 shadow-lg transition duration-300 ease-in-out">
-              Cancel
-              </AlertDialogCancel>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
-
+          <AlertDialogDescription></AlertDialogDescription>
+          {auctions.isLoading ? (
+            <Loader2Icon className="animate-spin" />
+          ) : (
+            !auctions.isError && (
+              <TableList columns={columns} data={auctions.data?.offers || []} />
+            )
+          )}
+          {auctions.isError && <div>{auctions.error.message}</div>}
+        </AlertDialogHeader>
+        <AlertDialogFooter>
+          <AlertDialogCancel className="bg-red-500 text-white hover:bg-red-600 border-2 border-red-700 shadow-lg transition duration-300 ease-in-out">
+            Cancel
+          </AlertDialogCancel>
+        </AlertDialogFooter>
+      </AlertDialogContent>
+    </AlertDialog>
   );
 }

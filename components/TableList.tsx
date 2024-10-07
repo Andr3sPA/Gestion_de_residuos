@@ -1,17 +1,45 @@
-import { ColumnDef, ColumnFiltersState, flexRender, getCoreRowModel, getFilteredRowModel, getPaginationRowModel, getSortedRowModel, SortingState, useReactTable, VisibilityState } from "@tanstack/react-table";
+import {
+  ColumnDef,
+  ColumnFiltersState,
+  flexRender,
+  getCoreRowModel,
+  getFilteredRowModel,
+  getPaginationRowModel,
+  getSortedRowModel,
+  SortingState,
+  useReactTable,
+  VisibilityState,
+} from "@tanstack/react-table";
 import React from "react";
-import { TableHeader, TableRow, TableHead, TableBody, TableCell, Table } from "./ui/table";
+import {
+  TableHeader,
+  TableRow,
+  TableHead,
+  TableBody,
+  TableCell,
+  Table,
+} from "./ui/table";
 import { Input } from "./ui/input";
 import { Button } from "./ui/button";
 import { IconLeft, IconRight } from "react-day-picker";
-import { setGlobal } from "next/dist/trace";
+import { Loader2 } from "lucide-react";
 
-export function TableList<T>({ columns, data }:
-  { columns: ColumnDef<T>[], data: T[] }) {
+export function TableList<T>({
+  columns,
+  data,
+  isLoading = false,
+}: {
+  columns: ColumnDef<T>[];
+  data: T[];
+  isLoading?: boolean;
+}) {
   const [sorting, setSorting] = React.useState<SortingState>([]);
-  const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([]);
-  const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({});
-  const [globalFilter, setGlobalFilter] = React.useState('')
+  const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
+    [],
+  );
+  const [columnVisibility, setColumnVisibility] =
+    React.useState<VisibilityState>({});
+  const [globalFilter, setGlobalFilter] = React.useState("");
   const table = useReactTable({
     data,
     columns,
@@ -30,7 +58,10 @@ export function TableList<T>({ columns, data }:
     },
   });
 
-  const [triangleUp, triangleDown] = [<span>&#9652;</span>, <span>&#9662;</span>]
+  const [triangleUp, triangleDown] = [
+    <span>&#9652;</span>,
+    <span>&#9662;</span>,
+  ];
 
   return (
     <div className="w-full p-1">
@@ -49,39 +80,42 @@ export function TableList<T>({ columns, data }:
               <TableRow key={headerGroup.id}>
                 {headerGroup.headers.map((header) => (
                   <TableHead key={header.id}>
-                    {header.isPlaceholder
-                      ? null
-                      : (
-                        !header.column.columnDef.enableSorting ?
-                          flexRender(
-                            header.column.columnDef.header,
-                            header.getContext())
-                          :
-                          <Button variant={"ghost"} className="p-0"
-                            onClick={header.column.getToggleSortingHandler()}>
-                            {flexRender(
-                              header.column.columnDef.header,
-                              header.getContext())
-                            }
-                            {header.column.getIsSorted() && (header.column.getIsSorted() === "desc" ?
-                              triangleUp : triangleDown)
-                            }
-                          </Button>
-                      )}
+                    {header.isPlaceholder ? null : !header.column.columnDef
+                        .enableSorting ? (
+                      flexRender(
+                        header.column.columnDef.header,
+                        header.getContext(),
+                      )
+                    ) : (
+                      <Button
+                        variant={"ghost"}
+                        className="p-0"
+                        onClick={header.column.getToggleSortingHandler()}
+                      >
+                        {flexRender(
+                          header.column.columnDef.header,
+                          header.getContext(),
+                        )}
+                        {header.column.getIsSorted() &&
+                          (header.column.getIsSorted() === "desc"
+                            ? triangleUp
+                            : triangleDown)}
+                      </Button>
+                    )}
                   </TableHead>
                 ))}
               </TableRow>
             ))}
           </TableHeader>
-          <TableBody >
-            {table.getRowModel().rows?.length ? (
+          <TableBody>
+            {!isLoading && table.getRowModel().rows?.length ? (
               table.getRowModel().rows.map((row) => (
                 <TableRow key={row.id}>
                   {row.getVisibleCells().map((cell) => (
                     <TableCell key={cell.id}>
                       {flexRender(
                         cell.column.columnDef.cell,
-                        cell.getContext()
+                        cell.getContext(),
                       )}
                     </TableCell>
                   ))}
@@ -89,15 +123,24 @@ export function TableList<T>({ columns, data }:
               ))
             ) : (
               <TableRow>
-                <TableCell colSpan={columns.length} className="h-24 text-center">
-                  No se encontraron resultados.
+                <TableCell
+                  colSpan={columns.length}
+                  className="h-24 text-center w-full"
+                >
+                  {isLoading ? (
+                    <div className="flex justify-center">
+                      <Loader2 className="animate-spin" />
+                    </div>
+                  ) : (
+                    "No se encontraron resultados."
+                  )}
                 </TableCell>
               </TableRow>
             )}
           </TableBody>
         </Table>
       </div>
-      {(table.getCanPreviousPage() || table.getCanNextPage()) &&
+      {(table.getCanPreviousPage() || table.getCanNextPage()) && (
         <div className="flex items-center justify-end space-x-2 py-4">
           <div className="space-x-2">
             <Button
@@ -120,7 +163,7 @@ export function TableList<T>({ columns, data }:
             </Button>
           </div>
         </div>
-      }
+      )}
     </div>
   );
 }
