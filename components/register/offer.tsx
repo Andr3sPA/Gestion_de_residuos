@@ -14,9 +14,10 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { toast } from "@/hooks/use-toast";
+import { useSession } from "next-auth/react";
 
 const FormSchema = z.object({
-  auctionId: z.number().optional(), // Cambiamos auctionId para que sea opcional
+  auctionId: z.number(), // Cambiamos auctionId para que sea opcional
   price: z.number().positive({ message: "El precio debe ser un número positivo." }),
   contact: z.string().min(1, { message: "El campo de contacto es obligatorio." }), // Campo de contacto
 });
@@ -26,12 +27,13 @@ interface OfferFormProps {
 }
 
 export function OfferForm({ auctionId }: OfferFormProps) {
+  const { data, status } = useSession()
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
       auctionId: auctionId || undefined, // Si no hay auctionId, el campo es editable
       price: 0,
-      contact: '', // Valor por defecto para el campo de contacto
+      contact: data.user.email || '', // Valor por defecto para el campo de contacto
     },
   });
 

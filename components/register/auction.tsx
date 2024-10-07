@@ -23,6 +23,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
+import { useSession } from "next-auth/react";
 
 // Esquema de validación con Zod
 const FormSchema = z.object({
@@ -42,6 +43,7 @@ interface OfferFormProps {
 }
 
 export function AuctionForm({ wasteId, onCancel }: OfferFormProps) {
+  const { data, status } = useSession()
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
@@ -51,7 +53,7 @@ export function AuctionForm({ wasteId, onCancel }: OfferFormProps) {
       pickupLatitude: 0,
       pickupLongitude: 0,
       expiresAt: new Date(),
-      contact: '', 
+      contact: data.user.email || '', 
       conditions: '', // Valor por defecto para condiciones
     },
   });

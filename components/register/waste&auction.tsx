@@ -34,6 +34,7 @@ import {
 } from "@/components/ui/popover";
 import { useQuery } from "@tanstack/react-query";
 import { Combobox } from "@/components/Combobox";
+import { useSession } from "next-auth/react";
 // Esquema de validación con Zod
 const FormSchema = z.object({
   price: z.number().positive({ message: "El precio debe ser un número positivo." }),
@@ -54,19 +55,20 @@ interface OfferFormProps {
 }
 
 export function WasteWithAuctionForm({ onCancel }: OfferFormProps) {
-    const { data: wasteTypesData, isLoading: isLoadingWasteTypes } = useQuery({
-        queryKey: ['wasteTypes'],
-        queryFn: () => axios.get("/api/wastes/register").then(res =>
-          res.data.wasteTypes.map((type: any) => ({ id: type.name, label: type.name }))
-        ),
-      });
-    
-      const { data: unitTypesData, isLoading: isLoadingUnitTypes } = useQuery({
-        queryKey: ['unitTypes'],
-        queryFn: () => axios.get("/api/wastes/register").then(res =>
-          res.data.unitTypes.map((type: any) => ({ id: type.name, label: type.name }))
-        ),
-      });
+  const { data, status } = useSession()
+  const { data: wasteTypesData, isLoading: isLoadingWasteTypes } = useQuery({
+      queryKey: ['wasteTypes'],
+      queryFn: () => axios.get("/api/wastes/register").then(res =>
+        res.data.wasteTypes.map((type: any) => ({ id: type.name, label: type.name }))
+      ),
+    });
+  
+    const { data: unitTypesData, isLoading: isLoadingUnitTypes } = useQuery({
+      queryKey: ['unitTypes'],
+      queryFn: () => axios.get("/api/wastes/register").then(res =>
+        res.data.unitTypes.map((type: any) => ({ id: type.name, label: type.name }))
+      ),
+    });
      
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
@@ -80,7 +82,7 @@ export function WasteWithAuctionForm({ onCancel }: OfferFormProps) {
     pickupLatitude: 0,
     pickupLongitude: 0,
     expiresAt: new Date(),
-    contact: '', 
+    contact: data.user.email || '', 
     conditions: '', // Valor por defecto para condiciones
     },
   });
