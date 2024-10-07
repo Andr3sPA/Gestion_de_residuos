@@ -6,7 +6,17 @@ import { ColumnDef } from "@tanstack/react-table";
 import axios from "axios";
 import { Loader2Icon } from "lucide-react";
 import { useState } from "react";
-
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog"
 interface Purchase {
   auction_id: number; 
   offer_id: number;
@@ -81,40 +91,54 @@ export function ManageOffers({ auctionId }: OfferFormProps) {
       header: "Estado",
       enableSorting: true,
     },
-    ...(auctions.data?.hasOffers ? [
-      {
-        id: "actions-accept",
-        cell: ({ row }) => (
-          <Button
-            onClick={() => handleSendData({ auction_id: auctionId, offer_id: row.original.id, status: "accepted" })}
-            size={"sm"}
-          >
-            Aceptar
-          </Button>
-        ),
-      },
-      {
-        id: "actions-reject",
-        cell: ({ row }) => (
-          <Button
-            onClick={() => handleSendData({ auction_id: auctionId, offer_id: row.original.id, status: "rejected" })}
-            size={"sm"}
-          >
-            Rechazar
-          </Button>
-        ),
-      },
-    ] : []),
+    {
+      id: "actions-accept",
+      cell: ({ row }) => (
+        <Button
+          onClick={() => handleSendData({ auction_id: auctionId, offer_id: row.original.id, status: "accepted" })}
+          size={"sm"}
+        >
+          Aceptar
+        </Button>
+      ),
+    },
+    {
+      id: "actions-reject",
+      cell: ({ row }) => (
+        <Button
+          onClick={() => handleSendData({ auction_id: auctionId, offer_id: row.original.id, status: "rejected" })}
+          size={"sm"}
+        >
+          Rechazar
+        </Button>
+      ),
+    },
   ];
 
   return (
-    <SimpleCard title={`Ofertas de la subasta ${auctionId}`} desc="Visualiza aquí las ofertas hechas">
-      {auctions.isLoading ? (
-        <Loader2Icon className="animate-spin" />
-      ) : (
-        !auctions.isError && <TableList columns={columns} data={auctions.data?.offers || []} />
-      )}
-      {auctions.isError && <div>{auctions.error.message}</div>}
-    </SimpleCard>
+    <AlertDialog>
+        <AlertDialogTrigger asChild>
+          <Button variant="outline">ofertas</Button>
+        </AlertDialogTrigger>
+        <AlertDialogContent className="w-full max-w-5xl max-h-full">
+          <AlertDialogHeader>
+          <AlertDialogTitle>Ofertas de la subasta {auctionId}</AlertDialogTitle>
+            <AlertDialogDescription>
+                {auctions.isLoading ? (
+                  <Loader2Icon className="animate-spin" />
+                ) : (
+                  !auctions.isError && <TableList columns={columns} data={auctions.data?.offers || []} />
+                )}
+                {auctions.isError && <div>{auctions.error.message}</div>}
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel className="bg-red-500 text-white hover:bg-red-600 border-2 border-red-700 shadow-lg transition duration-300 ease-in-out">
+              Cancel
+              </AlertDialogCancel>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
   );
 }

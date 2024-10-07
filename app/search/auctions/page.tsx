@@ -7,7 +7,7 @@ import { ColumnDef } from "@tanstack/react-table";
 import { TableList } from "@/components/TableList";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogTrigger } from "@/components/ui/dialog";
-import { AuctionDetails } from "@/components/OfferDetails";
+import { AuctionDetails } from "@/components/AuctionDetails";
 import { SimpleCard } from "@/components/SimpleCard";
 import { Auction } from "@/app/manage/auctions/page";
 
