@@ -7,17 +7,7 @@ import { ColumnDef } from "@tanstack/react-table";
 import axios from "axios";
 import { Loader2Icon } from "lucide-react";
 import {ManageOffers} from "@/app/manage/offers/page";
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogTrigger,
-} from "@/components/ui/alert-dialog"
+
 export interface Auction {
   id: number;
   wasteId: number;
@@ -112,26 +102,8 @@ export default function ManageAuctions() {
     },
     {
       id: "actions",
-      cell: ({ row }) => {
-        return     <AlertDialog>
-        <AlertDialogTrigger asChild>
-          <Button variant="outline">ofertas</Button>
-        </AlertDialogTrigger>
-        <AlertDialogContent className="w-full max-w-5xl max-h-full">
-          <AlertDialogHeader>
-          <AlertDialogTitle></AlertDialogTitle>
-            <AlertDialogDescription>
-              <ManageOffers auctionId={row.original.id} />
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel className="bg-red-500 text-white hover:bg-red-600 border-2 border-red-700 shadow-lg transition duration-300 ease-in-out">
-              Cancel
-              </AlertDialogCancel>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
-      }
+      cell: ({ row }) => <ManageOffers auctionId={row.original.id} />
+      
     }
   ]
   return <SimpleCard
