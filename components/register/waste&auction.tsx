@@ -117,8 +117,8 @@ export function WasteWithAuctionForm({ onCancel }: OfferFormProps) {
   }
   return (
     <AlertDialog>
-      <AlertDialogTrigger asChild>
-        <Button variant="outline">Subastar</Button>
+      <AlertDialogTrigger>
+        Subastar
       </AlertDialogTrigger>
       <AlertDialogContent>
         <AlertDialogHeader>
