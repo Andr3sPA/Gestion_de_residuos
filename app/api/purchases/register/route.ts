@@ -50,6 +50,23 @@ export async function POST(req: NextRequest) {
         id: data.offer_id,
       },
     });
+    const notification = await prismaClient.notification.create({
+      data: {
+        type: "offer_status_changed",
+        description: `La oferta con id ${offer.id} fue rechazada`, // Usa una template string
+        auction: {
+          connect: {
+            id: auction.id,
+          },
+        },
+        offer: {
+          connect: {
+            id: offer.id,
+          },
+        },
+        read: false, // Asegúrate de incluir todos los campos requeridos
+      },
+    });
     return NextResponse.json("offer rejected", { status: 201 });
   } else if (data.status == "accepted") {
     const offer = await prismaClient.offer.update({
@@ -107,7 +124,23 @@ export async function POST(req: NextRequest) {
 
     if (!purchase)
       return NextResponse.json({ error: "internal error" }, { status: 500 });
-
+    const notification = await prismaClient.notification.create({
+      data: {
+        type: "offer_status_changed",
+        description: `La oferta con id ${offer.id} fue aceptada`, // Usa una template string
+        auction: {
+          connect: {
+            id: auction.id,
+          },
+        },
+        offer: {
+          connect: {
+            id: offer.id,
+          },
+        },
+        read: false, // Asegúrate de incluir todos los campos requeridos
+      },
+    });
     return NextResponse.json("offer accepted", { status: 201 });
   }
 }

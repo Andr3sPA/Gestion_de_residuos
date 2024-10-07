@@ -50,11 +50,23 @@ export async function POST(req: NextRequest) {
       }
     }
   })
-  const notification= await prismaClient.create({
-    data:{
-        notificationType:"auction_has_new_offer"
-    }
-  })
+  const notification = await prismaClient.notification.create({
+    data: {
+      type: "auction_has_new_offer",
+      description: `La subasta ${data.auctionId} tiene una nueva oferta`, // Usa una template string
+      auction: {
+        connect: {
+          id: data.auctionId,
+        },
+      },
+      offer: {
+        connect: {
+          id: offer.id,
+        },
+      },
+      read: false, // Asegúrate de incluir todos los campos requeridos
+    },
+  });
   if (!offer || !notification) return NextResponse.json({ error: "internal error" }, { status: 500 })
 
   return NextResponse.json("counter offer created", { status: 201 })

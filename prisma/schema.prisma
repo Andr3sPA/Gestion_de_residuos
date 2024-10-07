@@ -27,7 +27,7 @@ model Notification {
   offerId     Int?
   auction     Auction?         @relation(fields: [auctionId], references: [id])
   auctionId   Int?
-  read        Boolean
+  read        Boolean          @default(false)
   createdAt   DateTime         @default(now())
 }
 
