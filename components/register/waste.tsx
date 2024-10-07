@@ -1,7 +1,6 @@
 "use client";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
-import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -29,7 +28,9 @@ import { Combobox } from "@/components/Combobox";
 
 const FormSchema = z.object({
   description: z.string().min(1, { message: "La descripción es requerida." }),
-  units: z.number().positive({ message: "Las unidades deben ser un número positivo." }),
+  units: z
+    .number()
+    .positive({ message: "Las unidades deben ser un número positivo." }),
   unitType: z.string().min(1, { message: "El tipo de unidad es requerido." }),
   wasteType: z.string().min(1, { message: "El tipo de residuo es requerido." }),
   category: z.string().min(1, { message: "La categoría es requerida." }),
@@ -41,17 +42,25 @@ interface WasteFormProps {
 
 export function WasteForm({ onCancel }: WasteFormProps) {
   const { data: wasteTypesData, isLoading: isLoadingWasteTypes } = useQuery({
-    queryKey: ['wasteTypes'],
-    queryFn: () => axios.get("/api/wastes/register").then(res =>
-      res.data.wasteTypes.map((type: any) => ({ id: type.name, label: type.name }))
-    ),
+    queryKey: ["wasteTypes"],
+    queryFn: () =>
+      axios.get("/api/wastes/register").then((res) =>
+        res.data.wasteTypes.map((type: any) => ({
+          id: type.name,
+          label: type.name,
+        })),
+      ),
   });
 
   const { data: unitTypesData, isLoading: isLoadingUnitTypes } = useQuery({
-    queryKey: ['unitTypes'],
-    queryFn: () => axios.get("/api/wastes/register").then(res =>
-      res.data.unitTypes.map((type: any) => ({ id: type.name, label: type.name }))
-    ),
+    queryKey: ["unitTypes"],
+    queryFn: () =>
+      axios.get("/api/wastes/register").then((res) =>
+        res.data.unitTypes.map((type: any) => ({
+          id: type.name,
+          label: type.name,
+        })),
+      ),
   });
 
   const form = useForm<z.infer<typeof FormSchema>>({
@@ -69,10 +78,16 @@ export function WasteForm({ onCancel }: WasteFormProps) {
     axios
       .post("/api/wastes/register", data)
       .then((response) => {
-        toast({ title: "Residuo registrado con éxito.", description: response.data.message });
+        toast({
+          title: "Residuo registrado con éxito.",
+          description: response.data.message,
+        });
       })
       .catch((error) => {
-        toast({ title: "Error al registrar el residuo.", description: error.message });
+        toast({
+          title: "Error al registrar el residuo.",
+          description: error.message,
+        });
       });
   }
 
@@ -84,51 +99,12 @@ export function WasteForm({ onCancel }: WasteFormProps) {
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
         <div className="grid grid-cols-2 gap-6">
-          {/* Combobox para Waste Type */}
-          <FormField
-            control={form.control}
-            name="wasteType"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel htmlFor="wasteType">Tipo de Residuo</FormLabel>
-                <Combobox
-                  list={wasteTypesData ?? []}
-                  onSelect={(option) => {
-                    form.setValue("wasteType", option ? option.id : "")
-                    console.log(form.watch("wasteType"))  // Verifica el cambio de valor
-                  }}
-                />
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-
-          {/* Combobox para Unit Type */}
-          <FormField
-            control={form.control}
-            name="unitType"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel htmlFor="unitType">Tipo de Unidad</FormLabel>
-                <Combobox
-                  list={unitTypesData ?? []}
-                  onSelect={(option) => {
-                    form.setValue("unitType", option ? option.id : "")
-                    console.log(form.watch("unitType"))  // Verifica el cambio de valor
-                  }}
-                />
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-
-
           {/* Campo de Descripción */}
           <FormField
             control={form.control}
             name="description"
             render={({ field }) => (
-              <FormItem>
+              <FormItem className="flex flex-col">
                 <FormLabel>Descripción</FormLabel>
                 <FormControl>
                   <Input
@@ -142,12 +118,31 @@ export function WasteForm({ onCancel }: WasteFormProps) {
             )}
           />
 
+          {/* Combobox para Waste Type */}
+          <FormField
+            control={form.control}
+            name="wasteType"
+            render={({ field }) => (
+              <FormItem className="flex flex-col">
+                <FormLabel htmlFor="wasteType">Tipo de Residuo</FormLabel>
+                <Combobox
+                  list={wasteTypesData ?? []}
+                  onSelect={(option) => {
+                    form.setValue("wasteType", option ? option.id : "");
+                    console.log(form.watch("wasteType")); // Verifica el cambio de valor
+                  }}
+                />
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
           {/* Unidades */}
           <FormField
             control={form.control}
             name="units"
             render={({ field }) => (
-              <FormItem>
+              <FormItem className="flex flex-col">
                 <FormLabel>Unidades</FormLabel>
                 <FormControl>
                   <Input
@@ -163,12 +158,31 @@ export function WasteForm({ onCancel }: WasteFormProps) {
             )}
           />
 
+          {/* Combobox para Unit Type */}
+          <FormField
+            control={form.control}
+            name="unitType"
+            render={({ field }) => (
+              <FormItem className="flex flex-col">
+                <FormLabel htmlFor="unitType">Tipo de Unidad</FormLabel>
+                <Combobox
+                  list={unitTypesData ?? []}
+                  onSelect={(option) => {
+                    form.setValue("unitType", option ? option.id : "");
+                    console.log(form.watch("unitType")); // Verifica el cambio de valor
+                  }}
+                />
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
           {/* Select para la categoría */}
           <FormField
             control={form.control}
             name="category"
             render={({ field }) => (
-              <FormItem>
+              <FormItem className="flex flex-col">
                 <FormLabel>Categoría</FormLabel>
                 <Select onValueChange={(value) => field.onChange(value)}>
                   <SelectTrigger className="w-[180px]">
@@ -189,9 +203,6 @@ export function WasteForm({ onCancel }: WasteFormProps) {
         </div>
 
         <div className="flex justify-evenly">
-          <Button type="submit" className="w-2/5">
-            Registrar Residuo
-          </Button>
           {onCancel && (
             <Button
               variant="secondary"
@@ -202,6 +213,9 @@ export function WasteForm({ onCancel }: WasteFormProps) {
               Cancelar
             </Button>
           )}
+          <Button type="submit" className="w-2/5">
+            Registrar Residuo
+          </Button>
         </div>
       </form>
     </Form>

@@ -14,7 +14,7 @@ import { useState } from "react";
 import { useSession } from "next-auth/react";
 import { LoginMenu } from "./users/LoginMenu";
 import { ProfileMenu } from "./users/ProfileMenu";
-import NotificationComponent from "./Notificarions";
+import NotificationComponent from "./Notifications";
 
 export default function Header() {
   const { status } = useSession();
