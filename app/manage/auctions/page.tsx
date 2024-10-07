@@ -115,7 +115,7 @@ export default function ManageAuctions() {
       :
       (
         !auctions.isError &&
-        <TableList columns={columns} data={auctions.data} />
+        <TableList columns={columns} data={auctions.data || []} />
       )
     }
     {auctions.isError && auctions.error.message}

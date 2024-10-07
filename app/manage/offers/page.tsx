@@ -26,6 +26,25 @@ interface Purchase {
 export interface Offer {
   id: number;
   contact: string;
+  status:string;
+  auction:{
+    companySeller:{
+      name:string
+      description:string
+    }
+    waste:{
+      wasteType:string
+      category:string
+      description:string
+      unitType:string
+    }
+    initialPrice:number
+    conditions:string
+    units:number
+    status:string
+    contact:string
+    id:number
+  }
   companyBuyer: {
     name: string;
     description: string;
@@ -85,7 +104,6 @@ export function ManageOffers({ auctionId }: OfferFormProps) {
       sortingFn: "alphanumeric",
       cell: ({ row }) => <div className="text-right">{row.original.offerPrice}</div>,
     },
-    // Condicionalmente agregamos columnas basadas en hasOffers
     {
       accessorKey: "status",
       header: "Estado",

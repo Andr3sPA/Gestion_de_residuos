@@ -29,14 +29,12 @@ export async function GET(req: NextRequest) {
             companySellerId: user.companyId,  
             },  
             type: 'auction_has_new_offer',
-            read:false
         },  
         {  
             offer: {  
             companyBuyerId: user.companyId,  
             },  
             type: 'offer_status_changed',
-            read:false
         },  
         ],  
     },  
