@@ -6,22 +6,25 @@ import {
   PopoverContent,
 } from "@/components/ui/popover";
 import { MdCircleNotifications } from "react-icons/md";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { Button } from "./ui/button";
-// Definir la interfaz Notification
+
 interface Notification {
   id: number;
   description: string;
-  createdAt: string; // O Date, dependiendo de cómo manejes el formato
+  createdAt: string;
+  read: boolean;
+  type: string; // Añadido el campo type
 }
 
 const NotificationComponent = () => {
+  const queryClient = useQueryClient();
   const {
-    data: notifications = [],
+    data: { notifications = [], readCount = 0 } = {},
     isLoading,
     isError,
     error,
-  } = useQuery<Notification[]>({
+  } = useQuery({
     queryKey: ["notifications"],
     queryFn: () => axios.get("/api/notifications/list").then((res) => res.data),
   });
@@ -43,14 +46,39 @@ const NotificationComponent = () => {
     });
   };
 
+  const handleMouseEnter = async (id: number) => {
+    try {
+      await axios.post("/api/notifications/read", { id });
+      queryClient.invalidateQueries(["notifications"]);
+    } catch (error) {
+      console.error("Error al marcar la notificación como leída:", error);
+    }
+  };
+
+  const handleClick = async (notification: Notification) => {
+    try {
+      await axios.post("/api/notifications/read", { id: notification.id });
+      queryClient.invalidateQueries(["notifications"]);
+      if (notification.type === "offer_rejected") {
+        window.location.href = "/records/offersRecord";
+      } else if (notification.type === "auction_has_new_offer") {
+        window.location.href = "/manage/auctions";
+      }else if (notification.type === "offer_accepted") {
+        window.location.href = "/records/shoppingRecord";
+      }
+    } catch (error) {
+      console.error("Error al marcar la notificación como leída:", error);
+    }
+  };
+
   return (
     <Popover>
       <PopoverTrigger asChild>
         <button className="relative">
           <MdCircleNotifications style={{ fontSize: "2rem", color: "black" }} />
-          {notifications.length > 0 && (
+          {readCount > 0 && (
             <span className="absolute -top-1 -right-1 bg-red-500 text-white rounded-full w-4 h-4 text-xs flex items-center justify-center">
-              {notifications.length}
+              {readCount}
             </span>
           )}
         </button>
@@ -71,6 +99,8 @@ const NotificationComponent = () => {
               <li
                 key={notification.id}
                 className="p-1 w-full flex flex-col gap-1"
+                onMouseEnter={() => handleMouseEnter(notification.id)}
+                onClick={() => handleClick(notification)}
               >
                 <Button
                   variant={"ghost"}

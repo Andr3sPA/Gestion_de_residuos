@@ -52,7 +52,7 @@ export async function POST(req: NextRequest) {
     });
     const notification = await prismaClient.notification.create({
       data: {
-        type: "offer_status_changed",
+        type: "offer_rejected",
         description: `La oferta con id ${offer.id} fue rechazada`, // Usa una template string
         auction: {
           connect: {
@@ -126,7 +126,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "internal error" }, { status: 500 });
     const notification = await prismaClient.notification.create({
       data: {
-        type: "offer_status_changed",
+        type: "offer_accepted",
         description: `La oferta con id ${offer.id} fue aceptada`, // Usa una template string
         auction: {
           connect: {

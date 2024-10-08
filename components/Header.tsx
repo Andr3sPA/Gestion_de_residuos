@@ -50,7 +50,7 @@ export default function Header() {
             ))}
             <NavigationMenuItem>
               <NavigationMenuTrigger>Mis actividades</NavigationMenuTrigger>
-              <NavigationMenuContent>
+              <NavigationMenuContent className="absolute z-50">
                 <ul className="grid gap-3 p-6 md:w-[400px] lg:w-[500px] lg:grid-cols-1">
                   <ListItem
                     href="/records/offersRecord"

@@ -40,7 +40,26 @@ export async function GET(req: NextRequest) {
       ],
     },
   });
+  const readCount = await prismaClient.notification.count({  
+    where: {  
+      read:false,
+      OR: [
+        {
+          auction: {
+            companySellerId: user.companyId,
+          },
+          type: "auction_has_new_offer",
+        },
+        {
+          offer: {
+            companyBuyerId: user.companyId,
+          },
+          type: "offer_status_changed",
+        },
+      ],
+    },  
+  });
   if (!notifications)
     return NextResponse.json({ error: "internal error" }, { status: 500 });
-  return NextResponse.json(notifications, { status: 201 });
+  return NextResponse.json({readCount,notifications}, { status: 201 });
 }
