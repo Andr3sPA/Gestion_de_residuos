@@ -37,9 +37,11 @@ export function Combobox({
           role="combobox"
           aria-expanded={open}
           aria-hidden={false}
-          className="justify-between w-auto"
+          className="flex justify-between w-full"
         >
-          {selectedLabel ?? "Seleccione una opción"}
+          {selectedLabel ?? (
+            <span className="w-[80%] overflow-clip">Seleccione una opción</span>
+          )}
           <CaretSortIcon className="ml-2 h-4 w-4 shrink-0 opacity-50" />
         </Button>
       </PopoverTrigger>

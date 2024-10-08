@@ -8,9 +8,6 @@ export default function Home() {
   return (
     <div>
       Nothing
-      <ManageMyOffers/>
-      {/* Usamos el valor del enum en lugar de un string */}
-      <ManagePurchases recordType={RecordType.Ventas} />
     </div>
   );
 }
