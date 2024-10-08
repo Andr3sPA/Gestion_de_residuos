@@ -1,5 +1,6 @@
 "use client";
 
+import { LeafletMap } from "@/components/LeafletMap";
 import { AuctionForm } from "@/components/register/auction";
 import { WasteForm } from "@/components/register/waste";
 import { SimpleCard } from "@/components/SimpleCard";
@@ -7,8 +8,8 @@ import { TableList } from "@/components/TableList";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
-  DialogTitle,
   DialogContent,
+  DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
 import {
@@ -159,39 +160,41 @@ export default function ManageWastes() {
       />
     </SimpleCard>
   ) : (
-    <SimpleCard
-      title="Mis residuos"
-      desc="Gestiona aquí los residuos de tu empresa"
-      headerActions={
-        wastes.isSuccess && (
-          <div className="flex justify-end gap-4">
-            <Button
-              variant={"secondary"}
-              disabled={wastes.isRefetching}
-              onClick={() => wastes.refetch()}
-            >
-              <LucideRefreshCw
-                className={`w-5 h-5 ${wastes.isRefetching ? "animate-spin" : ""}`}
-              />
-            </Button>
-            <Dialog open={addWasteOpen} onOpenChange={setAddWasteOpen}>
-              <DialogTrigger asChild>
-                <Button size={"sm"}>
-                  <PlusIcon />
-                </Button>
-              </DialogTrigger>
-              <DialogContent>
-                <DialogTitle className="font-bold text-lg">
-                  Añadir nuevo residuo
-                </DialogTitle>
-                <WasteForm onCancel={() => setAddWasteOpen(false)} />
-              </DialogContent>
-            </Dialog>
-          </div>
-        )
-      }
-    >
-      {table}
-    </SimpleCard>
+    <>
+      <SimpleCard
+        title="Mis residuos"
+        desc="Gestiona aquí los residuos de tu empresa"
+        headerActions={
+          wastes.isSuccess && (
+            <div className="flex justify-end gap-4">
+              <Button
+                variant={"secondary"}
+                disabled={wastes.isRefetching}
+                onClick={() => wastes.refetch()}
+              >
+                <LucideRefreshCw
+                  className={`w-5 h-5 ${wastes.isRefetching ? "animate-spin" : ""}`}
+                />
+              </Button>
+              <Dialog open={addWasteOpen} onOpenChange={setAddWasteOpen}>
+                <DialogTrigger asChild>
+                  <Button size={"sm"}>
+                    <PlusIcon />
+                  </Button>
+                </DialogTrigger>
+                <DialogContent>
+                  <DialogTitle className="font-bold text-lg">
+                    Añadir nuevo residuo
+                  </DialogTitle>
+                  <WasteForm onCancel={() => setAddWasteOpen(false)} />
+                </DialogContent>
+              </Dialog>
+            </div>
+          )
+        }
+      >
+        {table}
+      </SimpleCard>
+    </>
   );
 }

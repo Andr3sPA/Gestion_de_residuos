@@ -1,27 +1,42 @@
-import { cn } from "@/lib/utils"
-import { Button } from "./ui/button"
-import { CaretSortIcon, CheckIcon } from "@radix-ui/react-icons"
-import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "./ui/command"
-import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover"
-import { useEffect, useState } from "react"
+import { cn } from "@/lib/utils";
+import { Button } from "./ui/button";
+import { CaretSortIcon, CheckIcon } from "@radix-ui/react-icons";
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+} from "./ui/command";
+import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
+import { useEffect, useState } from "react";
 
 export interface ComboboxItem {
-  id: string,
-  label: string
+  id: string;
+  label: string;
 }
 
-export function Combobox({ placeholder, list, onSelect }:
-  { placeholder?: string, list: ComboboxItem[], onSelect: (item: ComboboxItem | null) => void }) {
-  const [open, setOpen] = useState(false)
-  const [selectedLabel, setLabel] = useState<string | null>(null)
+export function Combobox({
+  placeholder,
+  list,
+  onSelect,
+}: {
+  placeholder?: string;
+  list: ComboboxItem[];
+  onSelect: (item: ComboboxItem | null) => void;
+}) {
+  const [open, setOpen] = useState(false);
+  const [selectedLabel, setLabel] = useState<string | null>(null);
 
   return (
-    <Popover open={open} onOpenChange={setOpen}>
+    <Popover modal={true} open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
         <Button
           variant="outline"
           role="combobox"
           aria-expanded={open}
+          aria-hidden={false}
           className="justify-between w-auto"
         >
           {selectedLabel ?? "Seleccione una opción"}
@@ -39,10 +54,12 @@ export function Combobox({ placeholder, list, onSelect }:
                   key={item.label}
                   value={item.label}
                   onSelect={(label) => {
-                    const nextLabel = label === selectedLabel ? null : label
-                    setLabel(nextLabel)
-                    setOpen(false)
-                    onSelect(list.find((item) => item.label === nextLabel) ?? null)
+                    const nextLabel = label === selectedLabel ? null : label;
+                    setLabel(nextLabel);
+                    setOpen(false);
+                    onSelect(
+                      list.find((item) => item.label === nextLabel) ?? null,
+                    );
                   }}
                   className="hover:cursor-pointer"
                 >
@@ -50,7 +67,9 @@ export function Combobox({ placeholder, list, onSelect }:
                   <CheckIcon
                     className={cn(
                       "ml-auto h-4 w-4",
-                      selectedLabel === item.label ? "opacity-100" : "opacity-0"
+                      selectedLabel === item.label
+                        ? "opacity-100"
+                        : "opacity-0",
                     )}
                   />
                 </CommandItem>
@@ -60,5 +79,5 @@ export function Combobox({ placeholder, list, onSelect }:
         </Command>
       </PopoverContent>
     </Popover>
-  )
+  );
 }

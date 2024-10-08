@@ -18,8 +18,12 @@ import { useSession } from "next-auth/react";
 
 const FormSchema = z.object({
   auctionId: z.number(), // Cambiamos auctionId para que sea opcional
-  price: z.number().positive({ message: "El precio debe ser un número positivo." }),
-  contact: z.string().min(1, { message: "El campo de contacto es obligatorio." }), // Campo de contacto
+  price: z
+    .number()
+    .positive({ message: "El precio debe ser un número positivo." }),
+  contact: z
+    .string()
+    .min(1, { message: "El campo de contacto es obligatorio." }), // Campo de contacto
 });
 
 interface OfferFormProps {
@@ -27,13 +31,13 @@ interface OfferFormProps {
 }
 
 export function OfferForm({ auctionId }: OfferFormProps) {
-  const { data, status } = useSession()
+  const { data, status } = useSession();
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
       auctionId: auctionId || undefined, // Si no hay auctionId, el campo es editable
       price: 0,
-      contact: data.user.email || '', // Valor por defecto para el campo de contacto
+      contact: data.user.email || "", // Valor por defecto para el campo de contacto
     },
   });
 
@@ -46,14 +50,21 @@ export function OfferForm({ auctionId }: OfferFormProps) {
       price: Number(data.price), // Asegúrate de que sea un número
     };
 
-    axios.post('/api/offers/register', payload)
+    axios
+      .post("/api/offers/register", payload)
       .then((response) => {
         console.log(response);
-        toast({ title: "Contraoferta registrada con éxito.", description: response.data.message });
+        toast({
+          title: "Contraoferta registrada con éxito.",
+          description: response.data.message,
+        });
       })
       .catch((error) => {
         console.error(error);
-        toast({ title: "Error al registrar la contraoferta.", description: error.message });
+        toast({
+          title: "Error al registrar la contraoferta.",
+          description: error.message,
+        });
       });
   }
 

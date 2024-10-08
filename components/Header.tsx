@@ -15,7 +15,7 @@ import { useSession } from "next-auth/react";
 import { LoginMenu } from "./users/LoginMenu";
 import { ProfileMenu } from "./users/ProfileMenu";
 import NotificationComponent from "./Notifications";
-import { WasteWithAuctionForm } from "./register/waste&auction";
+import { WasteWithAuctionForm } from "./register/waste_auction";
 
 export default function Header() {
   const { status } = useSession();
@@ -54,7 +54,7 @@ export default function Header() {
               {btn[1]}
             </Button>
           ))}
-          <WasteWithAuctionForm/>
+          <WasteWithAuctionForm />
         </nav>
         <Sheet open={sideMenuOpen} onOpenChange={setSideMenuOpen}>
           <SheetTrigger asChild>
