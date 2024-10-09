@@ -136,7 +136,6 @@ export function WasteForm({ onCancel }: WasteFormProps) {
                   list={wasteTypesData ?? []}
                   onSelect={(option) => {
                     form.setValue("wasteType", option ? option.id : "");
-                    console.log(form.watch("wasteType")); // Verifica el cambio de valor
                   }}
                 />
                 <FormMessage />
@@ -176,7 +175,6 @@ export function WasteForm({ onCancel }: WasteFormProps) {
                   list={unitTypesData ?? []}
                   onSelect={(option) => {
                     form.setValue("unitType", option ? option.id : "");
-                    console.log(form.watch("unitType")); // Verifica el cambio de valor
                   }}
                 />
                 <FormMessage />

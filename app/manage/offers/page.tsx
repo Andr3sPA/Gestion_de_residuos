@@ -19,6 +19,8 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
+import { toast } from "@/hooks/use-toast"; // Importa el hook de toast
+
 interface Purchase {
   auction_id: number;
   offer_id: number;
@@ -62,14 +64,25 @@ export function ManageOffers({ auctionId }: OfferFormProps) {
   const [selectedPurchase, setSelectedPurchase] = useState<Purchase | null>(
     null,
   );
+  const [isLoading, setIsLoading] = useState(false); // Estado para controlar la carga
 
   const handleSendData = async (purchase: Purchase) => {
     setSelectedPurchase(purchase);
+    setIsLoading(true); // Inicia la carga
     try {
       const response = await axios.post("/api/purchases/register", purchase);
       console.log("Datos enviados exitosamente:", response.data);
+      toast({
+        description: response.data.message, // Solo descripción
+      });
     } catch (error) {
-      console.error("Error al enviar los datos:", error);
+      toast({
+        variant: "destructive",
+        title: "Error al procesar",
+        description: (error as any).message,
+      });
+    } finally {
+      setIsLoading(false); // Finaliza la carga
     }
   };
 
@@ -129,8 +142,9 @@ export function ManageOffers({ auctionId }: OfferFormProps) {
             })
           }
           size={"sm"}
+          disabled={isLoading} // Deshabilita el botón mientras se carga
         >
-          Aceptar
+          {isLoading ? <Loader2Icon className="animate-spin" /> : "Aceptar"}
         </Button>
       ),
     },
@@ -146,8 +160,9 @@ export function ManageOffers({ auctionId }: OfferFormProps) {
             })
           }
           size={"sm"}
+          disabled={isLoading} // Deshabilita el botón mientras se carga
         >
-          Rechazar
+          {isLoading ? <Loader2Icon className="animate-spin" /> : "Rechazar"}
         </Button>
       ),
     },

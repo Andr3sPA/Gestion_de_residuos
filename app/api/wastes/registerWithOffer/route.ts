@@ -101,5 +101,5 @@ export async function POST(req: NextRequest){
     if (!offer) {
         return NextResponse.json({ error: "internal error" }, { status: 500 });
     }    
-    return NextResponse.json("Subasta y residuo creado satisfactoriamente", { status: 201 });
+    return NextResponse.json({message:"Subasta y residuo creado satisfactoriamente"}, { status: 201 });
 }

@@ -57,9 +57,7 @@ export function OfferForm({ auctionId }: OfferFormProps) {
     axios
       .post("/api/offers/register", payload)
       .then((response) => {
-        console.log(response);
         toast({
-          title: "Contraoferta registrada con éxito.",
           description: response.data.message,
         });
       })

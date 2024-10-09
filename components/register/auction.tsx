@@ -66,13 +66,11 @@ export function AuctionForm({ wasteId, onCancel }: OfferFormProps) {
 
     axios.post('/api/auctions/register', data)
       .then((response) => {
-        console.log(response);
         toast({
           description: response.data.message, // Asegúrate de usar el mensaje de la respuesta
         })  
       })
       .catch((error) => {
-        console.error(error);
         toast({  variant: "destructive", title: "Error al registrar la oferta.", description: error.message });
       })
       .finally(() => {
