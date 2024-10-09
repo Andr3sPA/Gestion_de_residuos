@@ -1,8 +1,5 @@
 "use client";
 
-import { cn } from "@/lib/utils";
-import { useSession } from "next-auth/react";
-import * as React from "react";
 import {
   NavigationMenu,
   NavigationMenuContent,
@@ -10,7 +7,10 @@ import {
   NavigationMenuLink,
   NavigationMenuList,
   NavigationMenuTrigger,
-} from "../components/ui/navigation-menu";
+} from "@/components/ui/navigation-menu";
+import { cn } from "@/lib/utils";
+import { useSession } from "next-auth/react";
+import * as React from "react";
 import NotificationComponent from "./Notifications";
 import { LoginMenu } from "./users/LoginMenu";
 import { ProfileMenu } from "./users/ProfileMenu";
@@ -50,8 +50,8 @@ export default function Header() {
             ))}
             <NavigationMenuItem>
               <NavigationMenuTrigger>Mis actividades</NavigationMenuTrigger>
-              <NavigationMenuContent className="absolute z-50">
-                <ul className="grid gap-3 p-6 md:w-[400px] lg:w-[500px] lg:grid-cols-1">
+              <NavigationMenuContent className="absolute z-50 p-2">
+                <ul className="grid gap-1 p-2 md:w-[300px] lg:w-[400px] lg:grid-cols-1">
                   <ListItem
                     href="/records/offersRecord"
                     title="Mis ofertas"
@@ -93,7 +93,7 @@ const ListItem = React.forwardRef<
         <a
           ref={ref}
           className={cn(
-            "block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground",
+            "block select-none space-y-1 rounded-md p-2 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground",
             className,
           )}
           {...props}

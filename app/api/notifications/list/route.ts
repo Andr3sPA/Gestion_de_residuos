@@ -35,8 +35,14 @@ export async function GET(req: NextRequest) {
           offer: {
             companyBuyerId: user.companyId,
           },
-          type: "offer_status_changed",
+          type: "offer_accepted",
         },
+        {
+          offer: {
+            companyBuyerId: user.companyId,
+          },
+          type: "offer_rejected",
+        },        
       ],
     },
   });
@@ -54,7 +60,12 @@ export async function GET(req: NextRequest) {
           offer: {
             companyBuyerId: user.companyId,
           },
-          type: "offer_status_changed",
+          type: "offer_accepted",
+        },        {
+          offer: {
+            companyBuyerId: user.companyId,
+          },
+          type: "offer_rejected",
         },
       ],
     },  

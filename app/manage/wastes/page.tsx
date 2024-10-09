@@ -1,9 +1,26 @@
 "use client";
 
+import { WasteEditForm } from "@/components/edit/waste";
 import { LeafletMap } from "@/components/LeafletMap";
 import { AuctionForm } from "@/components/register/auction";
 import { WasteForm } from "@/components/register/waste";
 import { SimpleCard } from "@/components/SimpleCard";
+import { Label } from "@/components/ui/label"
+import {
+  Drawer,
+  DrawerClose,
+  DrawerContent,
+  DrawerDescription,
+  DrawerFooter,
+  DrawerHeader,
+  DrawerTitle,
+  DrawerTrigger,
+} from "@/components/ui/drawer"
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover"
 import { TableList } from "@/components/TableList";
 import { Button } from "@/components/ui/button";
 import {
@@ -136,9 +153,23 @@ export default function ManageWastes() {
               >
                 Ofertar
               </DropdownMenuItem>
-              <DropdownMenuItem className="hover:cursor-pointer">
-                Editar
-              </DropdownMenuItem>
+              {/* <DropdownMenuItem
+                className="hover:cursor-pointer"
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                }}
+              >
+                <Dialog>
+                  <DialogTrigger>
+                    Editar
+                  </DialogTrigger>
+                  <DialogContent>
+                    <DialogTitle>Editar Residuo</DialogTitle>
+                    <WasteEditForm waste_id={wasteId} />
+                  </DialogContent>
+                </Dialog>
+              </DropdownMenuItem> */}
             </DropdownMenuContent>
           </DropdownMenu>
         );
