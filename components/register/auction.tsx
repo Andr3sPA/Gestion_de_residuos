@@ -7,7 +7,7 @@ import { z } from "zod";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
-import { CalendarIcon } from "lucide-react";
+import { CalendarIcon, Loader2Icon } from "lucide-react"; // Importa el ícono de carga
 import { format } from "date-fns";
 import {
   Form,
@@ -24,6 +24,7 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { useSession } from "next-auth/react";
+import { ToastAction } from "@/components/ui/toast"
 
 // Esquema de validación con Zod
 const FormSchema = z.object({
@@ -44,6 +45,7 @@ interface OfferFormProps {
 
 export function AuctionForm({ wasteId, onCancel }: OfferFormProps) {
   const { data, status } = useSession()
+  const [isLoading, setIsLoading] = useState(false); // Estado para controlar la carga
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
@@ -59,16 +61,22 @@ export function AuctionForm({ wasteId, onCancel }: OfferFormProps) {
   });
 
   function onSubmit(data: z.infer<typeof FormSchema>) {
+    setIsLoading(true); // Inicia la carga
     console.log("Datos antes de enviar:", data);
 
     axios.post('/api/auctions/register', data)
       .then((response) => {
         console.log(response);
-        toast({ title: "Oferta registrada con éxito.", description: response.data.message });
+        toast({
+          description: response.data.message, // Asegúrate de usar el mensaje de la respuesta
+        })  
       })
       .catch((error) => {
         console.error(error);
-        toast({ title: "Error al registrar la oferta.", description: error.message });
+        toast({  variant: "destructive", title: "Error al registrar la oferta.", description: error.message });
+      })
+      .finally(() => {
+        setIsLoading(false); // Finaliza la carga
       });
   }
 
@@ -260,7 +268,9 @@ export function AuctionForm({ wasteId, onCancel }: OfferFormProps) {
             </Button>
           )}
 
-          <Button type="submit">Registrar Oferta</Button>
+          <Button type="submit" disabled={isLoading}>
+            {isLoading ? <Loader2Icon className="animate-spin" /> : "Registrar Oferta"}
+          </Button>
         </div>
       </form>
     </Form>

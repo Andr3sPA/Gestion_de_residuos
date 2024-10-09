@@ -87,5 +87,5 @@ export async function POST(req: NextRequest) {
   });
 
   if (!waste) return NextResponse.json({ error: "internal error" }, { status: 500 });
-  return NextResponse.json("waste created", { status: 201 });
+  return NextResponse.json("Residuo registrado satisfactoriamente", { status: 201 });
 }

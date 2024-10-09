@@ -184,7 +184,7 @@ export default function ManageWastes() {
   );
 
   return selectedWasteId ? (
-    <SimpleCard className="ml-80" title="Crear oferta">
+    <SimpleCard className="ml10" title="Crear oferta">
       <AuctionForm
         wasteId={selectedWasteId}
         onCancel={() => setSelectedWasteId(null)}

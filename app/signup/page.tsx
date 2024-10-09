@@ -78,8 +78,11 @@ export default function Signup() {
     console.log(values);
 
     setRes({ status: "loading", info: "" })
-    axios.post("/api/users/signup", values).then(() => {
+    axios.post("/api/users/signup", values).then((response) => {
       setRes({ status: "ok", info: "" })
+      toast({
+        description: response.data.message, // Solo descripción
+      })
       router.push("/")
     }).catch((err) => {
       setRes({ status: "error", info: err.response.data.error ?? "Error al enviar los datos de registro" })
@@ -158,7 +161,7 @@ export default function Signup() {
             <Button variant={"secondary"}>
               Regresar
             </Button>
-            <Button type="submit">
+            <Button type="submit" disabled={res.status === "loading"}>
               {res.status === "loading" ?
                 <Loader2 className="animate-spin" /> :
                 "Registrarse"
@@ -170,5 +173,4 @@ export default function Signup() {
     </CardContent>
     <Toaster />
   </Card>
-
 }

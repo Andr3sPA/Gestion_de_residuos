@@ -42,5 +42,5 @@ export async function POST(req: NextRequest) {
 
   if (!user) return NextResponse.json({ error: "internal error" }, { status: 500 })
 
-  return NextResponse.json("user created", { status: 201 })
+  return NextResponse.json("Usuario registrado satisfactoriamente", { status: 201 })
 }

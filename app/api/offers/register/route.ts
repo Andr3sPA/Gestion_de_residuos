@@ -69,5 +69,5 @@ export async function POST(req: NextRequest) {
   });
   if (!offer || !notification) return NextResponse.json({ error: "internal error" }, { status: 500 })
 
-  return NextResponse.json("counter offer created", { status: 201 })
+  return NextResponse.json("Oferta registrada con éxito", { status: 201 })
 }

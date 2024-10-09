@@ -96,5 +96,5 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "internal error" }, { status: 500 });
   }
 
-  return NextResponse.json("offer created", { status: 201 });
+  return NextResponse.json({ message: "Subasta creada satisfactoriamente" }, { status: 201 });
 }

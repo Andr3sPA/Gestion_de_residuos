@@ -8,7 +8,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { Input } from "@/components/ui/input";
 import { Calendar } from "@/components/ui/calendar";
-import { CalendarIcon, MapIcon } from "lucide-react";
+import { CalendarIcon, MapIcon, Loader2Icon } from "lucide-react"; // Importa el ícono de carga
 import { format } from "date-fns";
 import {
   Select,
@@ -90,6 +90,7 @@ export function WasteWithAuctionForm() {
   });
 
   const { data, status } = useSession();
+  const [isLoading, setIsLoading] = useState(false); // Estado para controlar la carga
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
@@ -111,6 +112,7 @@ export function WasteWithAuctionForm() {
   const router = useRouter();
 
   function onSubmit(data: z.infer<typeof FormSchema>) {
+    setIsLoading(true); // Inicia la carga
     console.log("Datos antes de enviar:", data);
 
     axios
@@ -118,16 +120,19 @@ export function WasteWithAuctionForm() {
       .then((response) => {
         console.log(response);
         toast({
-          title: "Subasta registrada con éxito.",
-          description: response.data.message,
+          description: response.data.message, // Solo descripción
         });
       })
       .catch((error) => {
         console.error(error);
         toast({
+          variant: "destructive",
           title: "Error al registrar la subasta.",
           description: error.message,
         });
+      })
+      .finally(() => {
+        setIsLoading(false); // Finaliza la carga
       });
   }
 
@@ -420,7 +425,9 @@ export function WasteWithAuctionForm() {
             >
               Regresar
             </Button>
-            <Button type="submit">Registrar Subasta</Button>
+            <Button type="submit" disabled={isLoading}>
+              {isLoading ? <Loader2Icon className="animate-spin" /> : "Registrar Subasta"}
+            </Button>
           </div>
         </form>
       </Form>

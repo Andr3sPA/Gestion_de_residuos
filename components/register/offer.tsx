@@ -15,6 +15,8 @@ import {
 } from "@/components/ui/form";
 import { toast } from "@/hooks/use-toast";
 import { useSession } from "next-auth/react";
+import { Loader2Icon } from "lucide-react"; // Importa el ícono de carga
+import { useState } from "react"; // Importa useState
 
 const FormSchema = z.object({
   auctionId: z.number(), // Cambiamos auctionId para que sea opcional
@@ -32,6 +34,7 @@ interface OfferFormProps {
 
 export function OfferForm({ auctionId }: OfferFormProps) {
   const { data, status } = useSession();
+  const [isLoading, setIsLoading] = useState(false); // Estado para controlar la carga
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
@@ -42,6 +45,7 @@ export function OfferForm({ auctionId }: OfferFormProps) {
   });
 
   function onSubmit(data: z.infer<typeof FormSchema>) {
+    setIsLoading(true); // Inicia la carga
     console.log("Datos antes de enviar:", data);
 
     // Convertir el precio a número
@@ -62,9 +66,13 @@ export function OfferForm({ auctionId }: OfferFormProps) {
       .catch((error) => {
         console.error(error);
         toast({
-          title: "Error al registrar la contraoferta.",
+          variant: "destructive",
+          title: "Error al registrar la oferta.",
           description: error.message,
         });
+      })
+      .finally(() => {
+        setIsLoading(false); // Finaliza la carga
       });
   }
 
@@ -125,7 +133,9 @@ export function OfferForm({ auctionId }: OfferFormProps) {
             </FormItem>
           )}
         />
-        <Button type="submit">Registrar oferta</Button>
+        <Button type="submit" disabled={isLoading}>
+          {isLoading ? <Loader2Icon className="animate-spin" /> : "Registrar oferta"}
+        </Button>
       </form>
     </Form>
   );

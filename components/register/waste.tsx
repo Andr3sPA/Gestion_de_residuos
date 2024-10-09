@@ -25,6 +25,8 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Combobox } from "@/components/Combobox";
+import { Loader2Icon } from "lucide-react"; // Importa el ícono de carga
+import { useState } from "react"; // Importa useState
 
 const FormSchema = z.object({
   description: z.string().min(1, { message: "La descripción es requerida." }),
@@ -63,6 +65,7 @@ export function WasteForm({ onCancel }: WasteFormProps) {
       ),
   });
 
+  const [isLoading, setIsLoading] = useState(false); // Estado para controlar la carga
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
@@ -75,19 +78,23 @@ export function WasteForm({ onCancel }: WasteFormProps) {
   });
 
   function onSubmit(data: z.infer<typeof FormSchema>) {
+    setIsLoading(true); // Inicia la carga
     axios
       .post("/api/wastes/register", data)
       .then((response) => {
         toast({
-          title: "Residuo registrado con éxito.",
-          description: response.data.message,
+          description: response.data.message, // Solo descripción
         });
       })
       .catch((error) => {
         toast({
+          variant: "destructive",
           title: "Error al registrar el residuo.",
           description: error.message,
         });
+      })
+      .finally(() => {
+        setIsLoading(false); // Finaliza la carga
       });
   }
 
@@ -213,8 +220,8 @@ export function WasteForm({ onCancel }: WasteFormProps) {
               Cancelar
             </Button>
           )}
-          <Button type="submit" className="w-2/5">
-            Registrar Residuo
+          <Button type="submit" className="w-2/5" disabled={isLoading}>
+            {isLoading ? <Loader2Icon className="animate-spin" /> : "Registrar Residuo"}
           </Button>
         </div>
       </form>
