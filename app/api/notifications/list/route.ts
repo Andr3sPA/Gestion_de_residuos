@@ -42,8 +42,11 @@ export async function GET(req: NextRequest) {
             companyBuyerId: user.companyId,
           },
           type: "offer_rejected",
-        },        
+        },
       ],
+    },
+    orderBy: {
+      createdAt: 'desc',
     },
   });
   const readCount = await prismaClient.notification.count({  

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import axios from "axios";
 import {
   Popover,
@@ -19,11 +19,13 @@ interface Notification {
 
 const NotificationComponent = () => {
   const queryClient = useQueryClient();
+  const [isScrollable, setIsScrollable] = useState(false); // Estado para controlar si el contenedor es scrollable
   const {
     data: { notifications = [], readCount = 0 } = {},
     isLoading,
     isError,
     error,
+    refetch,
   } = useQuery({
     queryKey: ["notifications"],
     queryFn: () => axios.get("/api/notifications/list").then((res) => res.data),
@@ -46,15 +48,6 @@ const NotificationComponent = () => {
     });
   };
 
-  const handleMouseEnter = async (id: number) => {
-    try {
-      await axios.post("/api/notifications/read", { id });
-      queryClient.invalidateQueries(["notifications"]);
-    } catch (error) {
-      console.error("Error al marcar la notificación como leída:", error);
-    }
-  };
-
   const handleClick = async (notification: Notification) => {
     try {
       await axios.post("/api/notifications/read", { id: notification.id });
@@ -63,12 +56,26 @@ const NotificationComponent = () => {
         window.location.href = "/records/offersRecord";
       } else if (notification.type === "auction_has_new_offer") {
         window.location.href = "/manage/auctions";
-      }else if (notification.type === "offer_accepted") {
+      } else if (notification.type === "offer_accepted") {
         window.location.href = "/records/shoppingRecord";
       }
     } catch (error) {
       console.error("Error al marcar la notificación como leída:", error);
     }
+  };
+
+  const handleDeleteAll = async () => {
+    try {
+      await axios.post("/api/notifications/erase");
+      queryClient.invalidateQueries(["notifications"]);
+      refetch(); 
+    } catch (error) {
+      console.error("Error al borrar las notificaciones:", error);
+    }
+  };
+
+  const handleShowMore = () => {
+    setIsScrollable(true); 
   };
 
   return (
@@ -83,7 +90,21 @@ const NotificationComponent = () => {
           )}
         </button>
       </PopoverTrigger>
-      <PopoverContent className="w-sm bg-white mr-2 shadow-lg rounded-md p-2 flex flex-col">
+      <PopoverContent
+        className={`w-sm bg-white mr-2 shadow-lg rounded-md p-2 flex flex-col ${
+          isScrollable ? "max-h-96 overflow-y-auto" : ""
+        }`}
+      >
+        {notifications.length > 0 && (
+          <div className="flex justify-end">
+            <button
+              className="text-red-500 text-xs"
+              onClick={handleDeleteAll}
+            >
+              Borrar todas
+            </button>
+          </div>
+        )}
         {isLoading ? (
           <p className="text-center text-gray-500">Cargando...</p>
         ) : isError ? (
@@ -94,26 +115,36 @@ const NotificationComponent = () => {
         ) : notifications.length === 0 ? (
           <p className="text-center text-gray-500">No hay notificaciones</p>
         ) : (
-          <ul className="divide-y divide-gray-200">
-            {notifications.map((notification) => (
-              <li
-                key={notification.id}
-                className="p-1 w-full flex flex-col gap-1"
-                onMouseEnter={() => handleMouseEnter(notification.id)}
-                onClick={() => handleClick(notification)}
-              >
-                <Button
-                  variant={"ghost"}
-                  className="w-full font-semibold text-wrap overflow-ellipsis text-left"
+          <>
+            <ul className="divide-y divide-gray-200">
+              {notifications.slice(0, isScrollable ? notifications.length : 4).map((notification) => (
+                <li
+                  key={notification.id}
+                  className="p-1 w-full flex flex-col gap-1"
+                  onClick={() => handleClick(notification)}
                 >
-                  {notification.description}
-                </Button>
-                <span className="text-xs text-gray-600 font-light align-bottom text-right">
-                  {formatDate(notification.createdAt)}
-                </span>
-              </li>
-            ))}
-          </ul>
+                  <Button
+                    variant={"ghost"}
+                    className="w-full font-semibold text-wrap overflow-ellipsis text-left"
+                  >
+                    {notification.description}
+                  </Button>
+                  <span className="text-xs text-gray-600 font-light align-bottom text-right">
+                    {formatDate(notification.createdAt)}
+                  </span>
+                </li>
+              ))}
+            </ul>
+            {!isScrollable && notifications.length > 4 && (
+              <Button
+                variant={"link"}
+                className="mt-2 self-center"
+                onClick={handleShowMore}
+              >
+                Ver más
+              </Button>
+            )}
+          </>
         )}
       </PopoverContent>
     </Popover>

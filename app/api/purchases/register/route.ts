@@ -50,7 +50,7 @@ export async function POST(req: NextRequest) {
     if (!offer)
       return NextResponse.json({ error: "internal error" }, { status: 500 });
     if(offer.status != "waiting"){
-      return NextResponse.json({ error: "Esta oferta ya fue modificada" }, { status: 500 });}
+      return NextResponse.json({ error: "Esta oferta ya fue modificada" }, { status: 400 });}
     await prismaClient.offer.update({
       data: {
         status: "rejected",
@@ -86,7 +86,7 @@ export async function POST(req: NextRequest) {
     if (!offer)
       return NextResponse.json({ error: "internal error" }, { status: 500 });
     if(offer.status != "waiting"){
-      return NextResponse.json({ error: "Esta oferta ya fue modificada" }, { status: 500 });}
+      return NextResponse.json({ error: "Esta oferta ya fue modificada" }, { status: 400 });}
     const offersAccepted = await prismaClient.offer.findMany({
       where: {
         auctionId: data.auction_id,
