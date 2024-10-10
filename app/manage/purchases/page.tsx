@@ -79,7 +79,7 @@ export function ManagePurchases({ recordType }: PurchasesProps) {
     },
     {
       accessorKey: "auction.units",
-      header: "unidades",
+      header: "Unidades",
       enableSorting: true,
     },
     {

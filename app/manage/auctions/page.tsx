@@ -31,6 +31,13 @@ export interface Auction {
   status: string;
 }
 
+const auctionStatusMap = {
+  available: "Disponible",
+  closed: "Cerrado",
+  expired: "Expirado",
+  sold: "Vendido",
+};
+
 export default function ManageAuctions() {
   const auctions = useQuery({
     queryKey: ["myAuctions"],
@@ -49,7 +56,7 @@ export default function ManageAuctions() {
     },
     {
       accessorKey: "waste.description",
-      header: "Description",
+      header: "Descripción",
       enableSorting: true,
     },
     {
@@ -64,7 +71,7 @@ export default function ManageAuctions() {
     },
     {
       accessorKey: "initialPrice",
-      header: "Price",
+      header: "Precio inicial",
       enableSorting: true,
       sortingFn: "alphanumeric",
       cell: ({ row }) => (
@@ -75,7 +82,7 @@ export default function ManageAuctions() {
       accessorKey: "units",
       enableSorting: true,
       sortingFn: "alphanumeric",
-      header: () => <div className="text-right">Units</div>,
+      header: () => <div className="text-right">Unidades</div>,
       cell: ({ row }) => {
         return (
           <div className="text-right font-medium">
@@ -90,13 +97,16 @@ export default function ManageAuctions() {
     },
     {
       accessorKey: "status",
-      header: "Status",
+      header: "Estado",
       enableGlobalFilter: false,
-      cell: ({ row }) => <div>{row.getValue("status")}</div>,
+      cell: ({ row }) => {
+        const status = row.original.status;
+        return <div>{auctionStatusMap[status]}</div>;
+      },
     },
     {
       accessorKey: "expiresAt",
-      header: "Expiration Date",
+      header: "Fecha de expiración",
       enableGlobalFilter: false,
       cell: ({ row }) => {
         const expiresAt = row.original.expiresAt;
@@ -112,11 +122,11 @@ export default function ManageAuctions() {
       cell: ({ row }) => <ManageOffers auctionId={row.original.id} />,
     },
   ];
+
   return (
     <SimpleCard
-      className="m-2"
-      title="Mis subastas"
-      desc="Visualiza aquí las subastas hechas por tu empresa."
+      title="Mis Subastas"
+      desc="Visualiza aquí todas las subastas hechas por tu empresa."
     >
       {auctions.isLoading ? (
         <Loader2Icon className="animate-spin" />

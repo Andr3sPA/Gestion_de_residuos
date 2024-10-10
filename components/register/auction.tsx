@@ -55,7 +55,7 @@ export function AuctionForm({ wasteId, onCancel }: OfferFormProps) {
       pickupLatitude: 0,
       pickupLongitude: 0,
       expiresAt: new Date(),
-      contact: data.user.email || '', 
+      contact: status === "authenticated" && data?.user?.email ? data.user.email : "",
       conditions: '', // Valor por defecto para condiciones
     },
   });
@@ -88,7 +88,7 @@ export function AuctionForm({ wasteId, onCancel }: OfferFormProps) {
             name="waste_id"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Waste ID</FormLabel>
+                <FormLabel>ID del residuo</FormLabel>
                 <FormControl>
                   <Input
                     type="number"

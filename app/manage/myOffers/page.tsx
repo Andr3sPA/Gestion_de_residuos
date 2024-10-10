@@ -18,6 +18,12 @@ export function ManageMyOffers() {
       }),
   });
 
+  const statusMap = {
+    waiting: "En espera",
+    accepted: "Aceptado",
+    rejected: "Rechazado",
+  };
+
   const columns: ColumnDef<Offer>[] = [
     {
       accessorKey: "id",
@@ -50,7 +56,8 @@ export function ManageMyOffers() {
       header: "Estado",
       enableSorting: true,
       cell: ({ row }) => {
-        return <Badge variant={"outline"}>{row.original.status}</Badge>;
+        const status = row.original.status;
+        return <Badge variant={"outline"}>{statusMap[status]}</Badge>;
       },
     },
   ];
