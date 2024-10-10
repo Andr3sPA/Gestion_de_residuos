@@ -14,6 +14,7 @@ import * as React from "react";
 import NotificationComponent from "./Notifications";
 import { LoginMenu } from "./users/LoginMenu";
 import { ProfileMenu } from "./users/ProfileMenu";
+import { NavigationSheet } from "./NavigationSheet";
 
 const navButtons = [
   { title: "Inicio", href: "/" },
@@ -29,8 +30,9 @@ export default function Header() {
 
   return (
     <div className="flex w-full flex-col shadow-md">
-      <header className="sticky top-0 flex h-16 items-center gap-4 border-b bg-background px-4 md:px-6">
-        <NavigationMenu>
+      <header className="sticky z-20 top-0 flex h-16 items-center gap-4 border-b bg-background px-4 md:px-6">
+        <NavigationSheet />
+        <NavigationMenu className="hidden md:block">
           <NavigationMenuList>
             {navButtons.map((btn) => (
               <NavigationMenuItem key={btn.title}>

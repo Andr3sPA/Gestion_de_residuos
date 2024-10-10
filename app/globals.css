@@ -10,7 +10,7 @@
     --card-foreground: 0 0% 3.9%;
     --popover: 0 0% 100%;
     --popover-foreground: 0 0% 3.9%;
-    --primary: #1F4A59;
+    --primary: #1f4a59;
     --primary-foreground: 0 0% 98%;
     --secondary: 0 0% 96.1%;
     --secondary-foreground: 0 0% 9%;
@@ -28,7 +28,7 @@
     --chart-3: 197 37% 24%;
     --chart-4: 43 74% 66%;
     --chart-5: 27 87% 67%;
-    --radius: 0.5rem
+    --radius: 0.5rem;
   }
 
   .dark {
@@ -55,7 +55,7 @@
     --chart-2: 160 60% 45%;
     --chart-3: 30 80% 55%;
     --chart-4: 280 65% 60%;
-    --chart-5: 340 75% 55%
+    --chart-5: 340 75% 55%;
   }
 }
 
@@ -76,5 +76,26 @@
 
   span {
     overflow: clip;
+  }
+
+  .CollapsibleContent[data-state="open"] {
+    animation: slideDown 200ms ease-out;
+  }
+  .CollapsibleContent[data-state="closed"] {
+    animation: slideUp 200ms ease-out;
+  }
+
+  @keyframes slideDown {
+    from {
+      opacity: 10%;
+      transform: translateY(-1rem);
+    }
+  }
+
+  @keyframes slideUp {
+    to {
+      opacity: 10%;
+      transform: translateY(-1rem);
+    }
   }
 }
