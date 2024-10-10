@@ -9,16 +9,23 @@ import { LatLngTuple } from "leaflet";
 export function MapPopover({
   markedPos,
   onMarkChange,
+  enableEdit = true,
 }: {
-  markedPos: LatLngTuple;
-  onMarkChange: (pos: LatLng) => void;
+  markedPos?: LatLngTuple;
+  onMarkChange?: (pos: LatLng) => void;
+  enableEdit?: boolean;
 }) {
+  console.log(markedPos);
+
   return (
     <Popover>
       <PopoverTrigger asChild>
         <div className="flex gap-2">
           <Input
-            value={`${markedPos[0].toFixed(2)}, ${markedPos[1].toFixed(2)}`}
+            value={
+              markedPos &&
+              `${markedPos[0].toFixed(2)}, ${markedPos[1].toFixed(2)}`
+            }
             disabled
           ></Input>
           <Button type="button" variant={"outline"}>
@@ -27,7 +34,12 @@ export function MapPopover({
         </div>
       </PopoverTrigger>
       <PopoverContent side={"bottom"} className="w-fit h-fit">
-        <LMap size="sm" onMarkChange={onMarkChange} />
+        <LMap
+          size="sm"
+          mark={markedPos}
+          disabled={!enableEdit}
+          onMarkChange={onMarkChange}
+        />
       </PopoverContent>
     </Popover>
   );

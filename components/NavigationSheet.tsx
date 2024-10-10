@@ -33,8 +33,8 @@ export function NavigationSheet() {
   ];
 
   const activityButtons = [
-    { title: "Mis ofertas", href: "/records/offersRecord" },
     { title: "Mis subastas", href: "/manage/auctions" },
+    { title: "Mis ofertas", href: "/records/offersRecord" },
     { title: "Mis ventas", href: "/records/salesRecord" },
     { title: "Mis compras", href: "/records/shoppingRecord" },
   ];

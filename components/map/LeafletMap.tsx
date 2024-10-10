@@ -10,13 +10,19 @@ import { MapContainer, TileLayer } from "react-leaflet";
 import { MapSearchAndMark } from "./MapControls";
 
 export default function LeafletMap({
+  mark,
   onMarkChange,
+  disabled,
   size,
 }: {
-  onMarkChange: (latLng: LatLng) => void;
+  mark?: LatLngExpression;
+  onMarkChange?: (latLng: LatLng) => void;
+  disabled?: boolean;
   size: "sm" | "md" | "lg";
 }) {
-  const [markedPos, setMarkedPos] = useState<LatLngExpression | null>(null);
+  const [markedPos, setMarkedPos] = useState<LatLngExpression | null>(
+    mark ?? null,
+  );
 
   // TODO: define Medellín's bounds and center
   const position: LatLngTuple = [6.243082, -75.579098];
@@ -35,7 +41,7 @@ export default function LeafletMap({
   return (
     <MapContainer
       className={className}
-      center={position}
+      center={markedPos ?? position}
       zoom={13}
       bounds={bounds}
       scrollWheelZoom={true}
@@ -47,8 +53,10 @@ export default function LeafletMap({
       <MapSearchAndMark
         markedPos={markedPos}
         onMarkChange={(pos) => {
-          setMarkedPos(pos);
-          onMarkChange(pos as LatLng);
+          if (!disabled) {
+            setMarkedPos(pos);
+            onMarkChange && onMarkChange(pos as LatLng);
+          }
         }}
       ></MapSearchAndMark>
     </MapContainer>

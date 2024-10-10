@@ -60,7 +60,7 @@ export default function ManageWastes() {
     },
     {
       accessorKey: "WasteType",
-      header: "Waste Type",
+      header: "Tipo de Residuo",
       enableSorting: true,
       cell: ({ row }) => (
         <div className="capitalize">
@@ -70,7 +70,7 @@ export default function ManageWastes() {
     },
     {
       id: "unitType",
-      header: "Unit Type",
+      header: "Tipo de Unidad",
       accessorKey: "unitType",
       enableSorting: true,
       cell: ({ row }) => {
@@ -82,7 +82,7 @@ export default function ManageWastes() {
     },
     {
       accessorKey: "description",
-      header: "Description",
+      header: "Descripción",
       enableSorting: true,
       cell: ({ row }) => <div>{row.getValue("description") || "N/A"}</div>,
     },
@@ -90,7 +90,7 @@ export default function ManageWastes() {
       accessorKey: "units",
       enableSorting: true,
       sortingFn: "alphanumeric",
-      header: () => <div className="text-right">Units</div>,
+      header: () => <div className="text-right">Unidades</div>,
       cell: ({ row }) => {
         const units = parseFloat(row.getValue("units"));
         return <div className="text-right font-medium">{units}</div>;
@@ -98,13 +98,14 @@ export default function ManageWastes() {
     },
     {
       accessorKey: "category", // Nueva columna
-      header: "Category",
+      header: "Categoría",
       enableSorting: true,
-      cell: ({ row }) => <div>{row.getValue("category")}</div>,
+      cell: ({ row }) =>
+        row.getValue("category") === "nonUsable" ? "No usable" : "Usable",
     },
     {
       accessorKey: "createdAt",
-      header: "Created At",
+      header: "Fecha de Creación",
       enableGlobalFilter: false,
       cell: ({ row }) => {
         const createdAt = row.getValue("createdAt") as string;
@@ -117,7 +118,7 @@ export default function ManageWastes() {
     },
     {
       id: "actions",
-      header: "Actions",
+      header: "Acciones",
       enableGlobalFilter: false,
       cell: ({ row }) => {
         const wasteId = row.original.id;
@@ -133,25 +134,8 @@ export default function ManageWastes() {
                 className="hover:cursor-pointer"
                 onClick={() => setSelectedWasteId(wasteId)}
               >
-                Ofertar
+                Subastar
               </DropdownMenuItem>
-              {/* <DropdownMenuItem
-                className="hover:cursor-pointer"
-                onClick={(e) => {
-                  e.preventDefault();
-                  e.stopPropagation();
-                }}
-              >
-                <Dialog>
-                  <DialogTrigger>
-                    Editar
-                  </DialogTrigger>
-                  <DialogContent>
-                    <DialogTitle>Editar Residuo</DialogTitle>
-                    <WasteEditForm waste_id={wasteId} />
-                  </DialogContent>
-                </Dialog>
-              </DropdownMenuItem> */}
             </DropdownMenuContent>
           </DropdownMenu>
         );
@@ -166,7 +150,7 @@ export default function ManageWastes() {
   );
 
   return selectedWasteId ? (
-    <SimpleCard className="ml10" title="Crear oferta">
+    <SimpleCard className="ml10" title="Subastar residuo">
       <AuctionForm
         wasteId={selectedWasteId}
         onCancel={() => setSelectedWasteId(null)}

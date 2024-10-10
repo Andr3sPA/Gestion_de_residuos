@@ -2,7 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import { TableList } from "./TableList";
 import { ColumnDef, Row } from "@tanstack/react-table";
 import axios from "axios";
-import { Prisma, User } from "@prisma/client";
+import { User } from "@prisma/client";
 import { Badge } from "./ui/badge";
 import { Checkbox } from "./ui/checkbox";
 import { CheckIcon, Loader2, XIcon } from "lucide-react";
@@ -162,7 +162,6 @@ export function MembershipReqTable({ me }: { me: number }) {
       id: "action",
       header: "Rechazar/Aceptar",
       cell: ({ row }) => {
-        const userId = row.original.id;
         return (
           <div className="flex justify-center">
             <Button

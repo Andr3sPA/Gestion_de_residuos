@@ -82,7 +82,7 @@ export function OfferForm({ auctionId }: OfferFormProps) {
           name="auctionId"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Offer ID</FormLabel>
+              <FormLabel>ID de la oferta</FormLabel>
               <FormControl>
                 <Input
                   type="number"

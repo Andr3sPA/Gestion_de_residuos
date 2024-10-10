@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { useQuery } from "@tanstack/react-query";
 import { ColumnDef } from "@tanstack/react-table";
 import axios from "axios";
-import { Loader2Icon } from "lucide-react";
+import { CheckIcon, Loader2Icon, XIcon } from "lucide-react";
 import { useState } from "react";
 import {
   AlertDialog,
@@ -20,6 +20,8 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { toast } from "@/hooks/use-toast"; // Importa el hook de toast
+import { Auction } from "../auctions/page";
+import { Badge } from "@/components/ui/badge";
 
 interface Purchase {
   auction_id: number;
@@ -30,25 +32,8 @@ interface Purchase {
 export interface Offer {
   id: number;
   contact: string;
-  status: string;
-  auction: {
-    companySeller: {
-      name: string;
-      description: string;
-    };
-    waste: {
-      wasteType: string;
-      category: string;
-      description: string;
-      unitType: string;
-    };
-    initialPrice: number;
-    conditions: string;
-    units: number;
-    status: string;
-    contact: string;
-    id: number;
-  };
+  status: "accepted" | "rejected" | "waiting";
+  auction: Auction;
   companyBuyer: {
     name: string;
     description: string;
@@ -129,41 +114,61 @@ export function ManageOffers({ auctionId }: OfferFormProps) {
       accessorKey: "status",
       header: "Estado",
       enableSorting: true,
+      cell: ({ row }) => {
+        const st = row.original.status;
+        return (
+          <Badge
+            className={
+              st === "waiting"
+                ? "bg-badge-neutral"
+                : st === "rejected"
+                  ? "bg-badge-error"
+                  : "bg-badge-ok"
+            }
+          >
+            {st}
+          </Badge>
+        );
+      },
     },
     {
-      id: "actions-accept",
+      id: "actions",
+      header: "Rechazar/Aceptar",
       cell: ({ row }) => (
-        <Button
-          onClick={() =>
-            handleSendData({
-              auction_id: auctionId,
-              offer_id: row.original.id,
-              status: "accepted",
-            })
-          }
-          size={"sm"}
-          disabled={isLoading} // Deshabilita el botón mientras se carga
-        >
-          {isLoading ? <Loader2Icon className="animate-spin" /> : "Aceptar"}
-        </Button>
-      ),
-    },
-    {
-      id: "actions-reject",
-      cell: ({ row }) => (
-        <Button
-          onClick={() =>
-            handleSendData({
-              auction_id: auctionId,
-              offer_id: row.original.id,
-              status: "rejected",
-            })
-          }
-          size={"sm"}
-          disabled={isLoading} // Deshabilita el botón mientras se carga
-        >
-          {isLoading ? <Loader2Icon className="animate-spin" /> : "Rechazar"}
-        </Button>
+        <div className="flex justify-center">
+          <Button
+            onClick={() =>
+              handleSendData({
+                auction_id: auctionId,
+                offer_id: row.original.id,
+                status: "rejected",
+              })
+            }
+            size={"sm"}
+            disabled={isLoading} // Deshabilita el botón mientras se carga
+            className="scale-75 bg-destructive"
+          >
+            {isLoading ? <Loader2Icon className="animate-spin" /> : <XIcon />}
+          </Button>
+          <Button
+            onClick={() =>
+              handleSendData({
+                auction_id: auctionId,
+                offer_id: row.original.id,
+                status: "accepted",
+              })
+            }
+            size={"sm"}
+            disabled={isLoading} // Deshabilita el botón mientras se carga
+            className="scale-75"
+          >
+            {isLoading ? (
+              <Loader2Icon className="animate-spin" />
+            ) : (
+              <CheckIcon />
+            )}
+          </Button>
+        </div>
       ),
     },
   ];
@@ -173,7 +178,7 @@ export function ManageOffers({ auctionId }: OfferFormProps) {
       <AlertDialogTrigger asChild>
         <Button variant="outline">ofertas</Button>
       </AlertDialogTrigger>
-      <AlertDialogContent className="w-full max-w-full max-h-full">
+      <AlertDialogContent className="w-2/3 max-w-full max-h-full">
         <AlertDialogHeader className="w-full overflow-scroll max-w-full">
           <AlertDialogTitle>Ofertas de la subasta {auctionId}</AlertDialogTitle>
           <AlertDialogDescription></AlertDialogDescription>

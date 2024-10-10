@@ -1,13 +1,14 @@
 "use client";
 import { SimpleCard } from "@/components/SimpleCard";
 import { TableList } from "@/components/TableList";
-import { Button } from "@/components/ui/button";
 import { useQuery } from "@tanstack/react-query";
 import { ColumnDef } from "@tanstack/react-table";
 import axios from "axios";
 import { Loader2Icon } from "lucide-react";
 import { Offer } from "@/app/manage/offers/page";
 import { Badge } from "@/components/ui/badge";
+import { AuctionDetails } from "@/components/AuctionDetails";
+import { cn } from "@/lib/utils";
 
 export function ManageMyOffers() {
   const offers = useQuery({
@@ -17,6 +18,12 @@ export function ManageMyOffers() {
         return res.data.offers;
       }),
   });
+
+  const statusMap = {
+    waiting: "En espera",
+    accepted: "Aceptado",
+    rejected: "Rechazado",
+  };
 
   const columns: ColumnDef<Offer>[] = [
     {
@@ -50,8 +57,30 @@ export function ManageMyOffers() {
       header: "Estado",
       enableSorting: true,
       cell: ({ row }) => {
-        return <Badge variant={"outline"}>{row.original.status}</Badge>;
+        const status = row.original.status;
+        return (
+          <Badge
+            className={cn(
+              status === "waiting"
+                ? "bg-badge-neutral"
+                : status === "rejected"
+                  ? "bg-badge-error"
+                  : "bg-badge-ok",
+              "text-white text-nowrap",
+            )}
+            variant={"outline"}
+          >
+            {statusMap[status]}
+          </Badge>
+        );
       },
+    },
+    {
+      id: "auction",
+      header: "Subasta",
+      cell: ({ row }) => (
+        <AuctionDetails canOffer={false} auctionInfo={row.original.auction} />
+      ),
     },
   ];
 

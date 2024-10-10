@@ -55,12 +55,12 @@ export default function Header() {
               <NavigationMenuContent className="absolute z-50 p-2">
                 <ul className="grid gap-1 p-2 md:w-[300px] lg:w-[400px] lg:grid-cols-1">
                   <ListItem
-                    href="/records/offersRecord"
-                    title="Mis ofertas"
-                  ></ListItem>
-                  <ListItem
                     href="/manage/auctions"
                     title="Mis subastas"
+                  ></ListItem>
+                  <ListItem
+                    href="/records/offersRecord"
+                    title="Mis ofertas"
                   ></ListItem>
                   <ListItem
                     href="/records/salesRecord"

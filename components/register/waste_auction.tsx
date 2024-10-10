@@ -8,7 +8,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { Input } from "@/components/ui/input";
 import { Calendar } from "@/components/ui/calendar";
-import { CalendarIcon, MapIcon, Loader2Icon } from "lucide-react"; // Importa el ícono de carga
+import { CalendarIcon, MapIcon, Loader2Icon, Loader2 } from "lucide-react"; // Importa el ícono de carga
 import { format } from "date-fns";
 import {
   Select,
@@ -101,8 +101,8 @@ export function WasteWithAuctionForm() {
       category: "",
       price: 0,
       units: 0,
-      pickupLatitude: 0,
-      pickupLongitude: 0,
+      pickupLatitude: NaN,
+      pickupLongitude: NaN,
       expiresAt: new Date(),
       contact:
         status === "authenticated" && data?.user?.email ? data.user.email : "",
@@ -138,7 +138,11 @@ export function WasteWithAuctionForm() {
   }
 
   if (isLoadingWasteTypes || isLoadingUnitTypes) {
-    return <p>Cargando...</p>; // Mostrar un estado de carga
+    return (
+      <SimpleCard title="Crea una nueva Subasta">
+        <Loader2 className="animate-spin" />
+      </SimpleCard>
+    ); // Mostrar un estado de carga
   }
 
   return (
@@ -357,10 +361,15 @@ export function WasteWithAuctionForm() {
                   <FormLabel>Ubicación de Recogida</FormLabel>
                   <FormControl>
                     <MapPopover
-                      markedPos={[
-                        form.getValues("pickupLatitude"),
-                        form.getValues("pickupLongitude"),
-                      ]}
+                      markedPos={
+                        form.getValues("pickupLongitude") &&
+                        form.getValues("pickupLongitude")
+                          ? [
+                              form.getValues("pickupLatitude"),
+                              form.getValues("pickupLongitude"),
+                            ]
+                          : undefined
+                      }
                       onMarkChange={(pos) => {
                         form.setValue("pickupLatitude", pos.lat);
                         form.setValue("pickupLongitude", pos.lng);

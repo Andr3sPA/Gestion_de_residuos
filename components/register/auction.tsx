@@ -63,10 +63,11 @@ export function AuctionForm({ wasteId, onCancel }: OfferFormProps) {
       waste_id: wasteId,
       price: 0,
       units: 0,
-      pickupLatitude: 0,
-      pickupLongitude: 0,
+      pickupLatitude: NaN,
+      pickupLongitude: NaN,
       expiresAt: new Date(),
-      contact: data?.user?.email || "",
+      contact:
+        status === "authenticated" && data?.user?.email ? data.user.email : "",
       conditions: "", // Valor por defecto para condiciones
     },
   });
@@ -104,10 +105,11 @@ export function AuctionForm({ wasteId, onCancel }: OfferFormProps) {
             name="waste_id"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Waste ID</FormLabel>
+                <FormLabel>ID del residuo</FormLabel>
                 <FormControl>
                   <Input
                     type="number"
+                    className="text-right"
                     placeholder="ID de residuo"
                     {...field}
                     value={field.value}
@@ -128,6 +130,7 @@ export function AuctionForm({ wasteId, onCancel }: OfferFormProps) {
                 <FormControl>
                   <Input
                     type="number"
+                    className="text-right"
                     placeholder="Precio de la oferta"
                     {...field}
                     value={field.value}
@@ -186,6 +189,7 @@ export function AuctionForm({ wasteId, onCancel }: OfferFormProps) {
                 <FormControl>
                   <Input
                     type="number"
+                    className="text-right"
                     placeholder="Número de unidades"
                     {...field}
                     value={field.value}
@@ -201,14 +205,19 @@ export function AuctionForm({ wasteId, onCancel }: OfferFormProps) {
             control={form.control}
             name="pickupLatitude"
             render={({ field }) => (
-              <FormItem className="flex flex-col col-start-2">
+              <FormItem className="flex flex-col">
                 <FormLabel>Ubicación de Recogida</FormLabel>
                 <FormControl>
                   <MapPopover
-                    markedPos={[
-                      form.getValues("pickupLatitude"),
-                      form.getValues("pickupLongitude"),
-                    ]}
+                    markedPos={
+                      form.getValues("pickupLongitude") &&
+                      form.getValues("pickupLongitude")
+                        ? [
+                            form.getValues("pickupLatitude"),
+                            form.getValues("pickupLongitude"),
+                          ]
+                        : undefined
+                    }
                     onMarkChange={(pos) => {
                       form.setValue("pickupLatitude", pos.lat);
                       form.setValue("pickupLongitude", pos.lng);

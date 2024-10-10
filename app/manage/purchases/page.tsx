@@ -1,12 +1,10 @@
 import { PurchaseDetails } from "@/components/PurchaseDetails";
 import { SimpleCard } from "@/components/SimpleCard";
 import { TableList } from "@/components/TableList";
-import { Button } from "@/components/ui/button";
 import { useQuery } from "@tanstack/react-query";
 import { ColumnDef } from "@tanstack/react-table";
 import axios from "axios";
 import { Loader2Icon } from "lucide-react";
-import { useState } from "react";
 export interface Purchase {
   id: number;
   offer: {
@@ -79,14 +77,14 @@ export function ManagePurchases({ recordType }: PurchasesProps) {
     },
     {
       accessorKey: "auction.units",
-      header: "unidades",
+      header: "Unidades",
       enableSorting: true,
     },
     {
-        accessorKey: "auction.waste.id",
-        header: "Id del residuo",
-        enableSorting: true,
-      },
+      accessorKey: "auction.waste.id",
+      header: "Id del residuo",
+      enableSorting: true,
+    },
 
     // Columnas específicas para ventas
     ...(recordType === RecordType.Ventas
@@ -101,7 +99,6 @@ export function ManagePurchases({ recordType }: PurchasesProps) {
             header: "Comprador",
             enableSorting: true,
           },
-          
         ]
       : []),
 
@@ -116,15 +113,21 @@ export function ManagePurchases({ recordType }: PurchasesProps) {
           {
             accessorKey: "auction.conditions",
             header: "Condiciones",
+            cell: ({ row }: any) => {
+              const conds = row.original.auction.conditions;
+              return conds && conds.length > 0 ? conds : "Sin condiciones";
+            },
             enableSorting: true,
           },
         ]
       : []),
-      {
-        accessorKey: "",
-        id: "details",
-        cell: ({ row }) => <PurchaseDetails purchaseInfo={row.original} recordType={recordType} />
-      }
+    {
+      accessorKey: "",
+      id: "details",
+      cell: ({ row }) => (
+        <PurchaseDetails purchaseInfo={row.original} recordType={recordType} />
+      ),
+    },
   ];
 
   return (
@@ -140,4 +143,3 @@ export function ManagePurchases({ recordType }: PurchasesProps) {
     </SimpleCard>
   );
 }
-

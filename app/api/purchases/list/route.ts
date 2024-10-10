@@ -46,24 +46,22 @@ export async function GET(req: NextRequest) {
       },
       include: {
         auction: {
-        include:{
-            companySeller:true,
-            waste:{
-              include:{
-                unitType:true,
-                wasteType:true
-              }
-            }
-        }
-
+          include: {
+            companySeller: true,
+            waste: {
+              include: {
+                unitType: true,
+                wasteType: true,
+              },
+            },
+          },
         },
 
         offer: {
-          include:{
-              companyBuyer:true
-          }
-  
-          }
+          include: {
+            companyBuyer: true,
+          },
+        },
       },
     });
   } else if (recordType === "Compras") {
@@ -75,24 +73,22 @@ export async function GET(req: NextRequest) {
       },
       include: {
         auction: {
-          include:{
-            companySeller:true,
-            waste:{
-              include:{
-                unitType:true,
-                wasteType:true
-              }
-            }
-        },
-
+          include: {
+            companySeller: true,
+            waste: {
+              include: {
+                unitType: true,
+                wasteType: true,
+              },
+            },
+          },
         },
 
         offer: {
-          include:{
-              companyBuyer:true
+          include: {
+            companyBuyer: true,
           },
-  
-          }
+        },
       },
     });
   }

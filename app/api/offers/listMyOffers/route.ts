@@ -30,7 +30,12 @@ export async function GET(req: NextRequest) {
       auction: {
         include: {
           companySeller: true,
-          waste: true,
+          waste: {
+            include: {
+              wasteType: true,
+              unitType: true,
+            },
+          },
         },
       },
     },

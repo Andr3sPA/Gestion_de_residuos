@@ -39,6 +39,10 @@ export default function searchAuctions() {
     {
       accessorKey: "conditions",
       header: "Condiciones",
+      cell: ({ row }) => {
+        const conds = row.original.conditions;
+        return conds && conds.length > 0 ? conds : "Sin condiciones";
+      },
     },
     {
       accessorKey: "waste.description",
@@ -57,7 +61,7 @@ export default function searchAuctions() {
     {
       accessorKey: "",
       id: "details",
-      cell: ({ row }) => <AuctionDetails offerInfo={row.original} />,
+      cell: ({ row }) => <AuctionDetails auctionInfo={row.original} />,
     },
   ];
 
