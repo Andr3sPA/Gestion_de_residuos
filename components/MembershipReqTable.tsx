@@ -1,5 +1,4 @@
 import { useQuery } from "@tanstack/react-query";
-import { TableList } from "./TableList";
 import { ColumnDef, Row } from "@tanstack/react-table";
 import axios from "axios";
 import { User } from "@prisma/client";
@@ -9,6 +8,7 @@ import { CheckIcon, Loader2, XIcon } from "lucide-react";
 import { Button } from "./ui/button";
 import { useState } from "react";
 import { enumMappings } from "@/lib/utils";
+import { TableList } from "./common/TableList";
 
 interface UserChecked extends User {
   checked: boolean;

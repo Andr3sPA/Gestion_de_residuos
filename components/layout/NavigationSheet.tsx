@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Button } from "./ui/button";
+import { Button } from "../ui/button";
 import {
   Sheet,
   SheetContent,
@@ -10,14 +10,14 @@ import {
   SheetHeader,
   SheetTitle,
   SheetTrigger,
-} from "./ui/sheet";
+} from "../ui/sheet";
 import { HamburgerMenuIcon } from "@radix-ui/react-icons";
 import { usePathname, useRouter } from "next/navigation";
 import {
   Collapsible,
   CollapsibleContent,
   CollapsibleTrigger,
-} from "./ui/collapsible";
+} from "../ui/collapsible";
 import { cn } from "@/lib/utils";
 
 export function NavigationSheet() {
@@ -28,15 +28,15 @@ export function NavigationSheet() {
   const navButtons = [
     { title: "Inicio", href: "/" },
     { title: "Mis residuos", href: "/manage/wastes" },
-    { title: "Vender", href: "/createAuction" },
+    { title: "Vender", href: "/create-auction" },
     { title: "Comprar", href: "/search/auctions" },
   ];
 
   const activityButtons = [
     { title: "Mis subastas", href: "/manage/auctions" },
-    { title: "Mis ofertas", href: "/records/offersRecord" },
-    { title: "Mis ventas", href: "/records/salesRecord" },
-    { title: "Mis compras", href: "/records/shoppingRecord" },
+    { title: "Mis ofertas", href: "/manage/offers" },
+    { title: "Mis ventas", href: "/manage/sales" },
+    { title: "Mis compras", href: "/manage/purchases" },
   ];
 
   return (

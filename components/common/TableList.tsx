@@ -10,19 +10,19 @@ import {
   useReactTable,
   VisibilityState,
 } from "@tanstack/react-table";
+import { Loader2 } from "lucide-react";
 import React from "react";
+import { IconLeft, IconRight } from "react-day-picker";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import {
-  TableHeader,
-  TableRow,
-  TableHead,
+  Table,
   TableBody,
   TableCell,
-  Table,
-} from "./ui/table";
-import { Input } from "./ui/input";
-import { Button } from "./ui/button";
-import { IconLeft, IconRight } from "react-day-picker";
-import { Loader2 } from "lucide-react";
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 
 export function TableList<T>({
   columns,

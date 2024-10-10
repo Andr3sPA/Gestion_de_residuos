@@ -24,7 +24,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Combobox } from "@/components/Combobox";
+import { Combobox } from "@/components/input/Combobox";
 import { Loader2Icon } from "lucide-react"; // Importa el ícono de carga
 import { useState } from "react"; // Importa useState
 
@@ -219,7 +219,11 @@ export function WasteForm({ onCancel }: WasteFormProps) {
             </Button>
           )}
           <Button type="submit" className="w-2/5" disabled={isLoading}>
-            {isLoading ? <Loader2Icon className="animate-spin" /> : "Registrar Residuo"}
+            {isLoading ? (
+              <Loader2Icon className="animate-spin" />
+            ) : (
+              "Registrar Residuo"
+            )}
           </Button>
         </div>
       </form>

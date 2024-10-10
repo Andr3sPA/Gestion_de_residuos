@@ -7,7 +7,7 @@ import {
 } from "@/components/ui/popover";
 import { MdCircleNotifications } from "react-icons/md";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { Button } from "./ui/button";
+import { Button } from "@/components/ui/button";
 
 interface Notification {
   id: number;
@@ -68,14 +68,14 @@ const NotificationComponent = () => {
     try {
       await axios.post("/api/notifications/erase");
       queryClient.invalidateQueries(["notifications"]);
-      refetch(); 
+      refetch();
     } catch (error) {
       console.error("Error al borrar las notificaciones:", error);
     }
   };
 
   const handleShowMore = () => {
-    setIsScrollable(true); 
+    setIsScrollable(true);
   };
 
   return (
@@ -97,10 +97,7 @@ const NotificationComponent = () => {
       >
         {notifications.length > 0 && (
           <div className="flex justify-end">
-            <button
-              className="text-red-500 text-xs"
-              onClick={handleDeleteAll}
-            >
+            <button className="text-red-500 text-xs" onClick={handleDeleteAll}>
               Borrar todas
             </button>
           </div>
@@ -117,23 +114,25 @@ const NotificationComponent = () => {
         ) : (
           <>
             <ul className="divide-y divide-gray-200">
-              {notifications.slice(0, isScrollable ? notifications.length : 4).map((notification) => (
-                <li
-                  key={notification.id}
-                  className="p-1 w-full flex flex-col gap-1"
-                  onClick={() => handleClick(notification)}
-                >
-                  <Button
-                    variant={"ghost"}
-                    className="w-full font-semibold text-wrap overflow-ellipsis text-left"
+              {notifications
+                .slice(0, isScrollable ? notifications.length : 4)
+                .map((notification) => (
+                  <li
+                    key={notification.id}
+                    className="p-1 w-full flex flex-col gap-1"
+                    onClick={() => handleClick(notification)}
                   >
-                    {notification.description}
-                  </Button>
-                  <span className="text-xs text-gray-600 font-light align-bottom text-right">
-                    {formatDate(notification.createdAt)}
-                  </span>
-                </li>
-              ))}
+                    <Button
+                      variant={"ghost"}
+                      className="w-full font-semibold text-wrap overflow-ellipsis text-left"
+                    >
+                      {notification.description}
+                    </Button>
+                    <span className="text-xs text-gray-600 font-light align-bottom text-right">
+                      {formatDate(notification.createdAt)}
+                    </span>
+                  </li>
+                ))}
             </ul>
             {!isScrollable && notifications.length > 4 && (
               <Button

@@ -25,7 +25,7 @@ import {
 } from "@/components/ui/popover";
 import { useSession } from "next-auth/react";
 import { ToastAction } from "@/components/ui/toast";
-import { MapPopover } from "../MapPopover";
+import { MapPopover } from "@/components/map/MapPopover";
 
 // Esquema de validación con Zod
 const FormSchema = z.object({

@@ -1,9 +1,9 @@
 import React from "react";
 import "./globals.css";
 import { Providers } from "./providers";
-import Header from "@/components/Header";
 import { Quicksand } from "next/font/google";
 import { Toaster } from "@/components/ui/toaster";
+import Header from "@/components/layout/Header";
 
 const quicksand = Quicksand({
   subsets: ["latin"],

@@ -1,12 +1,13 @@
 "use client";
-import { SimpleCard } from "@/components/SimpleCard";
-import { TableList } from "@/components/TableList";
+
 import { useQuery } from "@tanstack/react-query";
 import { ColumnDef } from "@tanstack/react-table";
 import axios from "axios";
 import { Loader2Icon } from "lucide-react";
-import { ManageOffers } from "@/app/manage/offers/page";
 import { Badge } from "@/components/ui/badge";
+import { SimpleCard } from "@/components/common/SimpleCard";
+import { TableList } from "@/components/common/TableList";
+import { ManageOffers } from "@/components/ManageOffers";
 
 export interface Auction {
   id: number;

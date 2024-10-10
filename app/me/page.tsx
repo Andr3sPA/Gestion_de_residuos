@@ -1,10 +1,10 @@
 "use client";
 
+import { SimpleCard } from "@/components/common/SimpleCard";
 import { MembershipReqTable } from "@/components/MembershipReqTable";
-import { SimpleCard } from "@/components/SimpleCard";
 import { Badge } from "@/components/ui/badge";
 import { enumMappings, cn } from "@/lib/utils";
-import { Prisma, User } from "@prisma/client";
+import { Prisma } from "@prisma/client";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import { Loader2 } from "lucide-react";
@@ -42,7 +42,7 @@ export default function ProfileDetails() {
   return (
     <div className="flex flex-col py-8 gap-8 max-w-[100%]">
       <div
-        className={`flex ${isCompAdmin ? "flex-row" : "flex-col"} flex-wrap gap-8 px-8 justify-center items-center`}
+        className={`flex ${isCompAdmin ? "flex-row" : "flex-col"} flex-wrap gap-0 px-8 justify-center items-center`}
       >
         {me.isSuccess && (
           <>

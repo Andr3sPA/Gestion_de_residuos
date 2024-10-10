@@ -40,7 +40,7 @@ export function OfferForm({ auctionId }: OfferFormProps) {
     defaultValues: {
       auctionId: auctionId || undefined, // Si no hay auctionId, el campo es editable
       price: 0,
-      contact: data.user.email || "", // Valor por defecto para el campo de contacto
+      contact: data?.user?.email || "", // Valor por defecto para el campo de contacto
     },
   });
 
@@ -132,7 +132,11 @@ export function OfferForm({ auctionId }: OfferFormProps) {
           )}
         />
         <Button type="submit" disabled={isLoading}>
-          {isLoading ? <Loader2Icon className="animate-spin" /> : "Registrar oferta"}
+          {isLoading ? (
+            <Loader2Icon className="animate-spin" />
+          ) : (
+            "Registrar oferta"
+          )}
         </Button>
       </form>
     </Form>

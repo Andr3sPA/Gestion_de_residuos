@@ -4,7 +4,7 @@ import {
   CardTitle,
   CardDescription,
   CardContent,
-} from "./ui/card";
+} from "@/components/ui/card";
 import { ReactNode } from "react";
 import { twMerge } from "tailwind-merge";
 

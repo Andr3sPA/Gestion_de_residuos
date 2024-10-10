@@ -1,5 +1,5 @@
 import { cn } from "@/lib/utils";
-import { Button } from "./ui/button";
+import { Button } from "../ui/button";
 import { CaretSortIcon, CheckIcon } from "@radix-ui/react-icons";
 import {
   Command,
@@ -8,8 +8,8 @@ import {
   CommandInput,
   CommandItem,
   CommandList,
-} from "./ui/command";
-import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
+} from "@/components/ui/command";
+import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
 import { useEffect, useState } from "react";
 
 export interface ComboboxItem {

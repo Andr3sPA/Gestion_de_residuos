@@ -14,13 +14,12 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { OfferForm } from "./register/offer";
 import { Separator } from "@radix-ui/react-select";
 import { PopoverArrow } from "@radix-ui/react-popover";
 import { useEffect, useState } from "react";
-import LMap from "./map/ClientOnlyMap";
 import { Auction } from "@/app/manage/auctions/page";
-import { MapPopover } from "./MapPopover";
+import { MapPopover } from "./map/MapPopover";
+import { OfferForm } from "./register/OfferForm";
 
 export function AuctionDetails({
   auctionInfo,

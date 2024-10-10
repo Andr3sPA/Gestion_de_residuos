@@ -11,15 +11,15 @@ import {
 import { cn } from "@/lib/utils";
 import { useSession } from "next-auth/react";
 import * as React from "react";
-import NotificationComponent from "./Notifications";
-import { LoginMenu } from "./users/LoginMenu";
-import { ProfileMenu } from "./users/ProfileMenu";
+import NotificationComponent from "../common/Notifications";
+import { LoginMenu } from "../users/LoginMenu";
+import { ProfileMenu } from "../users/ProfileMenu";
 import { NavigationSheet } from "./NavigationSheet";
 
 const navButtons = [
   { title: "Inicio", href: "/" },
   { title: "Mis residuos", href: "/manage/wastes" },
-  { title: "Vender", href: "/createAuction" },
+  { title: "Vender", href: "/create-auction" },
   { title: "Comprar", href: "/search/auctions" },
 ];
 
@@ -59,15 +59,12 @@ export default function Header() {
                     title="Mis subastas"
                   ></ListItem>
                   <ListItem
-                    href="/records/offersRecord"
+                    href="/manage/offers"
                     title="Mis ofertas"
                   ></ListItem>
+                  <ListItem href="/manage/sales" title="Mis ventas"></ListItem>
                   <ListItem
-                    href="/records/salesRecord"
-                    title="Mis ventas"
-                  ></ListItem>
-                  <ListItem
-                    href="/records/shoppingRecord"
+                    href="/manage/purchases"
                     title="Mis compras"
                   ></ListItem>
                 </ul>

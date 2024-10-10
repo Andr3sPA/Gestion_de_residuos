@@ -3,20 +3,13 @@ import {
   Dialog,
   DialogContent,
   DialogDescription,
-  DialogFooter,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
 } from "./ui/dialog";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
 import { Separator } from "@radix-ui/react-select";
-import { PopoverArrow } from "@radix-ui/react-popover";
-import { useEffect, useState } from "react";
-import { MapPopover } from "./MapPopover";
+import { useState } from "react";
+import { MapPopover } from "./map/MapPopover";
 
 const wasteCategoryMap = {
   usable: "Usable",

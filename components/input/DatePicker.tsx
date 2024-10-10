@@ -1,6 +1,6 @@
 import { ReactNode, useState } from "react";
-import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
-import { Calendar } from "./ui/calendar";
+import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
+import { Calendar } from "../ui/calendar";
 
 export function DatePicker({
   children,

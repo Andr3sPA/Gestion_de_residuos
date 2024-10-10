@@ -1,9 +1,9 @@
 "use client";
 
-import { AuctionForm } from "@/components/register/auction";
-import { WasteForm } from "@/components/register/waste";
-import { SimpleCard } from "@/components/SimpleCard";
-import { TableList } from "@/components/TableList";
+import { SimpleCard } from "@/components/common/SimpleCard";
+import { TableList } from "@/components/common/TableList";
+import { AuctionForm } from "@/components/register/AuctionForm";
+import { WasteForm } from "@/components/register/WasteForm";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,

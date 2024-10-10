@@ -34,13 +34,11 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { useQuery } from "@tanstack/react-query";
-import { Combobox } from "@/components/Combobox";
 import { useSession } from "next-auth/react";
-import { SimpleCard } from "@/components/SimpleCard";
-import LMap from "@/components/map/ClientOnlyMap";
-import { LatLng } from "leaflet";
 import { useRouter } from "next/navigation";
-import { MapPopover } from "../MapPopover";
+import { SimpleCard } from "../common/SimpleCard";
+import { Combobox } from "../input/Combobox";
+import { MapPopover } from "../map/MapPopover";
 
 // Esquema de validación con Zod
 const FormSchema = z.object({
@@ -67,7 +65,7 @@ const FormSchema = z.object({
   category: z.string().min(1, { message: "La categoría es requerida." }),
 });
 
-export function WasteWithAuctionForm() {
+export function AuctionWithWasteForm() {
   const { data: wasteTypesData, isLoading: isLoadingWasteTypes } = useQuery({
     queryKey: ["wasteTypes"],
     queryFn: () =>
