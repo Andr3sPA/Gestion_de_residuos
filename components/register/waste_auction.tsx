@@ -40,6 +40,7 @@ import { SimpleCard } from "@/components/SimpleCard";
 import LMap from "@/components/map/ClientOnlyMap";
 import { LatLng } from "leaflet";
 import { useRouter } from "next/navigation";
+import { MapPopover } from "../MapPopover";
 
 // Esquema de validación con Zod
 const FormSchema = z.object({
@@ -139,11 +140,6 @@ export function WasteWithAuctionForm() {
   if (isLoadingWasteTypes || isLoadingUnitTypes) {
     return <p>Cargando...</p>; // Mostrar un estado de carga
   }
-
-  const latLngValue = () => {
-    const { pickupLatitude, pickupLongitude } = form.getValues();
-    return `${pickupLatitude.toFixed(2)}, ${pickupLongitude.toFixed(2)}`;
-  };
 
   return (
     <SimpleCard title="Crea una nueva subasta">
@@ -311,28 +307,6 @@ export function WasteWithAuctionForm() {
               )}
             />
 
-            {/* Longitud de Recogida */}
-            {/* <FormField */}
-            {/*   control={form.control} */}
-            {/*   name="pickupLongitude" */}
-            {/*   render={({ field }) => ( */}
-            {/*     <FormItem> */}
-            {/*       <FormLabel>Longitud de Recogida</FormLabel> */}
-            {/*       <FormControl> */}
-            {/*         <Input */}
-            {/*           type="number" */}
-            {/*           placeholder="Longitud" */}
-            {/*           {...field} */}
-            {/*           value={field.value} */}
-            {/*           onChange={(e) => */}
-            {/*             field.onChange(e.target.valueAsNumber) */}
-            {/*           } */}
-            {/*         /> */}
-            {/*       </FormControl> */}
-            {/*       <FormMessage /> */}
-            {/*     </FormItem> */}
-            {/*   )} */}
-            {/* /> */}
             {/* Campo de Contacto */}
             <FormField
               control={form.control}
@@ -382,35 +356,16 @@ export function WasteWithAuctionForm() {
                 <FormItem className="flex flex-col col-start-2">
                   <FormLabel>Ubicación de Recogida</FormLabel>
                   <FormControl>
-                    <Popover>
-                      <PopoverTrigger asChild>
-                        <div className="flex gap-2">
-                          <Input value={latLngValue()} disabled></Input>
-                          <Button type="button" variant={"outline"}>
-                            <MapIcon />
-                          </Button>
-                        </div>
-                      </PopoverTrigger>
-                      <PopoverContent side={"bottom"} className="w-fit h-fit">
-                        <LMap
-                          size="sm"
-                          onMarkChange={(pos) => {
-                            form.setValue("pickupLatitude", pos.lat);
-                            form.setValue("pickupLongitude", pos.lng);
-                          }}
-                        />
-                      </PopoverContent>
-                    </Popover>
-
-                    {/* <Input */}
-                    {/*   type="number" */}
-                    {/*   placeholder="Latitud" */}
-                    {/*   {...field} */}
-                    {/*   value={field.value} */}
-                    {/*   onChange={(e) => */}
-                    {/*     field.onChange(e.target.valueAsNumber) */}
-                    {/*   } */}
-                    {/* /> */}
+                    <MapPopover
+                      markedPos={[
+                        form.getValues("pickupLatitude"),
+                        form.getValues("pickupLongitude"),
+                      ]}
+                      onMarkChange={(pos) => {
+                        form.setValue("pickupLatitude", pos.lat);
+                        form.setValue("pickupLongitude", pos.lng);
+                      }}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>

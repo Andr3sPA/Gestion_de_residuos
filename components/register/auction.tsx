@@ -24,18 +24,29 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { useSession } from "next-auth/react";
-import { ToastAction } from "@/components/ui/toast"
+import { ToastAction } from "@/components/ui/toast";
+import { MapPopover } from "../MapPopover";
 
 // Esquema de validación con Zod
 const FormSchema = z.object({
   waste_id: z.number(),
-  price: z.number().positive({ message: "El precio debe ser un número positivo." }),
-  units: z.number().positive({ message: "Las unidades deben ser un número positivo." }),
+  price: z
+    .number()
+    .positive({ message: "El precio debe ser un número positivo." }),
+  units: z
+    .number()
+    .positive({ message: "Las unidades deben ser un número positivo." }),
   pickupLatitude: z.number(),
   pickupLongitude: z.number(),
-  expiresAt: z.date({ required_error: "La fecha de expiración es obligatoria." }),
-  contact: z.string().min(1, { message: "El campo de contacto es obligatorio." }),
-  conditions: z.string().min(1, { message: "Las condiciones son obligatorias." }), // Nuevo campo de condiciones
+  expiresAt: z.date({
+    required_error: "La fecha de expiración es obligatoria.",
+  }),
+  contact: z
+    .string()
+    .min(1, { message: "El campo de contacto es obligatorio." }),
+  conditions: z
+    .string()
+    .min(1, { message: "Las condiciones son obligatorias." }), // Nuevo campo de condiciones
 });
 
 interface OfferFormProps {
@@ -44,7 +55,7 @@ interface OfferFormProps {
 }
 
 export function AuctionForm({ wasteId, onCancel }: OfferFormProps) {
-  const { data, status } = useSession()
+  const { data, status } = useSession();
   const [isLoading, setIsLoading] = useState(false); // Estado para controlar la carga
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
@@ -55,8 +66,8 @@ export function AuctionForm({ wasteId, onCancel }: OfferFormProps) {
       pickupLatitude: 0,
       pickupLongitude: 0,
       expiresAt: new Date(),
-      contact: data.user.email || '', 
-      conditions: '', // Valor por defecto para condiciones
+      contact: data?.user?.email || "",
+      conditions: "", // Valor por defecto para condiciones
     },
   });
 
@@ -64,14 +75,19 @@ export function AuctionForm({ wasteId, onCancel }: OfferFormProps) {
     setIsLoading(true); // Inicia la carga
     console.log("Datos antes de enviar:", data);
 
-    axios.post('/api/auctions/register', data)
+    axios
+      .post("/api/auctions/register", data)
       .then((response) => {
         toast({
           description: response.data.message, // Asegúrate de usar el mensaje de la respuesta
-        })  
+        });
       })
       .catch((error) => {
-        toast({  variant: "destructive", title: "Error al registrar la oferta.", description: error.message });
+        toast({
+          variant: "destructive",
+          title: "Error al registrar la oferta.",
+          description: error.message,
+        });
       })
       .finally(() => {
         setIsLoading(false); // Finaliza la carga
@@ -136,7 +152,9 @@ export function AuctionForm({ wasteId, onCancel }: OfferFormProps) {
                         variant={"outline"}
                         className="w-full pl-3 text-left font-normal"
                       >
-                        {field.value ? format(field.value, "PPP") : "Selecciona una fecha"}
+                        {field.value
+                          ? format(field.value, "PPP")
+                          : "Selecciona una fecha"}
                         <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
                       </Button>
                     </FormControl>
@@ -178,40 +196,23 @@ export function AuctionForm({ wasteId, onCancel }: OfferFormProps) {
               </FormItem>
             )}
           />
-          {/* Latitud de Recogida */}
+          {/* Ubicación de Recogida */}
           <FormField
             control={form.control}
             name="pickupLatitude"
             render={({ field }) => (
-              <FormItem>
-                <FormLabel>Latitud de Recogida</FormLabel>
+              <FormItem className="flex flex-col col-start-2">
+                <FormLabel>Ubicación de Recogida</FormLabel>
                 <FormControl>
-                  <Input
-                    type="number"
-                    placeholder="Latitud"
-                    {...field}
-                    value={field.value}
-                    onChange={(e) => field.onChange(e.target.valueAsNumber)}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          {/* Longitud de Recogida */}
-          <FormField
-            control={form.control}
-            name="pickupLongitude"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Longitud de Recogida</FormLabel>
-                <FormControl>
-                  <Input
-                    type="number"
-                    placeholder="Longitud"
-                    {...field}
-                    value={field.value}
-                    onChange={(e) => field.onChange(e.target.valueAsNumber)}
+                  <MapPopover
+                    markedPos={[
+                      form.getValues("pickupLatitude"),
+                      form.getValues("pickupLongitude"),
+                    ]}
+                    onMarkChange={(pos) => {
+                      form.setValue("pickupLatitude", pos.lat);
+                      form.setValue("pickupLongitude", pos.lng);
+                    }}
                   />
                 </FormControl>
                 <FormMessage />
@@ -261,13 +262,22 @@ export function AuctionForm({ wasteId, onCancel }: OfferFormProps) {
         </div>
         <div className="flex justify-evenly">
           {onCancel && (
-            <Button variant="secondary" className="w-2/5" onClick={onCancel} type="button">
+            <Button
+              variant="secondary"
+              className="w-2/5"
+              onClick={onCancel}
+              type="button"
+            >
               Cancelar
             </Button>
           )}
 
           <Button type="submit" disabled={isLoading}>
-            {isLoading ? <Loader2Icon className="animate-spin" /> : "Registrar Oferta"}
+            {isLoading ? (
+              <Loader2Icon className="animate-spin" />
+            ) : (
+              "Registrar Oferta"
+            )}
           </Button>
         </div>
       </form>
