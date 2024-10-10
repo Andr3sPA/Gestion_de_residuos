@@ -146,7 +146,7 @@ export function WasteWithAuctionForm() {
   };
 
   return (
-    <SimpleCard className="m-4" title="Crea una nueva subasta">
+    <SimpleCard title="Crea una nueva subasta">
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-2">
           <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
@@ -426,7 +426,11 @@ export function WasteWithAuctionForm() {
               Regresar
             </Button>
             <Button type="submit" disabled={isLoading}>
-              {isLoading ? <Loader2Icon className="animate-spin" /> : "Registrar Subasta"}
+              {isLoading ? (
+                <Loader2Icon className="animate-spin" />
+              ) : (
+                "Registrar Subasta"
+              )}
             </Button>
           </div>
         </form>

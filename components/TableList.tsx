@@ -73,7 +73,7 @@ export function TableList<T>({
           className="max-w-sm"
         />
       </div>
-      <div className="rounded-md border overflow-x-auto">
+      <div className="rounded-md border overflow-x-scroll">
         <Table className="overflow-x-scroll">
           <TableHeader className="bg-accent">
             {table.getHeaderGroups().map((headerGroup) => (

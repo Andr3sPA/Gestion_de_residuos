@@ -22,7 +22,7 @@ export function SimpleCard({
   children: ReactNode;
 }) {
   const mergedClasses = twMerge(
-    "w-fit p-4 border-2 shadow-md max-w-full",
+    "w-fit p-4 m-4 border-2 shadow-md max-w-full",
     className ?? "",
   );
 
