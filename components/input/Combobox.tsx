@@ -21,10 +21,12 @@ export function Combobox({
   placeholder,
   list,
   onSelect,
+  selectable = true,
 }: {
   placeholder?: string;
   list: ComboboxItem[];
-  onSelect: (item: ComboboxItem | null) => void;
+  onSelect?: (item: ComboboxItem | null) => void;
+  selectable?: boolean;
 }) {
   const [open, setOpen] = useState(false);
   const [selectedLabel, setLabel] = useState<string | null>(null);
@@ -40,7 +42,9 @@ export function Combobox({
           className="flex justify-between w-full"
         >
           {selectedLabel ?? (
-            <span className="w-[80%] overflow-clip">Seleccione una opción</span>
+            <span className="w-[80%] overflow-clip">
+              {selectable ? "Seleccione una opción" : ""}
+            </span>
           )}
           <CaretSortIcon className="ml-2 h-4 w-4 shrink-0 opacity-50" />
         </Button>
@@ -57,11 +61,13 @@ export function Combobox({
                   value={item.label}
                   onSelect={(label) => {
                     const nextLabel = label === selectedLabel ? null : label;
-                    setLabel(nextLabel);
                     setOpen(false);
-                    onSelect(
-                      list.find((item) => item.label === nextLabel) ?? null,
-                    );
+                    if (!selectable) return;
+                    setLabel(nextLabel);
+                    onSelect &&
+                      onSelect(
+                        list.find((item) => item.label === nextLabel) ?? null,
+                      );
                   }}
                   className="hover:cursor-pointer"
                 >
