@@ -90,6 +90,11 @@ export function ManageUsers() {
       enableSorting: true,
     },
     {
+      accessorKey: "company.nit",
+      header: "NIT",
+      enableSorting: true,
+    },
+    {
       accessorKey: "membershipStatus",
       header: "Estado",
       enableSorting: true,

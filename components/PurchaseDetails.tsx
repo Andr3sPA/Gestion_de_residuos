@@ -118,6 +118,15 @@ export function PurchaseDetails({
                   {purchaseInfo.offer.companyBuyer.description}
                 </span>
               </div>
+              <div>
+                <span className="text-xs font-light">
+                  NIT de la empresa
+                </span>
+                <Separator />
+                <span className="text-lg font-semibold">
+                  {purchaseInfo.offer.companyBuyer.nit}
+                </span>
+              </div>
             </>
           )}
 
@@ -137,6 +146,15 @@ export function PurchaseDetails({
                 <Separator />
                 <span className="text-lg font-semibold">
                   {purchaseInfo.auction.companySeller.description}
+                </span>
+              </div>
+              <div>
+                <span className="text-xs font-light">
+                  NIT de la empresa
+                </span>
+                <Separator />
+                <span className="text-lg font-semibold">
+                  {purchaseInfo.auction.companySeller.nit}
                 </span>
               </div>
             </>

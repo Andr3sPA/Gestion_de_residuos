@@ -36,6 +36,7 @@ export interface Offer {
   companyBuyer: {
     name: string;
     description: string;
+    nit:string
   };
   offerPrice: string;
 }
@@ -93,6 +94,16 @@ export function ManageOffers({ auctionId }: OfferFormProps) {
     {
       accessorKey: "companyBuyer.name",
       header: "Comprador",
+      enableSorting: true,
+    },
+    {
+      accessorKey: "companyBuyer.name",
+      header: "Comprador",
+      enableSorting: true,
+    },
+    {
+      accessorKey: "companyBuyer.nit",
+      header: "NIT",
       enableSorting: true,
     },
     {

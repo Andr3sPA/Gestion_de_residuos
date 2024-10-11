@@ -94,6 +94,11 @@ export function AuctionDetails({
             <span className="text-lg font-semibold">
               {auctionInfo.companySeller.name}
             </span>
+            <span className="text-xs font-light">Estado de la subasta</span>
+            <Separator />
+            <span className="text-lg font-semibold">
+              {auctionInfo.status}
+            </span>
           </div>
           <div>
             <span className="text-xs font-light">Ubicación</span>
@@ -108,6 +113,11 @@ export function AuctionDetails({
               />
             </span>
           </div>
+          <span className="text-xs font-light">NITr</span>
+            <Separator />
+            <span className="text-lg font-semibold">
+              {auctionInfo.companySeller.nit}
+            </span>
         </div>
         <DialogFooter>
           <div className="flex flex-col justify-end w-full h-full">

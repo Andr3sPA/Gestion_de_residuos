@@ -44,6 +44,9 @@ export async function GET(req: NextRequest) {
           companySellerId: user.companyId,
         },
       },
+      orderBy: {
+        createdAt: 'desc',
+      },
       include: {
         auction: {
           include: {
@@ -70,6 +73,9 @@ export async function GET(req: NextRequest) {
         offer: {
           companyBuyerId: user.companyId,
         },
+      },
+      orderBy: {
+        createdAt: 'desc',
       },
       include: {
         auction: {

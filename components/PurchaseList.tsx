@@ -99,6 +99,11 @@ export function PurchaseList({ recordType }: PurchasesProps) {
             header: "Comprador",
             enableSorting: true,
           },
+          {
+            accessorKey: "offer.companyBuyer.nit",
+            header: "NIT",
+            enableSorting: true,
+          },
         ]
       : []),
 

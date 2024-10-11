@@ -43,14 +43,15 @@ export async function GET(req: NextRequest) {
     select: {
       companySellerId: true,
       offers: {
-        where:{
-          status:"waiting",
+        orderBy: {
+          createdAt: 'desc',
         },
         include: {
           companyBuyer: true,
         },
       },
     },
+    
   });
 
   if (!auction) return NextResponse.json({ error: "internal error" }, { status: 500 });

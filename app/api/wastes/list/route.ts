@@ -22,6 +22,9 @@ export async function GET(req: NextRequest) {
 
   const wastes = await prismaClient.waste.findMany({
     where: { companyOwnerId: user?.companyId },
+    orderBy: {
+      createdAt: 'desc',
+    },
     include: {
       wasteType: true,
       unitType: true,
