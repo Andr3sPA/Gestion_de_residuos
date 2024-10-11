@@ -28,7 +28,6 @@ export default withAuth({
 
   callbacks: {
     authorized: ({ token, req }) => {
-      console.log(token);
       if (req.nextUrl.pathname.startsWith("/admin")) {
         return token?.role === "superAdmin";
       }
