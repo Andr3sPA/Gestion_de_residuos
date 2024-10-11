@@ -23,6 +23,7 @@ const navButtons = [
   { title: "Mis residuos", href: "/manage/wastes" },
   { title: "Vender", href: "/create-auction" },
   { title: "Comprar", href: "/search/auctions" },
+  {title:"Admin",href:"/admin"}
 ];
 
 export default function Header() {
@@ -46,9 +47,15 @@ export default function Header() {
                     className={cn(
                       "select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none",
                       "transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground",
-                      (!loggedIn || isSuperAdmin) && btn.title !== "Inicio"
+                      (!loggedIn) && btn.title !== "Inicio"
                         ? "hidden"
                         : "",
+                        ( isSuperAdmin) && (btn.title !== "Inicio" && btn.title !== "Admin")
+                        ? "hidden"
+                        : "",  
+                        ( !isSuperAdmin) && btn.title == "Admin"
+                        ? "hidden"
+                        : "",  
                     )}
                     onClick={() => router.push(btn.href)}
                   >
