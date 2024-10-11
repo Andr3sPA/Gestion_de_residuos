@@ -33,10 +33,12 @@ const roleOptions = [
 export function ManageUsers() {
   const [selectedPurchase, setSelectedPurchase] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(false); // Estado para controlar la carga
+  const [loadingUserId, setLoadingUserId] = useState<number | null>(null); // Estado para rastrear el ID del usuario cuyo botón se hizo clic
 
   const handleSendData = async (user: User, status: string, role: string) => {
     setSelectedPurchase(user);
     setIsLoading(true); // Inicia la carga
+    setLoadingUserId(user.id); // Establece el ID del usuario cuyo botón se hizo clic
     try {
       const statusOption = statusOptions.find((option) => option.label === status);
       const roleOption = roleOptions.find((option) => option.label === role);
@@ -57,6 +59,7 @@ export function ManageUsers() {
       });
     } finally {
       setIsLoading(false); // Finaliza la carga
+      setLoadingUserId(null); // Restablece el ID del usuario cuyo botón se hizo clic
     }
   };
 
@@ -169,8 +172,13 @@ export function ManageUsers() {
             onClick={() =>
               handleSendData(user, selectedStatus, selectedRole)
             }
+            disabled={isLoading} // Deshabilita el botón si isLoading es true
           >
-            Actualizar usuario
+            {loadingUserId === user.id ? (
+              <Loader2Icon className="animate-spin" />
+            ) : (
+              "Actualizar usuario"
+            )}
           </Button>
         );
       },
