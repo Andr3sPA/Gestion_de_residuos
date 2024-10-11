@@ -28,12 +28,14 @@ export function SimpleCard({
 
   return (
     <Card className={mergedClasses}>
-      <CardHeader className="px-7 grid grid-cols-2 max-w-full">
+      <CardHeader
+        className={`px-7 grid ${headerActions ? "grid-cols-2" : ""} max-w-full`}
+      >
         <div>
           <CardTitle className="w-full">{title}</CardTitle>
           {desc && <CardDescription>{desc}</CardDescription>}
         </div>
-        <div>{headerActions}</div>
+        {headerActions && <div>{headerActions}</div>}
       </CardHeader>
       <CardContent className="flex justify-center max-w-full">
         {children}
