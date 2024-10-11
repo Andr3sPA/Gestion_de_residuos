@@ -11,7 +11,7 @@ import {
 import { JWTWithRole } from "../../auth/[...nextauth]/route";
 import { prismaClient } from "@/prisma/client";
 
-export async function GET(req: NextRequest) {
+async function listAll(req: NextRequest) {
   const token = (await getToken({ req })) as JWTWithRole;
   if (!token || !token.sub) return unauthorized();
   if (token.role !== "superAdmin") return forbidden();
@@ -21,7 +21,7 @@ export async function GET(req: NextRequest) {
   return ok({ types });
 }
 
-export async function POST(req: NextRequest) {
+async function create(req: NextRequest) {
   const token = (await getToken({ req })) as JWTWithRole;
   if (!token || !token.sub) return unauthorized();
   if (token.role !== "superAdmin") return forbidden();
@@ -46,3 +46,5 @@ export async function POST(req: NextRequest) {
 
   if (newType) return created(newType);
 }
+
+export { listAll as GET, create as POST };

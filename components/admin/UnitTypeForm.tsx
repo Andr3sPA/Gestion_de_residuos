@@ -5,10 +5,10 @@ import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import { Loader2, SaveIcon } from "lucide-react";
 import { useState } from "react";
-import { SimpleCard } from "./common/SimpleCard";
-import { Combobox } from "./input/Combobox";
-import { Input } from "./ui/input";
-import { Button } from "./ui/button";
+import { SimpleCard } from "../common/SimpleCard";
+import { Combobox } from "../input/Combobox";
+import { Input } from "../ui/input";
+import { Button } from "../ui/button";
 
 export function UnitTypeForm() {
   const types = useQuery({
@@ -21,12 +21,11 @@ export function UnitTypeForm() {
         })),
       ),
   });
-  const [selected, setSelected] = useState<number | null>(null);
   const [newTypeName, setNewTypeName] = useState("");
   const [loading, setLoading] = useState(false);
 
   return (
-    <SimpleCard title="Crear tipo de unidad">
+    <SimpleCard className="h-fit" title="Crear tipos de unidad">
       {types.isLoading && <Loader2 className="animate-spin" />}
       {types.isSuccess && (
         <div className="w-full justify-start grid grid-rows-2 gap-4">
@@ -75,9 +74,7 @@ export function UnitTypeForm() {
           </div>
 
           <div className="flex flex-col">
-            <label htmlFor="wasteToDelete" className="text-sm font-bold">
-              Existentes
-            </label>
+            <label className="text-sm font-bold">Existentes</label>
             <div className="flex gap-2">
               <Combobox selectable={false} list={types.data} />
             </div>

@@ -69,7 +69,11 @@ export function Combobox({
                         list.find((item) => item.label === nextLabel) ?? null,
                       );
                   }}
-                  className="hover:cursor-pointer"
+                  className={
+                    selectable
+                      ? "hover:cursor-pointer"
+                      : "hover:cursor-not-allowed"
+                  }
                 >
                   {item.label}
                   <CheckIcon

@@ -31,16 +31,16 @@ const roleOptions = [
 ];
 
 export function ManageUsers() {
-  const [selectedPurchase, setSelectedPurchase] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(false); // Estado para controlar la carga
   const [loadingUserId, setLoadingUserId] = useState<number | null>(null); // Estado para rastrear el ID del usuario cuyo botón se hizo clic
 
   const handleSendData = async (user: User, status: string, role: string) => {
-    setSelectedPurchase(user);
     setIsLoading(true); // Inicia la carga
     setLoadingUserId(user.id); // Establece el ID del usuario cuyo botón se hizo clic
     try {
-      const statusOption = statusOptions.find((option) => option.label === status);
+      const statusOption = statusOptions.find(
+        (option) => option.label === status,
+      );
       const roleOption = roleOptions.find((option) => option.label === role);
 
       const response = await axios.post("/api/admin/updateUser", {
@@ -65,10 +65,7 @@ export function ManageUsers() {
 
   const users = useQuery({
     queryKey: ["myUsers"],
-    queryFn: () =>
-      axios
-        .get(`/api/admin/listUsers`)
-        .then((res) => res.data),
+    queryFn: () => axios.get(`/api/admin/listUsers`).then((res) => res.data),
   });
 
   const columns: ColumnDef<User>[] = [
@@ -76,17 +73,17 @@ export function ManageUsers() {
       accessorKey: "id",
       header: "id del usuario",
       enableSorting: true,
-    },    
+    },
     {
-        accessorKey: "email",
-        header: "Correo electrónico",
-        enableSorting: true,
-      },
-      {
-        accessorKey: "company.id",
-        header: "Id de la empresa",
-        enableSorting: true,
-      },
+      accessorKey: "email",
+      header: "Correo electrónico",
+      enableSorting: true,
+    },
+    {
+      accessorKey: "company.id",
+      header: "Id de la empresa",
+      enableSorting: true,
+    },
     {
       accessorKey: "company.name",
       header: "Empresa",
@@ -100,7 +97,7 @@ export function ManageUsers() {
         const user = row.original;
         const [selectedStatus, setSelectedStatus] = useState(
           statusOptions.find((option) => option.value === user.membershipStatus)
-            ?.label || "esperando"
+            ?.label || "esperando",
         );
 
         return (
@@ -130,7 +127,7 @@ export function ManageUsers() {
         const user = row.original;
         const [selectedRole, setSelectedRole] = useState(
           roleOptions.find((option) => option.value === user.role)?.label ||
-            "gerenteDeEmpresa"
+            "gerenteDeEmpresa",
         );
 
         return (
@@ -159,19 +156,17 @@ export function ManageUsers() {
         const user = row.original;
         const [selectedStatus, setSelectedStatus] = useState(
           statusOptions.find((option) => option.value === user.membershipStatus)
-            ?.label || "esperando"
+            ?.label || "esperando",
         );
         const [selectedRole, setSelectedRole] = useState(
           roleOptions.find((option) => option.value === user.role)?.label ||
-            "gerenteDeEmpresa"
+            "gerenteDeEmpresa",
         );
 
         return (
           <Button
             variant="outline"
-            onClick={() =>
-              handleSendData(user, selectedStatus, selectedRole)
-            }
+            onClick={() => handleSendData(user, selectedStatus, selectedRole)}
             disabled={isLoading} // Deshabilita el botón si isLoading es true
           >
             {loadingUserId === user.id ? (
