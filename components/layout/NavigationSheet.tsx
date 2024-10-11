@@ -42,19 +42,19 @@ export function NavigationSheet() {
   return (
     <Sheet open={open} onOpenChange={setOpen}>
       <SheetTrigger className="md:hidden" asChild>
-        <Button variant={"outline"}>
-          <HamburgerMenuIcon />
+        <Button variant={"outline"} className="bg-primary hover:bg-primary">
+          <HamburgerMenuIcon className="bg-transparent text-white scale-125" />
         </Button>
       </SheetTrigger>
       <SheetContent
         side={"left"}
-        className="pr-16 flex flex-col justify-center w-fit"
+        className="p-0 flex flex-col justify-center w-fit border-0"
       >
-        <SheetHeader>
-          <SheetTitle>Menú</SheetTitle>
+        <SheetHeader className="p-8 pb-4 bg-primary text-white">
+          <SheetTitle className="text-white text-left">Menú</SheetTitle>
           <SheetDescription></SheetDescription>
         </SheetHeader>
-        <nav className="flex flex-col flex-grow gap-2 w-fit justify-start">
+        <nav className="pl-8 pr-16 flex flex-col flex-grow gap-2 w-fit justify-start">
           {navButtons.map((btn, idx) => (
             <Button
               key={idx}
@@ -98,7 +98,7 @@ export function NavigationSheet() {
             </CollapsibleContent>
           </Collapsible>
         </nav>
-        <SheetFooter>algo</SheetFooter>
+        <SheetFooter className="p-4 text-right">footer</SheetFooter>
       </SheetContent>
     </Sheet>
   );

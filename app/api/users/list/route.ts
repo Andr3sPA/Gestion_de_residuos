@@ -1,13 +1,17 @@
 import { prismaClient } from "@/prisma/client";
 import { NextRequest } from "next/server";
 import { forbidden, ok, unauthorized } from "../../(utils)/responses";
+import { getToken } from "next-auth/jwt";
 
 export async function GET(req: NextRequest) {
-  const userId = req.headers.get("userId") as string;
+  const token = await getToken({ req });
+  if (!token || !token.sub) {
+    return unauthorized("Es necesario iniciar sesión");
+  }
 
   const user = await prismaClient.user.findUnique({
     where: {
-      id: parseInt(userId),
+      id: parseInt(token.sub),
     },
   });
 

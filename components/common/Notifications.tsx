@@ -82,7 +82,7 @@ const NotificationComponent = () => {
     <Popover>
       <PopoverTrigger asChild>
         <button className="relative">
-          <MdCircleNotifications style={{ fontSize: "2rem", color: "black" }} />
+          <MdCircleNotifications style={{ fontSize: "2rem", color: "white" }} />
           {readCount > 0 && (
             <span className="absolute -top-1 -right-1 bg-red-500 text-white rounded-full w-4 h-4 text-xs flex items-center justify-center">
               {readCount}

@@ -37,12 +37,13 @@ export default function ProfileDetails() {
     <span className="text-sm font-light">{val}</span>
   );
   const isCompAdmin = me.data && me.data.role === "companyAdmin";
+  const isSuperAdmin = me.data && me.data.role === "superAdmin";
   const isMembership = me.data && me.data.membershipStatus === "accepted";
 
   return (
     <div className="flex flex-col py-8 gap-8 max-w-[100%]">
       <div
-        className={`flex ${isCompAdmin ? "flex-row" : "flex-col"} flex-wrap gap-0 px-8 justify-center items-center`}
+        className={`flex ${isCompAdmin || isSuperAdmin ? "flex-row" : "flex-col"} flex-wrap gap-0 px-8 justify-center items-center`}
       >
         {me.isSuccess && (
           <>

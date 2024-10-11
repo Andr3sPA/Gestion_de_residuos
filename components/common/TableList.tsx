@@ -50,6 +50,11 @@ export function TableList<T>({
     getSortedRowModel: getSortedRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
     onColumnVisibilityChange: setColumnVisibility,
+    initialState: {
+      pagination: {
+        pageSize: 5,
+      },
+    },
     state: {
       sorting,
       columnFilters,
@@ -73,13 +78,16 @@ export function TableList<T>({
           className="max-w-sm"
         />
       </div>
-      <div className="rounded-md border overflow-x-scroll">
-        <Table className="overflow-x-scroll">
-          <TableHeader className="bg-accent">
+      <div className="rounded-md border">
+        <Table className="overflow-x-auto">
+          <TableHeader className="bg-tablehead hover:bg-tablehead">
             {table.getHeaderGroups().map((headerGroup) => (
-              <TableRow key={headerGroup.id}>
+              <TableRow key={headerGroup.id} className="hover:bg-tablehead">
                 {headerGroup.headers.map((header) => (
-                  <TableHead key={header.id}>
+                  <TableHead
+                    key={header.id}
+                    className="text-white hover:bg-tablehead"
+                  >
                     {header.isPlaceholder ? null : !header.column.columnDef
                         .enableSorting ? (
                       flexRender(
@@ -89,7 +97,7 @@ export function TableList<T>({
                     ) : (
                       <Button
                         variant={"ghost"}
-                        className="p-0"
+                        className="p-0 hover:bg-tablehead"
                         onClick={header.column.getToggleSortingHandler()}
                       >
                         {flexRender(
@@ -140,30 +148,26 @@ export function TableList<T>({
           </TableBody>
         </Table>
       </div>
-      {(table.getCanPreviousPage() || table.getCanNextPage()) && (
-        <div className="flex items-center justify-end space-x-2 py-4">
-          <div className="space-x-2">
-            <Button
-              variant="outline"
-              className={!table.getCanPreviousPage() ? "hidden" : ""}
-              size="sm"
-              onClick={() => table.previousPage()}
-              disabled={!table.getCanPreviousPage()}
-            >
-              <IconLeft />
-            </Button>
-            <Button
-              variant="outline"
-              className={!table.getCanPreviousPage() ? "hidden" : ""}
-              size="sm"
-              onClick={() => table.nextPage()}
-              disabled={!table.getCanNextPage()}
-            >
-              <IconRight />
-            </Button>
-          </div>
+      <div className="flex items-center justify-end space-x-2 py-4">
+        <div className="space-x-2">
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => table.previousPage()}
+            disabled={!table.getCanPreviousPage()}
+          >
+            <IconLeft />
+          </Button>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => table.nextPage()}
+            disabled={!table.getCanNextPage()}
+          >
+            <IconRight />
+          </Button>
         </div>
-      )}
+      </div>
     </div>
   );
 }

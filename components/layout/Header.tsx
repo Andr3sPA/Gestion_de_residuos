@@ -15,6 +15,8 @@ import NotificationComponent from "../common/Notifications";
 import { LoginMenu } from "../users/LoginMenu";
 import { ProfileMenu } from "../users/ProfileMenu";
 import { NavigationSheet } from "./NavigationSheet";
+import { Button } from "../ui/button";
+import { useRouter } from "next/navigation";
 
 const navButtons = [
   { title: "Inicio", href: "/" },
@@ -25,33 +27,38 @@ const navButtons = [
 
 export default function Header() {
   const { status } = useSession();
+  const router = useRouter();
 
   const loggedIn = status === "authenticated";
 
   return (
     <div className="flex w-full flex-col shadow-md">
-      <header className="sticky z-20 top-0 flex h-16 items-center gap-4 border-b bg-background px-4 md:px-6">
+      <header className="text-white sticky z-20 top-0 flex h-16 items-center gap-4 border-b bg-primary px-4 md:px-6">
         <NavigationSheet />
         <NavigationMenu className="hidden md:block">
           <NavigationMenuList>
             {navButtons.map((btn) => (
               <NavigationMenuItem key={btn.title}>
                 <NavigationMenuLink asChild>
-                  <a
-                    href={btn.href}
+                  <Button
+                    variant={"ghost"}
                     className={cn(
-                      "block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground",
+                      "block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none",
+                      "transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground",
                     )}
+                    onClick={() => router.push(btn.href)}
                   >
                     <div className="text-sm font-medium leading-none">
                       {btn.title}
                     </div>
-                  </a>
+                  </Button>
                 </NavigationMenuLink>
               </NavigationMenuItem>
             ))}
             <NavigationMenuItem>
-              <NavigationMenuTrigger>Mis actividades</NavigationMenuTrigger>
+              <NavigationMenuTrigger className="bg-primary">
+                Mis actividades
+              </NavigationMenuTrigger>
               <NavigationMenuContent className="absolute z-50 p-2">
                 <ul className="grid gap-1 p-2 md:w-[300px] lg:w-[400px] lg:grid-cols-1">
                   <ListItem
@@ -85,23 +92,29 @@ export default function Header() {
 const ListItem = React.forwardRef<
   React.ElementRef<"a">,
   React.ComponentPropsWithoutRef<"a">
->(({ className, title, children, ...props }, ref) => {
+>(({ className, title, children, href }, ref) => {
+  const router = useRouter();
+
   return (
     <li>
       <NavigationMenuLink asChild>
-        <a
-          ref={ref}
+        <Button
+          variant={"ghost"}
           className={cn(
-            "block select-none space-y-1 rounded-md p-2 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground",
+            "block select-none space-y-1 rounded-md p-2 leading-none no-underline outline-none",
+            "transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground",
+            "w-full text-left",
             className,
           )}
-          {...props}
+          onClick={() => {
+            href && router.push(href);
+          }}
         >
           <div className="text-sm font-medium leading-none">{title}</div>
           <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
             {children}
           </p>
-        </a>
+        </Button>
       </NavigationMenuLink>
     </li>
   );

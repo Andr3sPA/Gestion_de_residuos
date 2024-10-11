@@ -1,8 +1,18 @@
 "use client";
 
-import { WasteEditForm } from "@/components/edit/waste";
-import { useToast } from "@/hooks/use-toast";
+import { toast } from "@/hooks/use-toast";
+
 export default function Home() {
-  const { toast } = useToast();
-  return <div>Nothing</div>;
+  return (
+    <div
+      onClick={() => {
+        toast({
+          description: "si creo",
+          variant: "default",
+        });
+      }}
+    >
+      Nothing
+    </div>
+  );
 }

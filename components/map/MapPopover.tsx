@@ -15,8 +15,6 @@ export function MapPopover({
   onMarkChange?: (pos: LatLng) => void;
   enableEdit?: boolean;
 }) {
-  console.log(markedPos);
-
   return (
     <Popover>
       <PopoverTrigger asChild>

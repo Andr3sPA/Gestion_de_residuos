@@ -1,5 +1,6 @@
 import type { Config } from "tailwindcss";
 import colors from "./theme/colors";
+import { DEFAULT_CIPHERS } from "tls";
 
 const config: Config = {
   darkMode: ["class"],
@@ -37,7 +38,7 @@ const config: Config = {
         },
         secondary: {
           DEFAULT: "hsl(var(--secondary))",
-          foreground: "hsl(var(--secondary-foreground))",
+          forground: "hsl(var(--secondary-foreground))",
         },
         muted: {
           DEFAULT: "hsl(var(--muted))",
@@ -50,6 +51,9 @@ const config: Config = {
         destructive: {
           DEFAULT: "var(--destructive)",
           foreground: "hsl(var(--destructive-foreground))",
+        },
+        tablehead: {
+          DEFAULT: "var(--table-head)",
         },
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
@@ -64,7 +68,7 @@ const config: Config = {
         badge: {
           neutral: "#f97316",
           ok: "#22b34e",
-          error: "#ef4444",
+          error: "var(--destructive)",
         },
       },
       keyframes: {

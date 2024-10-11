@@ -19,7 +19,7 @@ export function ProfileMenu() {
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <Button variant="secondary" size="icon" className="rounded-full">
-          <CircleUser className="h-5 w-5" />
+          <CircleUser className="h-5 w-5 text-primary" />
           <span className="sr-only">Toggle user menu</span>
         </Button>
       </DropdownMenuTrigger>
