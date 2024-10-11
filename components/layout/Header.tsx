@@ -26,10 +26,11 @@ const navButtons = [
 ];
 
 export default function Header() {
-  const { status } = useSession();
+  const { status, data } = useSession();
   const router = useRouter();
 
   const loggedIn = status === "authenticated";
+  const isSuperAdmin = data?.user?.role === "superAdmin";
 
   return (
     <div className="flex w-full flex-col shadow-md">
@@ -43,8 +44,11 @@ export default function Header() {
                   <Button
                     variant={"ghost"}
                     className={cn(
-                      "block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none",
+                      "select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none",
                       "transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground",
+                      (!loggedIn || isSuperAdmin) && btn.title !== "Inicio"
+                        ? "hidden"
+                        : "",
                     )}
                     onClick={() => router.push(btn.href)}
                   >
@@ -56,7 +60,9 @@ export default function Header() {
               </NavigationMenuItem>
             ))}
             <NavigationMenuItem>
-              <NavigationMenuTrigger className="bg-primary">
+              <NavigationMenuTrigger
+                className={`bg-primary ${(!loggedIn || isSuperAdmin) && "hidden"}`}
+              >
                 Mis actividades
               </NavigationMenuTrigger>
               <NavigationMenuContent className="absolute z-50 p-2">
@@ -81,7 +87,7 @@ export default function Header() {
         </NavigationMenu>
         <div className="flex w-full items-center gap-4 md:ml-auto md:gap-2 lg:gap-4">
           <div className="ml-auto flex-1 sm:flex-initial"></div>
-          <NotificationComponent />
+          {loggedIn && !isSuperAdmin && <NotificationComponent />}
           {loggedIn ? <ProfileMenu /> : <LoginMenu />}
         </div>
       </header>

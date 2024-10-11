@@ -19,8 +19,10 @@ import {
   CollapsibleTrigger,
 } from "../ui/collapsible";
 import { cn } from "@/lib/utils";
+import { useSession } from "next-auth/react";
 
 export function NavigationSheet() {
+  const { status, data } = useSession();
   const [open, setOpen] = useState(false);
   const router = useRouter();
   const pathname = usePathname();
@@ -38,6 +40,9 @@ export function NavigationSheet() {
     { title: "Mis ventas", href: "/manage/sales" },
     { title: "Mis compras", href: "/manage/purchases" },
   ];
+
+  const loggedIn = status === "authenticated";
+  const isSuperAdmin = data?.user?.role === "superAdmin";
 
   return (
     <Sheet open={open} onOpenChange={setOpen}>
@@ -59,7 +64,12 @@ export function NavigationSheet() {
             <Button
               key={idx}
               variant={"ghost"}
-              className="w-full justify-start"
+              className={cn(
+                "w-full justify-start",
+                (!loggedIn || isSuperAdmin) && btn.title !== "Inicio"
+                  ? "hidden"
+                  : "",
+              )}
               disabled={pathname === btn.href}
               onClick={() => {
                 router.push(btn.href);
@@ -69,7 +79,7 @@ export function NavigationSheet() {
               {btn.title}
             </Button>
           ))}
-          <Collapsible>
+          <Collapsible className={!loggedIn || isSuperAdmin ? "hidden" : ""}>
             <CollapsibleTrigger asChild>
               <Button className="w-full justify-start" variant={"ghost"}>
                 Mis actividades
