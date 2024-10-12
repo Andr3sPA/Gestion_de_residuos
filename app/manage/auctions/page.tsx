@@ -3,7 +3,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { ColumnDef } from "@tanstack/react-table";
 import axios from "axios";
-import { CheckIcon, Loader2Icon } from "lucide-react";
+import { CheckIcon, Loader2Icon, PlusIcon } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { SimpleCard } from "@/components/common/SimpleCard";
 import { TableList } from "@/components/common/TableList";
@@ -12,6 +12,7 @@ import { useState } from "react";
 import { toast } from "@/hooks/use-toast";
 import { Purchase } from "@prisma/client";
 import { Button } from "@/components/ui/button";
+import { useRouter } from "next/navigation";
 
 export interface Auction {
   id: number;
@@ -30,7 +31,7 @@ export interface Auction {
   units: number;
   companySeller: {
     name: string;
-    nit:string;
+    nit: string;
   };
   pickupLatitude: string;
   pickupLongitude: string;
@@ -59,13 +60,16 @@ export default function ManageAuctions() {
   );
   const [isLoading, setIsLoading] = useState(false); // Estado para controlar la carga
   const [loadingAuctionId, setLoadingAuctionId] = useState<number | null>(null); // Estado para rastrear el ID de la subasta cuyo botón se hizo clic
+  const router = useRouter();
 
   const handleSendData = async (auctionId: number) => {
     setSelectedPurchase(null);
     setIsLoading(true); // Inicia la carga
     setLoadingAuctionId(auctionId); // Establece el ID de la subasta cuyo botón se hizo clic
     try {
-      const response = await axios.post("/api/auctions/close", { id: auctionId });
+      const response = await axios.post("/api/auctions/close", {
+        id: auctionId,
+      });
       console.log("Datos enviados exitosamente:", response.data);
       toast({
         description: response.data.message, // Solo descripción
@@ -167,7 +171,10 @@ export default function ManageAuctions() {
         <div className="flex justify-center">
           <Button
             onClick={() => handleSendData(row.original.id)}
-            disabled={isLoading || ["closed", "sold", "expired"].includes(row.original.status)} // Deshabilita el botón si está cargando o si el estado es "closed"
+            disabled={
+              isLoading ||
+              ["closed", "sold", "expired"].includes(row.original.status)
+            } // Deshabilita el botón si está cargando o si el estado es "closed"
             className="scale-75"
           >
             {loadingAuctionId === row.original.id ? (
@@ -185,6 +192,13 @@ export default function ManageAuctions() {
     <SimpleCard
       title="Mis Subastas"
       desc="Visualiza aquí todas las subastas hechas por tu empresa."
+      headerActions={
+        <div className="flex justify-end">
+          <Button onClick={() => router.push("/create-auction")}>
+            <PlusIcon />
+          </Button>
+        </div>
+      }
     >
       {auctions.isLoading ? (
         <Loader2Icon className="animate-spin" />

@@ -21,8 +21,9 @@ export function MapPopover({
         <div className="flex gap-2">
           <Input
             value={
-              markedPos &&
-              `${markedPos[0].toFixed(2)}, ${markedPos[1].toFixed(2)}`
+              markedPos
+                ? `${markedPos[0].toFixed(2)}, ${markedPos[1].toFixed(2)}`
+                : ""
             }
             disabled
           ></Input>

@@ -5,8 +5,8 @@ import L, { LatLngExpression } from "leaflet";
 
 import "leaflet-defaulticon-compatibility";
 import "leaflet-defaulticon-compatibility/dist/leaflet-defaulticon-compatibility.css";
-import "leaflet-control-geocoder/dist/Control.Geocoder.css"; // Geocoder CSS
-import "leaflet-control-geocoder"; // Import the Geocoder module
+import "leaflet-control-geocoder/dist/Control.Geocoder.css";
+import Geocoder from "leaflet-control-geocoder";
 
 export function MapSearchAndMark({
   onMarkChange,
@@ -15,15 +15,20 @@ export function MapSearchAndMark({
   onMarkChange: (latLng: LatLngExpression) => void;
   markedPos: LatLngExpression | null;
 }) {
-  const map = useMapEvent("click", (e) => onMarkChange(e.latlng));
+  let gcControl: Geocoder | null = null;
+  const map = useMapEvent("click", (e) => {
+    onMarkChange(e.latlng);
+  });
 
   useEffect(() => {
-    const geocoder = L.Control.geocoder({
+    if (gcControl) return;
+
+    gcControl = new Geocoder({
       defaultMarkGeocode: false,
     });
-    map.removeControl(geocoder);
-    geocoder
-      .on("markgeocode", function (e: any) {
+
+    gcControl
+      .on("markgeocode", function (e) {
         const bbox = e.geocode.bbox;
         const poly = L.polygon([
           [bbox.getSouthEast().lat, bbox.getSouthEast().lng],
@@ -33,6 +38,7 @@ export function MapSearchAndMark({
         ]);
         map.fitBounds(poly.getBounds());
         onMarkChange(e.geocode.center);
+        console.log(e.geocode.name);
       })
       .addTo(map);
   }, [map]);

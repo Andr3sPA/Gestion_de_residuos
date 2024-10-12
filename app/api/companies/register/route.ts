@@ -14,7 +14,9 @@ import { JWTWithRole } from "../../auth/[...nextauth]/route";
 const companySchema = z.object({
   name: z.string(),
   address: z.string(),
+  phoneNumber: z.string().optional(),
   description: z.string(),
+  nit: z.string().regex(/\b[0-9]{3}\.[0-9]{3}\.[0-9]{3}\.[0-9]\b/), // NNN.NNN.NNN.N
 });
 
 // registers a new company from the request
@@ -23,8 +25,8 @@ export async function POST(req: NextRequest) {
   if (!token || !token.sub) return unauthorized();
   if (token.role !== "superAdmin") return forbidden();
 
-  const { success, data } = companySchema.safeParse(await req.json());
-  if (!success) return badReq();
+  const { success, data, error } = companySchema.safeParse(await req.json());
+  if (!success) return badReq(error.message);
 
   if (
     (await prismaClient.company.count({
@@ -32,8 +34,9 @@ export async function POST(req: NextRequest) {
         name: data.name,
       },
     })) > 0
-  )
+  ) {
     return alreadyExists();
+  }
 
   const company = await prismaClient.company.create({
     data,

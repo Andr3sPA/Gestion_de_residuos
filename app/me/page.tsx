@@ -47,7 +47,7 @@ export default function ProfileDetails() {
       >
         {me.isSuccess && (
           <>
-            <SimpleCard title={"Perfil"}>
+            <SimpleCard title={"Mi perfil"}>
               <div className="grid grid-cols-2 gap-2 max-w-xs">
                 <div className="flex flex-col gap-0">
                   {spanPropDescriptor("Nombres")}
@@ -69,7 +69,7 @@ export default function ProfileDetails() {
             </SimpleCard>
             {me.data.company && (
               <SimpleCard
-                title="Empresa"
+                title="Mi empresa"
                 headerActions={
                   <div className="flex flex-col justify-around items-end gap-1">
                     <span>Solicitud de afiliación</span>
@@ -94,14 +94,32 @@ export default function ProfileDetails() {
               >
                 <div className="grid grid-cols-2">
                   <div className="flex flex-col gap-1 max-w-52">
-                    <span className="text-lg">{me.data.company.name}</span>
+                    <span className="text-sm font-light">
+                      NIT: {me.data.company.nit}
+                    </span>
+                    <span className="text-lg font-semibold">
+                      {me.data.company.name}
+                    </span>
                     <span className="font-light text-md text-wrap">
                       {me.data.company.description}
                     </span>
                   </div>
                   <div className="flex flex-col justify-end gap-1 text-end">
-                    <span className="text-xs">Dirección</span>
-                    <span className="text-sm">{me.data.company.address}</span>
+                    {me.data.company.phoneNumber &&
+                      me.data.company.phoneNumber?.length > 0 && (
+                        <div className="flex flex-col">
+                          <span className="text-xs">Teléfono:</span>
+                          <span className="text-sm font-semibold">
+                            {me.data.company.phoneNumber}
+                          </span>
+                        </div>
+                      )}
+                    <div className="flex flex-col">
+                      <span className="text-xs">Dirección</span>
+                      <span className="text-sm font-semibold">
+                        {me.data.company.address}
+                      </span>
+                    </div>
                   </div>
                 </div>
               </SimpleCard>

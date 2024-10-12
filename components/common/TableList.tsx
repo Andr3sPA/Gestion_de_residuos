@@ -155,6 +155,7 @@ export function TableList<T>({
             size="sm"
             onClick={() => table.previousPage()}
             disabled={!table.getCanPreviousPage()}
+            className="disabled:opacity-20"
           >
             <IconLeft />
           </Button>
@@ -163,6 +164,7 @@ export function TableList<T>({
             size="sm"
             onClick={() => table.nextPage()}
             disabled={!table.getCanNextPage()}
+            className="disabled:opacity-20"
           >
             <IconRight />
           </Button>

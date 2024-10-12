@@ -25,15 +25,10 @@ export async function GET(req: NextRequest) {
     users = await prismaClient.user.findMany({
       where: {
         companyId: user.companyId,
-        membershipStatus: "waiting",
       },
     });
   } else {
-    users = await prismaClient.user.findMany({
-      where: {
-        membershipStatus: "waiting",
-      },
-    });
+    users = await prismaClient.user.findMany();
   }
 
   return ok(users);

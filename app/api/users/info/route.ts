@@ -8,8 +8,7 @@ import {
   unauthorized,
 } from "../../(utils)/responses";
 import { prismaClient } from "@/prisma/client";
-import { NextApiRequestQuery } from "next/dist/server/api-utils";
-import { date, z } from "zod";
+import { z } from "zod";
 import { getToken } from "next-auth/jwt";
 
 export async function GET(req: NextRequest) {
@@ -29,6 +28,8 @@ export async function GET(req: NextRequest) {
           name: true,
           description: true,
           address: true,
+          nit: true,
+          phoneNumber: true,
         },
       },
       email: true,
@@ -51,16 +52,20 @@ const membershipUpdateSchema = z.object({
 
 // accept/reject membership
 export async function PATCH(req: NextRequest) {
-  const userId = req.headers.get("userId") as string;
+  const token = await getToken({ req });
+  if (!token || !token.sub) {
+    return unauthorized("Es necesario iniciar sesión");
+  }
+
   const body = await req.json();
   const { success, data } = membershipUpdateSchema.safeParse(body);
 
   if (!success) return badReq();
-  if (parseInt(userId) === data.id) return forbidden();
+  if (parseInt(token.sub) === data.id) return forbidden();
 
   const userAdmin = await prismaClient.user.findUnique({
     where: {
-      id: parseInt(userId),
+      id: parseInt(token.sub),
     },
   });
 

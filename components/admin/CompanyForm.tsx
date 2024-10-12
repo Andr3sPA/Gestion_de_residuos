@@ -20,6 +20,8 @@ export function CompanyForm() {
       axios.get("/api/companies/list").then((res) =>
         res.data.companies.map((c: Company) => ({
           id: c.id,
+          nit: c.nit,
+          phoneNumber: c.phoneNumber,
           label: c.name,
           description: c.description,
           address: c.address,
@@ -30,10 +32,23 @@ export function CompanyForm() {
   const [anySelected, setAnySelected] = useState(false);
   const [newComp, setNewComp] = useState({
     name: "",
+    nit: "",
+    phoneNumber: "",
     description: "",
     address: "",
   });
   const [loading, setLoading] = useState(false);
+
+  const formatNit = (nit: string) => {
+    let nitFmt = "";
+    Object.values(nit).forEach((c, i) => {
+      if (i > 0 && i % 3 === 0) {
+        nitFmt += ".";
+      }
+      nitFmt += c;
+    });
+    return nitFmt;
+  };
 
   return (
     <SimpleCard title="Crear empresas">
@@ -50,6 +65,10 @@ export function CompanyForm() {
                 });
                 return;
               }
+
+              if (newComp.nit.length < 13) {
+              }
+
               setLoading(true);
 
               axios
@@ -87,6 +106,24 @@ export function CompanyForm() {
                 }
               />
             </div>
+            <div>
+              <label htmlFor="nit" className="text-sm font-bold">
+                NIT
+              </label>
+              <Input
+                value={newComp.nit}
+                pattern="\b[0-9]{3}\.[0-9]{3}\.[0-9]{3}\.[0-9]\b"
+                onChange={(e) => {
+                  const nitNums = e.target.value.replace(/\D/g, "");
+                  if (nitNums.length > 10) return;
+
+                  const newNit = setNewComp((prev) => ({
+                    ...prev,
+                    nit: formatNit(nitNums),
+                  }));
+                }}
+              />
+            </div>
             <div className="w-full">
               <label htmlFor="desc" className="text-sm font-bold">
                 Descripción
@@ -100,7 +137,6 @@ export function CompanyForm() {
                     description: e.target.value,
                   }))
                 }
-                placeholder="(Opcional)"
               />
             </div>
             <div>
@@ -115,7 +151,20 @@ export function CompanyForm() {
                     address: e.target.value,
                   }))
                 }
-                placeholder="(Opcional)"
+              />
+            </div>
+            <div>
+              <label htmlFor="phoneNumber" className="text-sm font-bold">
+                Número de teléfono
+              </label>
+              <Input
+                value={newComp.phoneNumber}
+                onChange={(e) => {
+                  setNewComp((prev) => ({
+                    ...prev,
+                    phoneNumber: e.target.value,
+                  }));
+                }}
               />
             </div>
             <div className="flex w-full justify-center items-end">
@@ -125,7 +174,7 @@ export function CompanyForm() {
             </div>
           </form>
           <div className="flex flex-col">
-            <Separator className="my-6" />
+            <Separator className="my-2" />
             <label className="text-sm font-bold">Existentes</label>
             <div className="flex gap-2">
               <Combobox
@@ -141,6 +190,8 @@ export function CompanyForm() {
                       id,
                       name: comp.label,
                       address: comp.address,
+                      nit: comp.nit,
+                      phoneNumber: comp.phoneNumber,
                       description: comp.description,
                     });
                     setAnySelected(true);
@@ -153,11 +204,17 @@ export function CompanyForm() {
               <CollapsibleContent
                 className={`overflow-hidden transition-all CollapsibleContent`}
               >
-                <div className="py-4 pl-1 grid grid-cols-2 text-wrap">
+                <div className="py-4 pl-1 grid grid-cols-2 text-wrap gap-y-2">
                   <div className="flex flex-col">
                     <span className="font-bold text-sm">Nombre</span>
                     <span className="w-full max-w-44 pl-1 text-sm">
                       {selectedComp?.name}
+                    </span>
+                  </div>
+                  <div className="flex flex-col">
+                    <span className="font-bold text-sm">NIT</span>
+                    <span className="w-full max-w-44 pl-1 text-sm">
+                      {selectedComp?.nit}
                     </span>
                   </div>
                   <div className="flex flex-col">
@@ -170,6 +227,14 @@ export function CompanyForm() {
                     <span className="font-bold text-sm">Dirección</span>
                     <span className="w-full max-w-44 pl-1 text-sm">
                       {selectedComp?.address}
+                    </span>
+                  </div>
+                  <div className="flex flex-col">
+                    <span className="font-bold text-sm">
+                      Número de teléfono
+                    </span>
+                    <span className="w-full max-w-44 pl-1 text-sm">
+                      {selectedComp?.phoneNumber}
                     </span>
                   </div>
                 </div>

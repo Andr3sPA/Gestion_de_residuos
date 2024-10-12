@@ -20,6 +20,8 @@ import { useEffect, useState } from "react";
 import { Auction } from "@/app/manage/auctions/page";
 import { MapPopover } from "./map/MapPopover";
 import { OfferForm } from "./register/OfferForm";
+import { Badge } from "./ui/badge";
+import { cn } from "@/lib/utils";
 
 export function AuctionDetails({
   auctionInfo,
@@ -29,6 +31,19 @@ export function AuctionDetails({
   canOffer?: boolean;
 }) {
   const [open, setOpen] = useState(false);
+
+  const statusMapping: { [key in Auction["status"]]: string } = {
+    available: "Disponible",
+    closed: "Cerrada",
+    expired: "Ya expiró",
+    sold: "Vendida",
+  };
+  const statusColorMapping: { [key in Auction["status"]]: string } = {
+    available: "bg-badge-ok",
+    closed: "bg-badge-neutral",
+    expired: "bg-badge-error",
+    sold: "bg-badge-neutral",
+  };
 
   return (
     <Dialog>
@@ -94,11 +109,6 @@ export function AuctionDetails({
             <span className="text-lg font-semibold">
               {auctionInfo.companySeller.name}
             </span>
-            <span className="text-xs font-light">Estado de la subasta</span>
-            <Separator />
-            <span className="text-lg font-semibold">
-              {auctionInfo.status}
-            </span>
           </div>
           <div>
             <span className="text-xs font-light">Ubicación</span>
@@ -113,11 +123,6 @@ export function AuctionDetails({
               />
             </span>
           </div>
-          <span className="text-xs font-light">NITr</span>
-            <Separator />
-            <span className="text-lg font-semibold">
-              {auctionInfo.companySeller.nit}
-            </span>
         </div>
         <DialogFooter>
           <div className="flex flex-col justify-end w-full h-full">
@@ -129,6 +134,14 @@ export function AuctionDetails({
                 day: "numeric",
               })}
             </span>
+            <Badge
+              className={cn(
+                statusColorMapping[auctionInfo.status],
+                "ml-2 w-fit",
+              )}
+            >
+              {statusMapping[auctionInfo.status]}
+            </Badge>
           </div>
           {canOffer ? (
             <Popover modal={true}>
@@ -152,9 +165,9 @@ export function AuctionDetails({
               </PopoverContent>
             </Popover>
           ) : (
-            <DialogClose>
+            <div className="flex items-end">
               <Button variant={"outline"}>Cerrar </Button>
-            </DialogClose>
+            </div>
           )}
         </DialogFooter>
       </DialogContent>

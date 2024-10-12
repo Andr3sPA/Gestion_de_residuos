@@ -66,7 +66,7 @@ const config: Config = {
           "5": "hsl(var(--chart-5))",
         },
         badge: {
-          neutral: "#f97316",
+          neutral: "#6a7a77",
           ok: "#22b34e",
           error: "var(--destructive)",
         },

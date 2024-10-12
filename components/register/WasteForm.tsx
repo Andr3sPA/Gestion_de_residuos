@@ -25,7 +25,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Combobox } from "@/components/input/Combobox";
-import { Loader2Icon } from "lucide-react"; // Importa el ícono de carga
+import { Loader2, Loader2Icon } from "lucide-react"; // Importa el ícono de carga
 import { useState } from "react"; // Importa useState
 
 const FormSchema = z.object({
@@ -99,7 +99,11 @@ export function WasteForm({ onCancel }: WasteFormProps) {
   }
 
   if (isLoadingWasteTypes || isLoadingUnitTypes) {
-    return <p>Cargando...</p>; // Mostrar un estado de carga
+    return (
+      <div className="flex justify-center items-center min-h-16">
+        <Loader2 className="animate-spin" />
+      </div>
+    ); // Mostrar un estado de carga
   }
 
   return (
