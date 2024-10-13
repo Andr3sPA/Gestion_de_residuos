@@ -21,6 +21,7 @@ export interface Purchase {
       };
     };
   };
+  finalPrice: number;
   createdAt: string;
 }
 
@@ -54,8 +55,11 @@ export function PurchaseList({ recordType }: PurchasesProps) {
     },
     {
       accessorKey: "finalPrice",
-      header: "Precio",
+      header: "Precio de compra",
       enableSorting: true,
+      cell: ({ row }) => (
+        <div className="text-right">${row.original.finalPrice}</div>
+      ),
     },
     {
       accessorKey: "createdAt",

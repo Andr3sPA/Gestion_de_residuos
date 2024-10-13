@@ -26,6 +26,7 @@ import {
 import { useSession } from "next-auth/react";
 import { ToastAction } from "@/components/ui/toast";
 import { MapPopover } from "@/components/map/MapPopover";
+import { PriceInput } from "../input/PriceInput";
 
 // Esquema de validación con Zod
 const FormSchema = z.object({
@@ -128,13 +129,11 @@ export function AuctionForm({ wasteId, onCancel }: OfferFormProps) {
               <FormItem>
                 <FormLabel>Precio</FormLabel>
                 <FormControl>
-                  <Input
-                    type="number"
-                    className="text-right"
-                    placeholder="Precio de la oferta"
-                    {...field}
-                    value={field.value}
-                    onChange={(e) => field.onChange(e.target.valueAsNumber)}
+                  <PriceInput
+                    value={field.value || ""}
+                    onValueChange={(vals) => {
+                      field.onChange(vals.floatValue);
+                    }}
                   />
                 </FormControl>
                 <FormMessage />

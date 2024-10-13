@@ -36,7 +36,7 @@ export interface Offer {
   companyBuyer: {
     name: string;
     description: string;
-    nit:string
+    nit: string;
   };
   offerPrice: string;
 }
@@ -189,7 +189,7 @@ export function ManageOffers({ auctionId }: OfferFormProps) {
         <Button variant="outline">ofertas</Button>
       </AlertDialogTrigger>
       <AlertDialogContent className="w-2/3 max-w-full max-h-full">
-        <AlertDialogHeader className="w-full overflow-scroll max-w-full">
+        <AlertDialogHeader className="w-full overflow-auto max-w-full">
           <AlertDialogTitle>Ofertas de la subasta {auctionId}</AlertDialogTitle>
           <AlertDialogDescription></AlertDialogDescription>
           {auctions.isLoading ? (
@@ -202,9 +202,7 @@ export function ManageOffers({ auctionId }: OfferFormProps) {
           {auctions.isError && <div>{auctions.error.message}</div>}
         </AlertDialogHeader>
         <AlertDialogFooter>
-          <AlertDialogCancel className="bg-red-500 text-white hover:bg-red-600 border-2 border-red-700 shadow-lg transition duration-300 ease-in-out">
-            Cancel
-          </AlertDialogCancel>
+          <AlertDialogCancel>Cerrar</AlertDialogCancel>
         </AlertDialogFooter>
       </AlertDialogContent>
     </AlertDialog>

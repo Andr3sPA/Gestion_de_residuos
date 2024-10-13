@@ -39,6 +39,7 @@ import { useRouter } from "next/navigation";
 import { SimpleCard } from "../common/SimpleCard";
 import { Combobox } from "../input/Combobox";
 import { MapPopover } from "../map/MapPopover";
+import { PriceInput } from "../input/PriceInput";
 
 // Esquema de validación con Zod
 const FormSchema = z.object({
@@ -236,13 +237,11 @@ export function AuctionWithWasteForm() {
                 <FormItem className="flex flex-col">
                   <FormLabel>Precio</FormLabel>
                   <FormControl>
-                    <Input
-                      type="number"
-                      className="text-right"
-                      placeholder="Precio de la oferta"
-                      {...field}
-                      value={field.value}
-                      onChange={(e) => field.onChange(e.target.valueAsNumber)}
+                    <PriceInput
+                      value={field.value || ""}
+                      onValueChange={(vals) => {
+                        field.onChange(vals.floatValue);
+                      }}
                     />
                   </FormControl>
                   <FormMessage />

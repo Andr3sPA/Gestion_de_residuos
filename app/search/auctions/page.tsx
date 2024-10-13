@@ -48,7 +48,11 @@ export default function searchAuctions() {
     },
     {
       accessorKey: "initialPrice",
-      header: "Precio",
+      header: "Precio (COP)",
+      enableSorting: true,
+      cell: ({ row }) => (
+        <div className="text-right">${row.original.initialPrice}</div>
+      ),
     },
     {
       accessorKey: "units",

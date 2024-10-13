@@ -48,6 +48,15 @@ export default function ManageMyOffers() {
       enableSorting: true,
     },
     {
+      accessorKey: "offerPrice",
+      header: "Precio ofrecido",
+      enableSorting: true,
+      sortingFn: "alphanumeric",
+      cell: ({ row }) => (
+        <div className="text-right">${row.original.offerPrice}</div>
+      ),
+    },
+    {
       accessorKey: "auction.contact",
       header: "Contacto",
       enableSorting: true,

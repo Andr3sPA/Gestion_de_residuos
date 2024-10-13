@@ -3,7 +3,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { ColumnDef } from "@tanstack/react-table";
 import axios from "axios";
-import { CheckIcon, Loader2Icon, PlusIcon } from "lucide-react";
+import { CheckIcon, Loader2Icon, PlusIcon, XIcon } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { SimpleCard } from "@/components/common/SimpleCard";
 import { TableList } from "@/components/common/TableList";
@@ -118,7 +118,7 @@ export default function ManageAuctions() {
       enableSorting: true,
       sortingFn: "alphanumeric",
       cell: ({ row }) => (
-        <div className="text-right">{row.original.initialPrice}</div>
+        <div className="text-right">${row.original.initialPrice}</div>
       ),
     },
     {
@@ -175,12 +175,12 @@ export default function ManageAuctions() {
               isLoading ||
               ["closed", "sold", "expired"].includes(row.original.status)
             } // Deshabilita el botón si está cargando o si el estado es "closed"
-            className="scale-75"
+            className="scale-75 bg-destructive"
           >
             {loadingAuctionId === row.original.id ? (
               <Loader2Icon className="animate-spin" />
             ) : (
-              <CheckIcon />
+              <XIcon />
             )}
           </Button>
         </div>

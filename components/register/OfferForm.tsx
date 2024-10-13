@@ -17,6 +17,8 @@ import { toast } from "@/hooks/use-toast";
 import { useSession } from "next-auth/react";
 import { Loader2Icon } from "lucide-react"; // Importa el ícono de carga
 import { useState } from "react"; // Importa useState
+import { NumericFormat } from "react-number-format";
+import { PriceInput } from "../input/PriceInput";
 
 const FormSchema = z.object({
   auctionId: z.number(), // Cambiamos auctionId para que sea opcional
@@ -102,12 +104,11 @@ export function OfferForm({ auctionId }: OfferFormProps) {
             <FormItem>
               <FormLabel>Precio</FormLabel>
               <FormControl>
-                <Input
-                  type="number"
-                  placeholder="Precio"
-                  {...field}
-                  value={field.value}
-                  onChange={(e) => field.onChange(e.target.valueAsNumber)}
+                <PriceInput
+                  value={field.value || ""}
+                  onValueChange={(vals) => {
+                    field.onChange(vals.floatValue);
+                  }}
                 />
               </FormControl>
               <FormMessage />

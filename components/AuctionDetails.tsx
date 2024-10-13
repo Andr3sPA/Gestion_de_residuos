@@ -91,7 +91,8 @@ export function AuctionDetails({
             <span className="text-xs font-light">Precio</span>
             <Separator />
             <span className="text-lg font-semibold">
-              ${auctionInfo.initialPrice}
+              <span className="text-xs font-semibold">COP$ </span>
+              <span>{auctionInfo.initialPrice}</span>
             </span>
             <Separator className="h-1" />
             <span className="text-xs font-light">Cantidad</span>
