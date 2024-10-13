@@ -75,10 +75,10 @@ export function TableList<T>({
           placeholder="Buscar..."
           value={globalFilter}
           onChange={(e) => setGlobalFilter(e.target.value)}
-          className="max-w-sm"
+          className="border-gray-300 max-w-sm w-1/5 focus:w-1/2 transition-width ease-out duration-300"
         />
       </div>
-      <div className="rounded-md border">
+      <div className="rounded-b-sm border">
         <Table className="overflow-x-auto">
           <TableHeader className="bg-tablehead hover:bg-tablehead">
             {table.getHeaderGroups().map((headerGroup) => (

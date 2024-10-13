@@ -2,7 +2,12 @@ import { prismaClient } from "@/prisma/client";
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 import { getToken } from "next-auth/jwt";
-import { badReq, forbidden, notFound, unauthorized } from "../../(utils)/responses";
+import {
+  badReq,
+  forbidden,
+  notFound,
+  unauthorized,
+} from "../../(utils)/responses";
 
 const offerSchema = z.object({
   auction_id: z.number(),
@@ -33,24 +38,28 @@ export async function POST(req: NextRequest) {
     where: { id: data?.offer_id }, // Usamos el userId convertido a string
   });
 
-  if (!auction || !offer) return notFound("Subasta u oferta no encontrados")
+  if (!auction || !offer) return notFound("Subasta u oferta no encontrados");
 
   if (user.companyId != auction.companySellerId) {
-    return forbidden("You are not part of the sellers company")
+    return forbidden("You are not part of the sellers company");
   }
 
-  if (!success) return badReq()
+  if (!success) return badReq();
 
   if (data.status == "rejected") {
     const offer = await prismaClient.offer.findUnique({
       where: {
         id: data.offer_id,
       },
-    })
+    });
     if (!offer)
       return NextResponse.json({ error: "internal error" }, { status: 500 });
-    if(offer.status != "waiting"){
-      return NextResponse.json({ error: "Esta oferta ya fue modificada" }, { status: 400 });}
+    if (offer.status != "waiting") {
+      return NextResponse.json(
+        { error: "Esta oferta ya fue modificada" },
+        { status: 400 },
+      );
+    }
     await prismaClient.offer.update({
       data: {
         status: "rejected",
@@ -76,27 +85,34 @@ export async function POST(req: NextRequest) {
         read: false, // Asegúrate de incluir todos los campos requeridos
       },
     });
-    return NextResponse.json({message:"offer rejected"}, { status: 201 });
+    return NextResponse.json({ message: "offer rejected" }, { status: 201 });
   } else if (data.status == "accepted") {
     const offer = await prismaClient.offer.findUnique({
       where: {
         id: data.offer_id,
       },
-    })
+    });
     if (!offer)
       return NextResponse.json({ error: "internal error" }, { status: 500 });
-    if(offer.status != "waiting"){
-      return NextResponse.json({ error: "Esta oferta ya fue modificada" }, { status: 400 });}
+    if (offer.status != "waiting") {
+      return NextResponse.json(
+        { error: "Esta oferta ya fue modificada" },
+        { status: 400 },
+      );
+    }
     const offersAccepted = await prismaClient.offer.findMany({
       where: {
         auctionId: data.auction_id,
         status: "accepted",
       },
-    })
+    });
     if (offersAccepted.length > 0) {
-      return NextResponse.json({ error: "Ya hay una oferta aceptada" }, { status: 400 });
+      return NextResponse.json(
+        { error: "Ya hay una oferta aceptada" },
+        { status: 400 },
+      );
     }
-   await prismaClient.offer.update({
+    await prismaClient.offer.update({
       data: {
         status: "accepted",
       },
@@ -113,26 +129,26 @@ export async function POST(req: NextRequest) {
       },
     });
     const waste = await prismaClient.waste.update({
-      data:{
+      data: {
         units: {
           decrement: auction.units,
         },
       },
       where: {
-          id:auction.wasteId,
+        id: auction.wasteId,
       },
-    })
+    });
     const offers = await prismaClient.offer.updateMany({
-      data:{
-        status:"rejected"
+      data: {
+        status: "rejected",
       },
       where: {
-        auctionId:auction.id,
+        auctionId: auction.id,
         NOT: {
-          id: offer.id
-        }
+          id: offer.id,
+        },
       },
-    })
+    });
     const purchase = await prismaClient.purchase.create({
       data: {
         finalPrice: offer.offerPrice,
@@ -168,6 +184,6 @@ export async function POST(req: NextRequest) {
         read: false, // Asegúrate de incluir todos los campos requeridos
       },
     });
-    return NextResponse.json({message:"offer accepted"}, { status: 201 });
+    return NextResponse.json({ message: "offer accepted" }, { status: 201 });
   }
 }

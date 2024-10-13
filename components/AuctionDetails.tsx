@@ -30,6 +30,7 @@ export function AuctionDetails({
   auctionInfo: Auction;
   canOffer?: boolean;
 }) {
+  const [popoverOpen, setPopoverOpen] = useState(false);
   const [open, setOpen] = useState(false);
 
   const statusMapping: { [key in Auction["status"]]: string } = {
@@ -46,7 +47,7 @@ export function AuctionDetails({
   };
 
   return (
-    <Dialog>
+    <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <Button
           variant={canOffer ? "default" : "outline"}
@@ -58,7 +59,7 @@ export function AuctionDetails({
       <DialogContent
         onPointerDownOutside={(e) => {
           // disable close on click outside
-          open && e.preventDefault();
+          popoverOpen && e.preventDefault();
         }}
         className="sm:max-w-[425px]"
       >
@@ -149,14 +150,14 @@ export function AuctionDetails({
               <PopoverTrigger asChild>
                 <Button
                   onClick={() => {
-                    setOpen(true);
+                    setPopoverOpen(true);
                   }}
                 >
                   Realizar oferta
                 </Button>
               </PopoverTrigger>
               <PopoverContent
-                onPointerDownOutside={() => setOpen(false)}
+                onPointerDownOutside={() => setPopoverOpen(false)}
                 side="right"
                 className="w-full p-4"
               >
@@ -167,7 +168,9 @@ export function AuctionDetails({
             </Popover>
           ) : (
             <div className="flex items-end">
-              <Button variant={"outline"}>Cerrar </Button>
+              <Button variant={"outline"} onClick={() => setOpen(false)}>
+                Cerrar
+              </Button>
             </div>
           )}
         </DialogFooter>

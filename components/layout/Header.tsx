@@ -23,7 +23,7 @@ const navButtons = [
   { title: "Mis residuos", href: "/manage/wastes" },
   { title: "Vender", href: "/create-auction" },
   { title: "Comprar", href: "/search/auctions" },
-  {title:"Admin",href:"/admin"}
+  { title: "Admin", href: "/admin" },
 ];
 
 export default function Header() {
@@ -32,6 +32,14 @@ export default function Header() {
 
   const loggedIn = status === "authenticated";
   const isSuperAdmin = data?.user?.role === "superAdmin";
+
+  const isBtnDisabled = (title: string) => {
+    if (!loggedIn && title !== "Inicio") return true;
+    if (isSuperAdmin && title !== "Inicio" && title !== "Admin") return true;
+    if (!isSuperAdmin && title === "Admin") return true;
+    if ((!loggedIn || isSuperAdmin) && title === "Mis actividades") return true;
+    return false;
+  };
 
   return (
     <div className="flex w-full flex-col shadow-md">
@@ -44,20 +52,17 @@ export default function Header() {
                 <NavigationMenuLink asChild>
                   <Button
                     variant={"ghost"}
+                    disabled={isBtnDisabled(btn.title)}
                     className={cn(
                       "select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none",
                       "transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground",
-                      (!loggedIn) && btn.title !== "Inicio"
-                        ? "hidden"
-                        : "",
-                        ( isSuperAdmin) && (btn.title !== "Inicio" && btn.title !== "Admin")
-                        ? "hidden"
-                        : "",  
-                        ( !isSuperAdmin) && btn.title == "Admin"
-                        ? "hidden"
-                        : "",  
+                      "disabled:-translate-x-4",
+                      "transition ease-in duration-300",
+                      "disabled:opacity-0 disabled:w-0 disabled:p-0",
                     )}
-                    onClick={() => router.push(btn.href)}
+                    onClick={() =>
+                      !isBtnDisabled(btn.title) && router.push(btn.href)
+                    }
                   >
                     <div className="text-sm font-medium leading-none">
                       {btn.title}
@@ -68,7 +73,12 @@ export default function Header() {
             ))}
             <NavigationMenuItem>
               <NavigationMenuTrigger
-                className={`bg-primary ${(!loggedIn || isSuperAdmin) && "hidden"}`}
+                disabled={isBtnDisabled("Mis actividades")}
+                className={cn(
+                  "disabled:-translate-x-4",
+                  "bg-primary transition ease-in duration-300",
+                  "disabled:opacity-0 disabled:w-0 disabled:p-0",
+                )}
               >
                 Mis actividades
               </NavigationMenuTrigger>
@@ -94,7 +104,7 @@ export default function Header() {
         </NavigationMenu>
         <div className="flex w-full items-center gap-4 md:ml-auto md:gap-2 lg:gap-4">
           <div className="ml-auto flex-1 sm:flex-initial"></div>
-          {loggedIn && !isSuperAdmin && <NotificationComponent />}
+          <NotificationComponent disabled={!loggedIn || isSuperAdmin} />
           {loggedIn ? <ProfileMenu /> : <LoginMenu />}
         </div>
       </header>

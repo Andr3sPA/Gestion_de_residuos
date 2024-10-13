@@ -13,6 +13,18 @@ import { toast } from "@/hooks/use-toast";
 import { Purchase } from "@prisma/client";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
+import { cn, enumMappings } from "@/lib/utils";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 
 export interface Auction {
   id: number;
@@ -37,15 +49,8 @@ export interface Auction {
   pickupLongitude: string;
   initialPrice: string;
   createdAt: string;
-  status: keyof typeof auctionStatusMap;
+  status: keyof (typeof enumMappings)["auctionStatusMap"];
 }
-
-const auctionStatusMap = {
-  available: "Disponible",
-  closed: "Cerrado",
-  expired: "Expirado",
-  sold: "Vendido",
-};
 
 export default function ManageAuctions() {
   const auctions = useQuery({
@@ -70,7 +75,7 @@ export default function ManageAuctions() {
       const response = await axios.post("/api/auctions/close", {
         id: auctionId,
       });
-      console.log("Datos enviados exitosamente:", response.data);
+      auctions.refetch();
       toast({
         description: response.data.message, // Solo descripción
       });
@@ -144,7 +149,22 @@ export default function ManageAuctions() {
       enableGlobalFilter: false,
       cell: ({ row }) => {
         const status = row.original.status;
-        return <Badge variant={"secondary"}>{auctionStatusMap[status]}</Badge>;
+        return (
+          <Badge
+            variant={"secondary"}
+            className={cn(
+              "text-white hover:text-white hover:brightness-110",
+
+              status === "available"
+                ? "bg-badge-ok hover:bg-badge-ok"
+                : status === "expired"
+                  ? "bg-badge-error hover:bg-badge-error"
+                  : "bg-badge-neutral hover:bg-badge-neutral",
+            )}
+          >
+            {enumMappings.auctionStatusMap[status]}
+          </Badge>
+        );
       },
     },
     {
@@ -162,27 +182,59 @@ export default function ManageAuctions() {
     },
     {
       id: "actions",
-      cell: ({ row }) => <ManageOffers auctionId={row.original.id} />,
+      cell: ({ row }) => (
+        <ManageOffers
+          auctionId={row.original.id}
+          auctionStatus={row.original.status}
+        />
+      ),
     },
     {
       id: "closeAuction",
       header: "Cerrar subasta",
       cell: ({ row }) => (
         <div className="flex justify-center">
-          <Button
-            onClick={() => handleSendData(row.original.id)}
-            disabled={
-              isLoading ||
-              ["closed", "sold", "expired"].includes(row.original.status)
-            } // Deshabilita el botón si está cargando o si el estado es "closed"
-            className="scale-75 bg-destructive"
-          >
-            {loadingAuctionId === row.original.id ? (
-              <Loader2Icon className="animate-spin" />
-            ) : (
-              <XIcon />
-            )}
-          </Button>
+          <AlertDialog>
+            <AlertDialogTrigger
+              asChild
+              disabled={
+                isLoading ||
+                ["closed", "sold", "expired"].includes(row.original.status)
+              } // Deshabilita el botón si está cargando o si el estado es "closed"
+            >
+              <Button
+                disabled={
+                  isLoading ||
+                  ["closed", "sold", "expired"].includes(row.original.status)
+                }
+                className="scale-75 bg-destructive"
+              >
+                {loadingAuctionId === row.original.id ? (
+                  <Loader2Icon className="animate-spin" />
+                ) : (
+                  <XIcon />
+                )}
+              </Button>
+            </AlertDialogTrigger>
+            <AlertDialogContent className="flex flex-col gap-6">
+              <AlertDialogHeader>
+                <AlertDialogTitle className="text-lg font-bold">
+                  ¿Está seguro de cerrar esta subasta?
+                </AlertDialogTitle>
+                <AlertDialogDescription className="">
+                  Se rechazarán todas las ofertas relacionadas a esta.
+                </AlertDialogDescription>
+              </AlertDialogHeader>
+              <AlertDialogFooter>
+                <AlertDialogCancel>Cancelar</AlertDialogCancel>
+                <AlertDialogAction
+                  onClick={() => handleSendData(row.original.id)}
+                >
+                  Cerrar subasta
+                </AlertDialogAction>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
         </div>
       ),
     },

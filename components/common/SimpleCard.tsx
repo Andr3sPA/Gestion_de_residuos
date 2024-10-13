@@ -5,11 +5,11 @@ import {
   CardDescription,
   CardContent,
 } from "@/components/ui/card";
+import { cn } from "@/lib/utils";
 import { ReactNode } from "react";
-import { twMerge } from "tailwind-merge";
 
 export function SimpleCard({
-  className,
+  className = "",
   title,
   desc,
   headerActions,
@@ -21,13 +21,13 @@ export function SimpleCard({
   headerActions?: ReactNode;
   children: ReactNode;
 }) {
-  const mergedClasses = twMerge(
-    "w-fit p-4 m-4 border-2 shadow-md max-w-full",
-    className ?? "",
-  );
-
   return (
-    <Card className={mergedClasses}>
+    <Card
+      className={cn(
+        "w-fit p-4 m-4 border-2 transi shadow-md max-w-full",
+        className,
+      )}
+    >
       <CardHeader
         className={`px-7 grid ${headerActions ? "grid-cols-2" : ""} max-w-full`}
       >

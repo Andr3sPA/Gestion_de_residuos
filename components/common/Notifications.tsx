@@ -8,6 +8,7 @@ import {
 import { MdCircleNotifications } from "react-icons/md";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 
 interface Notification {
   id: number;
@@ -17,7 +18,11 @@ interface Notification {
   type: string; // Añadido el campo type
 }
 
-const NotificationComponent = () => {
+const NotificationComponent = ({
+  disabled = false,
+}: {
+  disabled?: boolean;
+}) => {
   const queryClient = useQueryClient();
   const [isScrollable, setIsScrollable] = useState(false); // Estado para controlar si el contenedor es scrollable
   const {
@@ -81,7 +86,13 @@ const NotificationComponent = () => {
   return (
     <Popover>
       <PopoverTrigger asChild>
-        <button className="relative">
+        <button
+          disabled={disabled}
+          className={cn(
+            "relative disabled:opacity-0 disabled:translate-x-4",
+            "transition ease-in duration-300",
+          )}
+        >
           <MdCircleNotifications style={{ fontSize: "2rem", color: "white" }} />
           {readCount > 0 && (
             <span className="absolute -top-1 -right-1 bg-red-500 text-white rounded-full w-4 h-4 text-xs flex items-center justify-center">

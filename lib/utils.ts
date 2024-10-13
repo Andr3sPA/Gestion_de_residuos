@@ -16,4 +16,15 @@ export const enumMappings = {
     accepted: "Aceptada",
     rejected: "Rechazada",
   },
+  offerStatus: {
+    waiting: "En espera",
+    accepted: "Aceptada",
+    rejected: "Rechazada",
+  },
+  auctionStatusMap: {
+    available: "Disponible",
+    closed: "Cerrado",
+    expired: "Expirado",
+    sold: "Vendido",
+  },
 };

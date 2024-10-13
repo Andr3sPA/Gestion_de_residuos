@@ -2,13 +2,15 @@
 import { useQuery } from "@tanstack/react-query";
 import { ColumnDef } from "@tanstack/react-table";
 import axios from "axios";
-import { Loader2Icon } from "lucide-react";
+import { Loader2Icon, LucideRefreshCw } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { AuctionDetails } from "@/components/AuctionDetails";
 import { cn } from "@/lib/utils";
 import { SimpleCard } from "@/components/common/SimpleCard";
 import { TableList } from "@/components/common/TableList";
 import { Offer } from "@/components/ManageOffers";
+import { Button } from "@/components/ui/button";
+import { off } from "process";
 
 export default function ManageMyOffers() {
   const offers = useQuery({
@@ -97,6 +99,19 @@ export default function ManageMyOffers() {
     <SimpleCard
       title="Mis Ofertas"
       desc="Visualiza aquí todas las ofertas hechas por tu empresa."
+      headerActions={
+        <div className="flex justify-end gap-4">
+          <Button
+            variant={"secondary"}
+            disabled={offers.isRefetching}
+            onClick={() => offers.refetch()}
+          >
+            <LucideRefreshCw
+              className={`w-5 h-5 ${offers.isRefetching ? "animate-spin" : ""}`}
+            />
+          </Button>
+        </div>
+      }
     >
       {offers.isLoading ? (
         <Loader2Icon className="animate-spin" />

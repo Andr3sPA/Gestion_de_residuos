@@ -8,7 +8,6 @@ import { CheckIcon, Loader2Icon, XIcon } from "lucide-react";
 import { useState } from "react";
 import {
   AlertDialog,
-  AlertDialogAction,
   AlertDialogCancel,
   AlertDialogContent,
   AlertDialogDescription,
@@ -21,6 +20,8 @@ import { toast } from "@/hooks/use-toast"; // Importa el hook de toast
 import { Badge } from "@/components/ui/badge";
 import { TableList } from "./common/TableList";
 import { Auction } from "@/app/manage/auctions/page";
+import { AuctionStatus } from "@prisma/client";
+import { cn, enumMappings } from "@/lib/utils";
 
 interface Purchase {
   auction_id: number;
@@ -43,23 +44,29 @@ export interface Offer {
 
 interface OfferFormProps {
   auctionId: number; // Hacemos que auctionId sea opcional
+  auctionStatus: AuctionStatus;
 }
 
-export function ManageOffers({ auctionId }: OfferFormProps) {
+export function ManageOffers({ auctionId, auctionStatus }: OfferFormProps) {
   const [selectedPurchase, setSelectedPurchase] = useState<Purchase | null>(
     null,
   );
-  const [isLoading, setIsLoading] = useState(false); // Estado para controlar la carga
+  const [isLoading, setIsLoading] = useState({ a: false, r: false }); // Estado para controlar la carga
 
   const handleSendData = async (purchase: Purchase) => {
     setSelectedPurchase(purchase);
-    setIsLoading(true); // Inicia la carga
+    setIsLoading({
+      a: purchase.status === "accepted",
+      r: purchase.status === "rejected",
+    }); // Inicia la carga
     try {
       const response = await axios.post("/api/purchases/register", purchase);
       console.log("Datos enviados exitosamente:", response.data);
       toast({
         description: response.data.message, // Solo descripción
       });
+      offers.refetch();
+      canAcceptReject = false;
     } catch (error) {
       toast({
         variant: "destructive",
@@ -67,16 +74,17 @@ export function ManageOffers({ auctionId }: OfferFormProps) {
         description: (error as any).message,
       });
     } finally {
-      setIsLoading(false); // Finaliza la carga
+      setIsLoading({ a: false, r: false }); // Finaliza la carga
     }
   };
 
-  const auctions = useQuery({
-    queryKey: ["myAuctions", auctionId],
+  const offers = useQuery<Offer[]>({
+    queryKey: ["auctionOffers", auctionId],
+    refetchOnWindowFocus: "always",
     queryFn: () =>
       axios
         .get(`/api/offers/list?auction_id=${auctionId}`)
-        .then((res) => res.data),
+        .then((res) => res.data.offers),
   });
 
   const columns: ColumnDef<Offer>[] = [
@@ -89,11 +97,6 @@ export function ManageOffers({ auctionId }: OfferFormProps) {
     {
       accessorKey: "contact",
       header: "Contacto",
-      enableSorting: true,
-    },
-    {
-      accessorKey: "companyBuyer.name",
-      header: "Comprador",
       enableSorting: true,
     },
     {
@@ -128,15 +131,16 @@ export function ManageOffers({ auctionId }: OfferFormProps) {
         const st = row.original.status;
         return (
           <Badge
-            className={
+            className={cn(
+              "text-nowrap",
               st === "waiting"
                 ? "bg-badge-neutral"
                 : st === "rejected"
                   ? "bg-badge-error"
-                  : "bg-badge-ok"
-            }
+                  : "bg-badge-ok",
+            )}
           >
-            {st}
+            {enumMappings.offerStatus[st]}
           </Badge>
         );
       },
@@ -155,10 +159,10 @@ export function ManageOffers({ auctionId }: OfferFormProps) {
               })
             }
             size={"sm"}
-            disabled={isLoading} // Deshabilita el botón mientras se carga
+            disabled={isLoading.a || isLoading.r || !canAcceptReject}
             className="scale-75 bg-destructive"
           >
-            {isLoading ? <Loader2Icon className="animate-spin" /> : <XIcon />}
+            {isLoading.r ? <Loader2Icon className="animate-spin" /> : <XIcon />}
           </Button>
           <Button
             onClick={() =>
@@ -169,10 +173,10 @@ export function ManageOffers({ auctionId }: OfferFormProps) {
               })
             }
             size={"sm"}
-            disabled={isLoading} // Deshabilita el botón mientras se carga
+            disabled={isLoading.a || isLoading.r || !canAcceptReject}
             className="scale-75"
           >
-            {isLoading ? (
+            {isLoading.a ? (
               <Loader2Icon className="animate-spin" />
             ) : (
               <CheckIcon />
@@ -183,6 +187,8 @@ export function ManageOffers({ auctionId }: OfferFormProps) {
     },
   ];
 
+  let canAcceptReject = auctionStatus === "available";
+
   return (
     <AlertDialog>
       <AlertDialogTrigger asChild>
@@ -192,14 +198,16 @@ export function ManageOffers({ auctionId }: OfferFormProps) {
         <AlertDialogHeader className="w-full overflow-auto max-w-full">
           <AlertDialogTitle>Ofertas de la subasta {auctionId}</AlertDialogTitle>
           <AlertDialogDescription></AlertDialogDescription>
-          {auctions.isLoading ? (
-            <Loader2Icon className="animate-spin" />
+          {offers.isLoading ? (
+            <div className="w-full min-h-8 flex justify-center items-center">
+              <Loader2Icon className="animate-spin" />
+            </div>
           ) : (
-            !auctions.isError && (
-              <TableList columns={columns} data={auctions.data?.offers || []} />
+            !offers.isError && (
+              <TableList columns={columns} data={offers.data || []} />
             )
           )}
-          {auctions.isError && <div>{auctions.error.message}</div>}
+          {offers.isError && <div>{offers.error.message}</div>}
         </AlertDialogHeader>
         <AlertDialogFooter>
           <AlertDialogCancel>Cerrar</AlertDialogCancel>
