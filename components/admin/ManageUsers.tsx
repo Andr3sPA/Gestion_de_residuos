@@ -31,25 +31,25 @@ const roleOptions = [
 ];
 
 export function ManageUsers() {
-  const [isLoading, setIsLoading] = useState(false); // Estado para controlar la carga
-  const [loadingUserId, setLoadingUserId] = useState<number | null>(null); // Estado para rastrear el ID del usuario cuyo botón se hizo clic
+  const [isLoading, setIsLoading] = useState(false);
+  const [loadingUserId, setLoadingUserId] = useState<number | null>(null);
+  const [selectedStatus, setSelectedStatus] = useState<{ [key: number]: string }>({});
+  const [selectedRole, setSelectedRole] = useState<{ [key: number]: string }>({});
 
   const handleSendData = async (user: User, status: string, role: string) => {
-    setIsLoading(true); // Inicia la carga
-    setLoadingUserId(user.id); // Establece el ID del usuario cuyo botón se hizo clic
+    setIsLoading(true);
+    setLoadingUserId(user.id);
     try {
-      const statusOption = statusOptions.find(
-        (option) => option.label === status,
-      );
+      const statusOption = statusOptions.find((option) => option.label === status);
       const roleOption = roleOptions.find((option) => option.label === role);
 
       const response = await axios.post("/api/admin/updateUser", {
-        id: user.id, // Asegúrate de enviar el ID del usuario
-        membershipStatus: statusOption?.value, // Envía el valor en inglés
-        role: roleOption?.value, // Envía el valor en inglés
+        id: user.id,
+        membershipStatus: statusOption?.value,
+        role: roleOption?.value,
       });
       toast({
-        description: response.data.message, // Solo descripción
+        description: response.data.message,
       });
     } catch (error) {
       toast({
@@ -58,8 +58,8 @@ export function ManageUsers() {
         description: (error as any).message,
       });
     } finally {
-      setIsLoading(false); // Finaliza la carga
-      setLoadingUserId(null); // Restablece el ID del usuario cuyo botón se hizo clic
+      setIsLoading(false);
+      setLoadingUserId(null);
     }
   };
 
@@ -100,15 +100,12 @@ export function ManageUsers() {
       enableSorting: true,
       cell: function StatusCell({ row }) {
         const user = row.original;
-        const [selectedStatus, setSelectedStatus] = useState(
-          statusOptions.find((option) => option.value === user.membershipStatus)
-            ?.label || "esperando",
-        );
+        const status = selectedStatus[user.id] ?? statusOptions.find((option) => option.value === user.membershipStatus)?.label ?? "esperando";
 
         return (
           <Select
-            value={selectedStatus}
-            onValueChange={(value) => setSelectedStatus(value)}
+            value={status}
+            onValueChange={(value) => setSelectedStatus((prev) => ({ ...prev, [user.id]: value }))}
           >
             <SelectTrigger>
               <SelectValue placeholder="Seleccione un estado" />
@@ -130,15 +127,12 @@ export function ManageUsers() {
       enableSorting: true,
       cell: function RoleCell({ row }) {
         const user = row.original;
-        const [selectedRole, setSelectedRole] = useState(
-          roleOptions.find((option) => option.value === user.role)?.label ||
-            "gerenteDeEmpresa",
-        );
+        const role = selectedRole[user.id] ?? roleOptions.find((option) => option.value === user.role)?.label ?? "gerenteDeEmpresa";
 
         return (
           <Select
-            value={selectedRole}
-            onValueChange={(value) => setSelectedRole(value)}
+            value={role}
+            onValueChange={(value) => setSelectedRole((prev) => ({ ...prev, [user.id]: value }))}
           >
             <SelectTrigger>
               <SelectValue placeholder="Seleccione un rol" />
@@ -159,20 +153,14 @@ export function ManageUsers() {
       id: "actions",
       cell: function ActionsCell({ row }) {
         const user = row.original;
-        const [selectedStatus, setSelectedStatus] = useState(
-          statusOptions.find((option) => option.value === user.membershipStatus)
-            ?.label || "esperando",
-        );
-        const [selectedRole, setSelectedRole] = useState(
-          roleOptions.find((option) => option.value === user.role)?.label ||
-            "gerenteDeEmpresa",
-        );
+        const status = selectedStatus[user.id] ?? statusOptions.find((option) => option.value === user.membershipStatus)?.label ?? "esperando";
+        const role = selectedRole[user.id] ?? roleOptions.find((option) => option.value === user.role)?.label ?? "gerenteDeEmpresa";
 
         return (
           <Button
             variant="outline"
-            onClick={() => handleSendData(user, selectedStatus, selectedRole)}
-            disabled={isLoading} // Deshabilita el botón si isLoading es true
+            onClick={() => handleSendData(user, status, role)}
+            disabled={isLoading}
           >
             {loadingUserId === user.id ? (
               <Loader2Icon className="animate-spin" />
