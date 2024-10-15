@@ -75,7 +75,7 @@ const handler = NextAuth({
         // Realizar la solicitud a la API para validar las credenciales
 
         const res = await axios.post(
-          "http://localhost:3000/api/users/login",
+          process.env.NEXTAUTH_URL + "/api/users/login",
           credentials,
         );
 
