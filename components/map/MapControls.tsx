@@ -1,5 +1,5 @@
 import { Marker } from "react-leaflet";
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { useMapEvent } from "react-leaflet";
 import L, { LatLngExpression } from "leaflet";
 
@@ -15,19 +15,19 @@ export function MapSearchAndMark({
   onMarkChange: (latLng: LatLngExpression) => void;
   markedPos: LatLngExpression | null;
 }) {
-  let gcControl: Geocoder | null = null;
+  let gcControl = useRef<Geocoder | null>(null);
   const map = useMapEvent("click", (e) => {
     onMarkChange(e.latlng);
   });
 
   useEffect(() => {
-    if (gcControl) return;
+    if (gcControl.current) return;
 
-    gcControl = new Geocoder({
+    gcControl.current = new Geocoder({
       defaultMarkGeocode: false,
     });
 
-    gcControl
+    gcControl.current
       .on("markgeocode", function (e) {
         const bbox = e.geocode.bbox;
         const poly = L.polygon([
@@ -41,7 +41,7 @@ export function MapSearchAndMark({
         console.log(e.geocode.name);
       })
       .addTo(map);
-  }, [map]);
+  }, [map, onMarkChange]);
 
   return markedPos ? <Marker position={markedPos} /> : null;
 }

@@ -9,7 +9,7 @@ import { Auction } from "@/app/manage/auctions/page";
 import { SimpleCard } from "@/components/common/SimpleCard";
 import { TableList } from "@/components/common/TableList";
 
-export default function searchAuctions() {
+export default function SearchAuctions() {
   const auctions = useQuery({
     queryKey: ["allAuctions"],
     queryFn: () =>

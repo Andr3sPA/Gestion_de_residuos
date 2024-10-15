@@ -64,8 +64,8 @@ export function TableList<T>({
   });
 
   const [triangleUp, triangleDown] = [
-    <span>&#9652;</span>,
-    <span>&#9662;</span>,
+    <span key={"tUp"}>&#9652;</span>,
+    <span key={"TDown"}>&#9662;</span>,
   ];
 
   return (

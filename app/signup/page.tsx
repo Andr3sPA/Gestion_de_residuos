@@ -77,7 +77,7 @@ export default function Signup() {
     if (status === "authenticated") {
       router.replace("/");
     }
-  }, [status]);
+  }, [status, router]);
 
   const form = useForm<z.infer<typeof signupSchema>>({
     resolver: zodResolver(signupSchema),

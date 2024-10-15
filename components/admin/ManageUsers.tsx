@@ -98,7 +98,7 @@ export function ManageUsers() {
       accessorKey: "membershipStatus",
       header: "Estado",
       enableSorting: true,
-      cell: ({ row }) => {
+      cell: function StatusCell({ row }) {
         const user = row.original;
         const [selectedStatus, setSelectedStatus] = useState(
           statusOptions.find((option) => option.value === user.membershipStatus)
@@ -128,7 +128,7 @@ export function ManageUsers() {
       accessorKey: "role",
       header: "Rol",
       enableSorting: true,
-      cell: ({ row }) => {
+      cell: function RoleCell({ row }) {
         const user = row.original;
         const [selectedRole, setSelectedRole] = useState(
           roleOptions.find((option) => option.value === user.role)?.label ||
@@ -156,8 +156,8 @@ export function ManageUsers() {
     },
     {
       accessorKey: "",
-      id: "details",
-      cell: ({ row }) => {
+      id: "actions",
+      cell: function ActionsCell({ row }) {
         const user = row.original;
         const [selectedStatus, setSelectedStatus] = useState(
           statusOptions.find((option) => option.value === user.membershipStatus)
