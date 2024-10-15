@@ -17,6 +17,7 @@ import { ProfileMenu } from "../users/ProfileMenu";
 import { NavigationSheet } from "./NavigationSheet";
 import { Button } from "../ui/button";
 import { useRouter } from "next/navigation";
+import { UserSession } from "@/app/api/auth/[...nextauth]/route";
 
 const navButtons = [
   { title: "Inicio", href: "/" },
@@ -31,7 +32,8 @@ export default function Header() {
   const router = useRouter();
 
   const loggedIn = status === "authenticated";
-  const isSuperAdmin = data?.user?.role === "superAdmin";
+  const isSuperAdmin =
+    loggedIn && (data as UserSession).user?.role === "superAdmin";
 
   const isBtnDisabled = (title: string) => {
     if (!loggedIn && title !== "Inicio") return true;

@@ -20,6 +20,7 @@ import {
 } from "../ui/collapsible";
 import { cn } from "@/lib/utils";
 import { useSession } from "next-auth/react";
+import { UserSession } from "@/app/api/auth/[...nextauth]/route";
 
 export function NavigationSheet() {
   const { status, data } = useSession();
@@ -42,7 +43,8 @@ export function NavigationSheet() {
   ];
 
   const loggedIn = status === "authenticated";
-  const isSuperAdmin = data?.user?.role === "superAdmin";
+  const isSuperAdmin =
+    loggedIn && (data as UserSession).user?.role === "superAdmin";
 
   return (
     <Sheet open={open} onOpenChange={setOpen}>

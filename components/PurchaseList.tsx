@@ -5,14 +5,28 @@ import axios from "axios";
 import { Loader2Icon } from "lucide-react";
 import { SimpleCard } from "./common/SimpleCard";
 import { TableList } from "./common/TableList";
+import { WasteCategory } from "@prisma/client";
 export interface Purchase {
   id: number;
   offer: {
-    companyBuyer: string;
+    companyBuyer: {
+      name: string;
+      description: string;
+      nit: number;
+    };
   };
   auction: {
-    companySeller: string;
+    conditions: string;
+    companySeller: {
+      name: string;
+      description: string;
+      nit: number;
+    };
+    units: number;
+    pickupLatitude: string;
+    pickupLongitude: string;
     waste: {
+      category: WasteCategory;
       unitType: {
         name: string;
       };

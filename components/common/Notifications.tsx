@@ -31,7 +31,7 @@ const NotificationComponent = ({
     isError,
     error,
     refetch,
-  } = useQuery({
+  } = useQuery<{ notifications: Notification[]; readCount: number }>({
     queryKey: ["notifications"],
     queryFn: () => axios.get("/api/notifications/list").then((res) => res.data),
   });
@@ -56,7 +56,7 @@ const NotificationComponent = ({
   const handleClick = async (notification: Notification) => {
     try {
       await axios.post("/api/notifications/read", { id: notification.id });
-      queryClient.invalidateQueries(["notifications"]);
+      queryClient.invalidateQueries({ queryKey: ["notifications"] });
       if (notification.type === "offer_rejected") {
         window.location.href = "/records/offersRecord";
       } else if (notification.type === "auction_has_new_offer") {
@@ -72,7 +72,7 @@ const NotificationComponent = ({
   const handleDeleteAll = async () => {
     try {
       await axios.post("/api/notifications/erase");
-      queryClient.invalidateQueries(["notifications"]);
+      queryClient.invalidateQueries({ queryKey: ["notifications"] });
       refetch();
     } catch (error) {
       console.error("Error al borrar las notificaciones:", error);

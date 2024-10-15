@@ -10,6 +10,7 @@ import {
 import { Separator } from "@radix-ui/react-select";
 import { useState } from "react";
 import { MapPopover } from "./map/MapPopover";
+import { Purchase } from "./PurchaseList";
 
 const wasteCategoryMap = {
   usable: "Usable",
@@ -20,7 +21,7 @@ export function PurchaseDetails({
   purchaseInfo,
   recordType,
 }: {
-  purchaseInfo: any;
+  purchaseInfo: Purchase;
   recordType: string;
 }) {
   const [offerOpen, setOfferOpen] = useState(false);
@@ -119,9 +120,7 @@ export function PurchaseDetails({
                 </span>
               </div>
               <div>
-                <span className="text-xs font-light">
-                  NIT de la empresa
-                </span>
+                <span className="text-xs font-light">NIT de la empresa</span>
                 <Separator />
                 <span className="text-lg font-semibold">
                   {purchaseInfo.offer.companyBuyer.nit}
@@ -149,9 +148,7 @@ export function PurchaseDetails({
                 </span>
               </div>
               <div>
-                <span className="text-xs font-light">
-                  NIT de la empresa
-                </span>
+                <span className="text-xs font-light">NIT de la empresa</span>
                 <Separator />
                 <span className="text-lg font-semibold">
                   {purchaseInfo.auction.companySeller.nit}

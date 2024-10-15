@@ -12,7 +12,6 @@ import {
 } from "@tanstack/react-table";
 import { Loader2 } from "lucide-react";
 import React from "react";
-import { IconLeft, IconRight } from "react-day-picker";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -23,6 +22,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { IconLeft, IconRight } from "react-day-picker";
 
 export function TableList<T>({
   columns,
