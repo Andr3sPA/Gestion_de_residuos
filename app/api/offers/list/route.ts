@@ -54,7 +54,6 @@ export async function GET(req: NextRequest) {
     },
   });
 
-  console.log("alog");
   if (!auction) return internal();
 
   if (auction.companySellerId != user.companyId) return unauthorized();

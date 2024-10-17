@@ -21,6 +21,7 @@ export interface JWTWithRole extends JWT {
 
 export interface UserWithRole extends AdapterUser {
   role?: string | null;
+  error?: string | null;
 }
 
 const handler = NextAuth({
@@ -58,6 +59,13 @@ const handler = NextAuth({
       }
       return token;
     },
+    async signIn({ user }) {
+      const userWithRole = user as UserWithRole;
+      if (userWithRole.error) {
+        throw new Error(userWithRole.error);
+      }
+      return true;
+    },
   },
   //TODO: use middleware or component to redirect if login failed or no logged in
   providers: [
@@ -73,16 +81,21 @@ const handler = NextAuth({
       },
       async authorize(credentials, req) {
         // Realizar la solicitud a la API para validar las credenciales
+        try {
+          const res = await axios.post(
+            process.env.NEXTAUTH_URL + "/api/users/login",
+            credentials,
+          );
 
-        const res = await axios.post(
-          process.env.NEXTAUTH_URL + "/api/users/login",
-          credentials,
-        );
-
-        const data = res.data;
-        const user = data.user;
-        if (user) {
-          return user;
+          const data = res.data;
+          const user = data.user;
+          if (user) {
+            return user;
+          }
+        } catch (err: any) {
+          if (err.response && err.response.data.error) {
+            return { error: err.response.data.error };
+          }
         }
 
         return null;

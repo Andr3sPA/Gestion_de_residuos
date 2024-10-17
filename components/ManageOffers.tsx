@@ -61,7 +61,6 @@ export function ManageOffers({ auctionId, auctionStatus }: OfferFormProps) {
     }); // Inicia la carga
     try {
       const response = await axios.post("/api/purchases/register", purchase);
-      console.log("Datos enviados exitosamente:", response.data);
       toast({
         description: response.data.message, // Solo descripción
       });

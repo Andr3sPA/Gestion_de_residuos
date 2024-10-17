@@ -75,7 +75,6 @@ export function AuctionForm({ wasteId, onCancel }: OfferFormProps) {
 
   function onSubmit(data: z.infer<typeof FormSchema>) {
     setIsLoading(true); // Inicia la carga
-    console.log("Datos antes de enviar:", data);
 
     axios
       .post("/api/auctions/register", data)

@@ -67,8 +67,6 @@ export default function Signup() {
           id: c.id,
           label: c.name,
         }));
-        console.log(newL);
-        return newL;
       }),
   });
 
@@ -92,8 +90,6 @@ export default function Signup() {
   const [res, setRes] = useState({ status: "pending", info: "" });
 
   const onSubmit = (values: z.infer<typeof signupSchema>) => {
-    console.log(values);
-
     setRes({ status: "loading", info: "" });
     axios
       .post("/api/users/signup", values)
@@ -170,7 +166,6 @@ export default function Signup() {
                       list={companies.data ?? []}
                       onSelect={(item) => {
                         form.setValue("companyId", item ? item.id : "");
-                        console.log(form.watch("companyId"));
                       }}
                     />
                   </FormControl>

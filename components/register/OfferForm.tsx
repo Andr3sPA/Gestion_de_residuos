@@ -48,7 +48,6 @@ export function OfferForm({ auctionId }: OfferFormProps) {
 
   function onSubmit(data: z.infer<typeof FormSchema>) {
     setIsLoading(true); // Inicia la carga
-    console.log("Datos antes de enviar:", data);
 
     // Convertir el precio a número
     const payload = {

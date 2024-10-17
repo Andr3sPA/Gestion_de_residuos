@@ -113,12 +113,10 @@ export function AuctionWithWasteForm() {
 
   function onSubmit(data: z.infer<typeof FormSchema>) {
     setIsLoading(true); // Inicia la carga
-    console.log("Datos antes de enviar:", data);
 
     axios
       .post("/api/wastes/registerWithOffer", data)
       .then((response) => {
-        console.log(response);
         toast({
           description: response.data.message, // Solo descripción
         });

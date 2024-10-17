@@ -38,7 +38,6 @@ export function MapSearchAndMark({
         ]);
         map.fitBounds(poly.getBounds());
         onMarkChange(e.geocode.center);
-        console.log(e.geocode.name);
       })
       .addTo(map);
   }, [map, onMarkChange]);
