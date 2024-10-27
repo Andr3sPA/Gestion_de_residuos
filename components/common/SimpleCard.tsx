@@ -16,28 +16,33 @@ export function SimpleCard({
   children,
 }: {
   className?: string;
-  title: string;
+  title?: string;
   desc?: string;
   headerActions?: ReactNode;
   children: ReactNode;
 }) {
+  const renderHeader = title || desc || headerActions;
+
   return (
     <Card
-      className={cn(
-        "w-fit p-4 m-4 border-2 transi shadow-md max-w-full",
-        className,
-      )}
+      className={cn("w-fit p-4 m-4 border-2 shadow-md max-w-full", className)}
     >
-      <CardHeader
-        className={`px-7 grid ${headerActions ? "grid-cols-2" : ""} max-w-full`}
+      {renderHeader && (
+        <CardHeader
+          className={`px-7 grid ${headerActions ? "grid-cols-2" : ""} max-w-full`}
+        >
+          <div>
+            <CardTitle className="w-full">{title}</CardTitle>
+            {desc && <CardDescription>{desc}</CardDescription>}
+          </div>
+          {headerActions && <div>{headerActions}</div>}
+        </CardHeader>
+      )}
+      <CardContent
+        className={cn("flex justify-center max-w-full", {
+          "pt-6": !renderHeader,
+        })}
       >
-        <div>
-          <CardTitle className="w-full">{title}</CardTitle>
-          {desc && <CardDescription>{desc}</CardDescription>}
-        </div>
-        {headerActions && <div>{headerActions}</div>}
-      </CardHeader>
-      <CardContent className="flex justify-center max-w-full">
         {children}
       </CardContent>
     </Card>
