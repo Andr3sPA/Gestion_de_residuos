@@ -34,7 +34,7 @@ export function Effectivity() {
         return res.data.auctions;
       }),
   });
-  const [data, setData] = useState<AuctionsCount[]>([]);
+  const [filteredData, setFilteredData] = useState<AuctionsCount[]>([]);
 
   useEffect(() => {
     if (!auctions.isSuccess) return;
@@ -51,13 +51,13 @@ export function Effectivity() {
         fill: `hsl(var(--chart-${(i % 5) + 1}))`,
       }),
     );
-    setData(counts);
+    setFilteredData(counts);
   }, [range, auctions.isSuccess, auctions.data]);
 
   return (
     <SimpleCard>
       <div className="w-fit flex flex-col items-center p-2">
-        <div className="grid sm:grid-cols-2 sm:grid-rows-1 grid-rows-2 gap-4">
+        <div className="grid grid-cols-2 gap-4">
           <DatePicker
             label="Desde"
             selected={range.from}
@@ -69,7 +69,13 @@ export function Effectivity() {
             onSelect={(date) => setRange((prev) => ({ ...prev, to: date }))}
           />
         </div>
-        <PieGraph data={data} />
+        {auctions.isLoading ? (
+          <div className="min-h-32 flex flex-col justify-center">
+            <Loader2 className="animate-spin" />
+          </div>
+        ) : (
+          <PieGraph data={filteredData} />
+        )}
       </div>
     </SimpleCard>
   );
@@ -98,13 +104,9 @@ function PieGraph({ data }: { data: AuctionsCount[] | undefined }) {
 
   return total === 0 ? (
     <div className="flex flex-col justify-center min-h-60 m-2 px-4 rounded-md">
-      {data ? (
-        <span className="font-light">
-          No hay subastas en el rango seleccionado
-        </span>
-      ) : (
-        <Loader2 className="animate-spin" />
-      )}
+      <span className="font-light">
+        No hay subastas en el rango seleccionado
+      </span>
     </div>
   ) : (
     <ChartContainer
