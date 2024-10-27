@@ -36,7 +36,7 @@ export async function GET(req: NextRequest) {
   }
 
   let purchases;
-
+  let purchasesWithCounts;
   if (recordType === "Ventas") {
     purchases = await prismaClient.purchase.findMany({
       where: {
@@ -62,11 +62,49 @@ export async function GET(req: NextRequest) {
 
         offer: {
           include: {
-            companyBuyer: true,
+            companyBuyer: {
+              include: {
+                offers: true,
+                auctions: true,
+              },
+            }
           },
         },
       },
     });
+  purchasesWithCounts = await Promise.all(
+    purchases.map(async (purchase) => {
+      const countOffers = purchase.offer.companyBuyer.offers.length
+  
+      const countSales = await prismaClient.purchase.count({
+        where: {
+          auction: {
+            companySellerId: purchase.offer.companyBuyerId,
+          },
+        },
+      });
+  
+      const countPurchases = await prismaClient.purchase.count({
+        where: {
+          offer: {
+            companyBuyerId: purchase.offer.companyBuyerId,
+          },
+        },
+      });
+  
+      const countAuctions = purchase.offer.companyBuyer.auctions.length
+  
+      return {
+        ...purchase,
+        counts: {
+          countOffers,
+          countSales,
+          countPurchases,
+          countAuctions,
+        },
+      };
+    })
+  );
   } else if (recordType === "Compras") {
     purchases = await prismaClient.purchase.findMany({
       where: {
@@ -80,7 +118,12 @@ export async function GET(req: NextRequest) {
       include: {
         auction: {
           include: {
-            companySeller: true,
+            companySeller: {
+              include: {
+                offers: true,
+                auctions: true,
+              },
+            },
             waste: {
               include: {
                 unitType: true,
@@ -97,11 +140,43 @@ export async function GET(req: NextRequest) {
         },
       },
     });
+  purchasesWithCounts = await Promise.all(
+    purchases.map(async (purchase) => {
+      const countOffers = purchase.auction.companySeller.offers.length
+  
+      const countSales = await prismaClient.purchase.count({
+        where: {
+          auction: {
+            companySellerId: purchase.auction.companySellerId,
+          },
+        },
+      });
+  
+      const countPurchases = await prismaClient.purchase.count({
+        where: {
+          offer: {
+            companyBuyerId: purchase.auction.companySellerId,
+          },
+        },
+      });
+  
+      const countAuctions = purchase.auction.companySeller.auctions.length
+  
+      return {
+        ...purchase,
+        counts: {
+          countOffers,
+          countSales,
+          countPurchases,
+          countAuctions,
+        },
+      };
+    })
+  );
   }
   // Verificamos si hay resultados
-  if (!purchases) {
+  if (!purchasesWithCounts) {
     return NextResponse.json({ error: "internal error" }, { status: 500 });
   }
-
-  return NextResponse.json(purchases, { status: 200 });
+  return NextResponse.json(purchasesWithCounts, { status: 200 });
 }

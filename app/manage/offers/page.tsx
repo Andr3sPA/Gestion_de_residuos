@@ -11,13 +11,21 @@ import { TableList } from "@/components/common/TableList";
 import { Offer } from "@/components/ManageOffers";
 import { Button } from "@/components/ui/button";
 import { off } from "process";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
 
 export default function ManageMyOffers() {
   const offers = useQuery({
     queryKey: ["myOffers"],
     queryFn: () =>
       axios.get("/api/offers/listMyOffers").then((res) => {
-        return res.data.offers;
+        return res.data.offersWithCounts;
       }),
   });
 
@@ -38,6 +46,24 @@ export default function ManageMyOffers() {
       accessorKey: "auction.companySeller.name",
       header: "Nombre del Vendedor",
       enableSorting: true,
+    },
+    {
+      accessorKey: "",
+      id: "Calificaciones del vendedor",
+      cell: ({ row }) => (
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button className="rounded-xl text-xs">Calificaciones del vendedor</Button>
+            </DropdownMenuTrigger>
+          <DropdownMenuContent>
+            <DropdownMenuLabel>Subastas realizadas {row.original.counts.countAuctions}</DropdownMenuLabel>
+            <DropdownMenuLabel>Subastas vendidas {row.original.counts.countSales}</DropdownMenuLabel>
+            <DropdownMenuLabel>Ofertas realizadas {row.original.counts.countOffers}</DropdownMenuLabel>
+            <DropdownMenuLabel>Subastas compradas {row.original.counts.countPurchases}</DropdownMenuLabel>
+          </DropdownMenuContent>
+        </DropdownMenu>
+
+      ),
     },
     {
       accessorKey: "auction.waste.description",

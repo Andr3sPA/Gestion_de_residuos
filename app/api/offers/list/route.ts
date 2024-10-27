@@ -43,12 +43,23 @@ export async function GET(req: NextRequest) {
     },
     select: {
       companySellerId: true,
+      companySeller:{
+        include:{
+          offers: true,
+          auctions:true
+        }
+      },
       offers: {
         orderBy: {
           createdAt: "desc",
         },
         include: {
-          companyBuyer: true,
+          companyBuyer: {
+            include:{
+              offers: true,
+              auctions:true
+            }
+          },
         },
       },
     },
@@ -57,9 +68,41 @@ export async function GET(req: NextRequest) {
   if (!auction) return internal();
 
   if (auction.companySellerId != user.companyId) return unauthorized();
-
+  const offersWithCounts = await Promise.all(
+    auction.offers.map(async (offer) => {
+      const countOffers = offer.companyBuyer.offers.length
+  
+      const countSales = await prismaClient.purchase.count({
+        where: {
+          auction: {
+            companySellerId: offer.companyBuyerId,
+          },
+        },
+      });
+  
+      const countPurchases = await prismaClient.purchase.count({
+        where: {
+          offer: {
+            companyBuyerId: offer.companyBuyerId,
+          },
+        },
+      });
+  
+      const countAuctions = offer.companyBuyer.auctions.length
+  
+      return {
+        ...offer,
+        counts: {
+          countOffers,
+          countSales,
+          countPurchases,
+          countAuctions,
+        },
+      };
+    })
+  );
   return NextResponse.json(
-    { offers: auction.offers, hasOffers: true },
+    { offers: offersWithCounts, hasOffers: true },
     { status: 200 },
   );
 }

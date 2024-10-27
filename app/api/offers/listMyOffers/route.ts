@@ -26,10 +26,18 @@ export async function GET(req: NextRequest) {
       companyBuyerId: user.companyId,
     },
     include: {
-      companyBuyer: true,
+      companyBuyer: {
+        include:{
+          offers: true,
+        }
+      },
       auction: {
         include: {
-          companySeller: true,
+          companySeller: {        
+            include:{
+              offers: true,
+              auctions:true
+          }},
           waste: {
             include: {
               wasteType: true,
@@ -43,8 +51,42 @@ export async function GET(req: NextRequest) {
       status: "asc",
     },
   });
-
-  if (!offers)
+  
+  // Ahora, para agregar los conteos a cada oferta
+  const offersWithCounts = await Promise.all(
+    offers.map(async (offer) => {
+      const countOffers = offer.auction.companySeller.offers.length
+  
+      const countSales = await prismaClient.purchase.count({
+        where: {
+          auction: {
+            companySellerId: offer.auction.companySellerId,
+          },
+        },
+      });
+  
+      const countPurchases = await prismaClient.purchase.count({
+        where: {
+          offer: {
+            companyBuyerId: offer.auction.companySellerId,
+          },
+        },
+      });
+  
+      const countAuctions = offer.auction.companySeller.auctions.length
+  
+      return {
+        ...offer,
+        counts: {
+          countOffers,
+          countSales,
+          countPurchases,
+          countAuctions,
+        },
+      };
+    })
+  );
+ if (!offers)
     return NextResponse.json({ error: "internal error" }, { status: 500 });
-  return NextResponse.json({ offers }, { status: 200 });
+  return NextResponse.json({ offersWithCounts }, { status: 200 });
 }

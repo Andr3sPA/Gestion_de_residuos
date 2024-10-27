@@ -32,6 +32,7 @@ export async function GET(req: NextRequest) {
       pickupLongitude: true,
       createdAt: true,
       status: true,
+      companySellerId:true,
       conditions:true,
       contact:true,
       expiresAt:true,
@@ -54,11 +55,45 @@ export async function GET(req: NextRequest) {
       companySeller: {
         select: {
           name: true,
-          description: true
+          description: true,
+          offers: true,
+          auctions: true,
         }
       }
     },
   })
+  const auctionsWithCounts = await Promise.all(
+    auctions.map(async (auction) => {
+      const countOffers = auction.companySeller.offers.length
   
-  return ok({ auctions })
+      const countSales = await prismaClient.purchase.count({
+        where: {
+          auction: {
+            companySellerId: auction.companySellerId,
+          },
+        },
+      });
+  
+      const countPurchases = await prismaClient.purchase.count({
+        where: {
+          offer: {
+            companyBuyerId: auction.companySellerId,
+          },
+        },
+      });
+  
+      const countAuctions = auction.companySeller.auctions.length
+  
+      return {
+        ...auction,
+        counts: {
+          countOffers,
+          countSales,
+          countPurchases,
+          countAuctions,
+        },
+      };
+    })
+  );
+  return ok({ auctionsWithCounts })
 }
