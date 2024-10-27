@@ -49,6 +49,12 @@ export interface Auction {
   pickupLongitude: string;
   initialPrice: string;
   createdAt: string;
+  counts:{  
+    countOffers: number;
+    countSales:number;
+    countPurchases:number;
+    countAuctions:number;
+  }
   status: keyof (typeof enumMappings)["auctionStatusMap"];
 }
 

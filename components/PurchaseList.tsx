@@ -34,9 +34,16 @@ export interface Purchase {
         name: string;
       };
     };
+    
   };
   finalPrice: number;
   createdAt: string;
+  counts:{  
+    countOffers: number;
+    countSales:number;
+    countPurchases:number;
+    countAuctions:number;
+  }
 }
 
 export enum RecordType {
@@ -133,6 +140,7 @@ export function PurchaseList({ recordType }: PurchasesProps) {
             header: "Contacto",
             enableSorting: true,
           },
+
           {
             accessorKey: "auction.conditions",
             header: "Condiciones",

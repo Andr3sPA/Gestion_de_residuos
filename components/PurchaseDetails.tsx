@@ -11,7 +11,14 @@ import { Separator } from "@radix-ui/react-select";
 import { useState } from "react";
 import { MapPopover } from "./map/MapPopover";
 import { Purchase } from "./PurchaseList";
-
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
 const wasteCategoryMap = {
   usable: "Usable",
   nonUsable: "No usable",
@@ -125,6 +132,19 @@ export function PurchaseDetails({
                 <span className="text-lg font-semibold">
                   {purchaseInfo.offer.companyBuyer.nit}
                 </span>
+                </div>
+                <div>
+                <DropdownMenu>
+                <DropdownMenuTrigger asChild><Button className="rounded-xl text-xs">Calificaciones del comprador
+                </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent>
+                  <DropdownMenuLabel>Subastas realizadas {purchaseInfo.counts.countAuctions}</DropdownMenuLabel>
+                  <DropdownMenuLabel>Subastas vendidas {purchaseInfo.counts.countSales}</DropdownMenuLabel>
+                  <DropdownMenuLabel>Ofertas realizadas {purchaseInfo.counts.countOffers}</DropdownMenuLabel>
+                  <DropdownMenuLabel>Subastas compradas {purchaseInfo.counts.countPurchases}</DropdownMenuLabel>
+                </DropdownMenuContent>
+              </DropdownMenu>
               </div>
             </>
           )}
@@ -153,6 +173,21 @@ export function PurchaseDetails({
                 <span className="text-lg font-semibold">
                   {purchaseInfo.auction.companySeller.nit}
                 </span>
+                </div>
+                <div>
+                <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="outline">
+                    Calificaciones del vendedor
+                </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent>
+                  <DropdownMenuLabel>Subastas realizadas {purchaseInfo.counts.countAuctions}</DropdownMenuLabel>
+                  <DropdownMenuLabel>Subastas vendidas {purchaseInfo.counts.countSales}</DropdownMenuLabel>
+                  <DropdownMenuLabel>Ofertas realizadas {purchaseInfo.counts.countOffers}</DropdownMenuLabel>
+                  <DropdownMenuLabel>Subastas compradas {purchaseInfo.counts.countPurchases}</DropdownMenuLabel>
+                </DropdownMenuContent>
+              </DropdownMenu>
               </div>
             </>
           )}
