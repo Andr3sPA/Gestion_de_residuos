@@ -25,6 +25,9 @@ export async function GET(req: NextRequest) {
       id: true,
       company: {
         select: {
+          id: true,
+          offers: true,
+          auctions: true,
           name: true,
           description: true,
           address: true,
@@ -41,8 +44,37 @@ export async function GET(req: NextRequest) {
   });
 
   if (!user) return notFound("Usuario no encontrado");
+  if (!user.company) return unauthorized("El usuario no pertenece a ninguna empresa");
+  const countOffers = user.company.offers.length;
 
-  return ok(user);
+  const countSales = await prismaClient.purchase.count({
+    where: {
+      auction: {
+        companySellerId: user.company.id,
+      },
+    },
+  });
+  
+  const countPurchases = await prismaClient.purchase.count({
+    where: {
+      offer: {
+        companyBuyerId: user.company.id,
+      },
+    },
+  });
+  
+  const countAuctions = user.company.auctions.length;
+  
+  const userWithCounts = {
+    ...user,
+    counts: {
+      countOffers,
+      countSales,
+      countPurchases,
+      countAuctions,
+    },
+  };
+  return ok(userWithCounts);
 }
 
 const membershipUpdateSchema = z.object({

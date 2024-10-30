@@ -13,7 +13,14 @@ type UserWithCompany = Prisma.UserGetPayload<{
   include: {
     company: true;
   };
-}>;
+}>& {
+  counts: {
+    countOffers: number;
+    countSales: number;
+    countPurchases: number;
+    countAuctions: number;
+  };
+};
 
 export default function ProfileDetails() {
   const me = useQuery({
@@ -91,7 +98,7 @@ export default function ProfileDetails() {
                     </Badge>
                   </div>
                 }
-              >
+              >      
                 <div className="grid grid-cols-2">
                   <div className="flex flex-col gap-1 max-w-52">
                     <span className="text-sm font-light">
@@ -103,6 +110,18 @@ export default function ProfileDetails() {
                     <span className="font-light text-md text-wrap">
                       {me.data.company.description}
                     </span>
+                    <div className="flex flex-col">
+                  <span>Cantidad de compras</span>
+                  <div>
+                  <Badge>{me.data.counts.countPurchases}</Badge>  
+                  </div> 
+                  </div>    
+                  <div className="flex flex-col">         
+                  <span>Cantidad de ventas</span>
+                  <div>
+                  <Badge>{me.data.counts.countSales}</Badge>
+                  </div>                
+                    </div>   
                   </div>
                   <div className="flex flex-col justify-end gap-1 text-end">
                     {me.data.company.phoneNumber &&
@@ -120,7 +139,19 @@ export default function ProfileDetails() {
                         {me.data.company.address}
                       </span>
                     </div>
+                    <div className="flex flex-col">
+                  <span>Cantidad de ofertas</span>
+                  <div>
+                  <Badge>{me.data.counts.countOffers}</Badge> 
                   </div>
+                  </div>  
+                  <div className="flex flex-col">             
+                  <span>Cantidad de subastas</span>
+                  <div>
+                  <Badge>{me.data.counts.countAuctions}</Badge>   
+                  </div>             
+                    </div>   
+                  </div>                   
                 </div>
               </SimpleCard>
             )}
