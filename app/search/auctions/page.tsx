@@ -8,35 +8,44 @@ import { AuctionDetails } from "@/components/AuctionDetails";
 import { Auction } from "@/app/manage/auctions/page";
 import { SimpleCard } from "@/components/common/SimpleCard";
 import { TableList } from "@/components/common/TableList";
+import { format } from "date-fns";
 import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import { Badge } from "@/components/ui/badge";
+import { PopoverArrow } from "@radix-ui/react-popover";
 export default function SearchAuctions() {
   const auctions = useQuery({
     queryKey: ["allAuctions"],
     queryFn: () =>
-      axios.get("/api/auctions/search").then((res) => res.data.auctionsWithCounts),
+      axios
+        .get("/api/auctions/search")
+        .then((res) => res.data.auctionsWithCounts),
   });
 
   const columns: ColumnDef<Auction>[] = [
     {
       accessorKey: "waste.wasteType.name",
-      header: "Tipo",
+      header: () => (
+        <span className="w-full inline-block text-center">Tipo de residuo</span>
+      ),
+      cell: ({ row }) => (
+        <span className="w-full inline-block font-semibold text-center">
+          {row.original.waste.wasteType.name}
+        </span>
+      ),
     },
     {
       accessorKey: "expiresAt",
-      header: "Expiration Date",
+      header: "Fecha de expiración",
       enableGlobalFilter: false,
       cell: ({ row }) => {
         const expiresAt = row.original.expiresAt;
         const date = new Date(expiresAt);
         const formattedDate = !isNaN(date.getTime())
-          ? date.toLocaleDateString("es-ES")
+          ? format(date, "PPP")
           : "N/A";
         return <div>{formattedDate}</div>;
       },
@@ -58,34 +67,54 @@ export default function SearchAuctions() {
       header: "Precio (COP)",
       enableSorting: true,
       cell: ({ row }) => (
-        <div className="text-right">${row.original.initialPrice}</div>
+        <div className="text-right font-semibold">
+          ${row.original.initialPrice}
+        </div>
       ),
     },
     {
       accessorKey: "units",
       header: "Cantidad",
-      cell: ({ row }) =>
-        `${row.original.units} ${row.original.waste.unitType.name}`,
+      cell: ({ row }) => (
+        <div className="text-right font-medium">
+          {row.original.units}
+          <span className="font-light text-xs">
+            {" "}
+            {row.original.waste.unitType.name}
+          </span>
+        </div>
+      ),
     },
     {
-      accessorKey: "",
-      id: "Calificaciones del vendedor",
-      cell: ({ row }) => (
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button className="rounded-xl text-xs">Calificaciones
-            del vendedor
-          </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent>
-            <DropdownMenuLabel>Subastas realizadas {row.original.counts.countAuctions}</DropdownMenuLabel>
-            <DropdownMenuLabel>Subastas vendidas {row.original.counts.countSales}</DropdownMenuLabel>
-            <DropdownMenuLabel>Ofertas realizadas {row.original.counts.countOffers}</DropdownMenuLabel>
-            <DropdownMenuLabel>Subastas compradas {row.original.counts.countPurchases}</DropdownMenuLabel>
-          </DropdownMenuContent>
-        </DropdownMenu>
-
-      ),
+      id: "Info vendedor",
+      cell: ({ row }) => {
+        const counts = [
+          ["Subastas realizadas", row.original.counts.countAuctions],
+          ["Subastas vendidas", row.original.counts.countSales],
+          ["Ofertas realizadas", row.original.counts.countOffers],
+          ["Subastas compradas", row.original.counts.countPurchases],
+        ];
+        return (
+          <Popover>
+            <PopoverTrigger asChild>
+              <Button variant={"outline"} className="rounded-xl text-xs">
+                Info del vendedor
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent className="flex flex-col w-fit gap-2 text-sm">
+              <PopoverArrow className="fill-background stroke-accent stroke-2" />
+              {counts.map((c, i) => (
+                <div key={i} className="flex gap-4 justify-between">
+                  <span className="text-left">{c[0]}</span>
+                  <Badge variant={"secondary"}>
+                    <span className="text-right font-semibold">{c[1]}</span>
+                  </Badge>
+                </div>
+              ))}
+            </PopoverContent>
+          </Popover>
+        );
+      },
     },
     {
       accessorKey: "",

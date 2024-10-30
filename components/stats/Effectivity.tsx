@@ -10,10 +10,9 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from "../ui/chart";
-import { Label, Legend, Pie, PieChart } from "recharts";
+import { Label, Pie, PieChart } from "recharts";
 import { Auction, AuctionStatus } from "@prisma/client";
 import { useEffect, useMemo, useState } from "react";
-import { SimpleCard } from "../common/SimpleCard";
 import { DatePicker } from "../input/DatePicker";
 import { Loader2 } from "lucide-react";
 
@@ -55,29 +54,27 @@ export function Effectivity() {
   }, [range, auctions.isSuccess, auctions.data]);
 
   return (
-    <SimpleCard>
-      <div className="w-fit flex flex-col items-center p-2">
-        <div className="grid grid-cols-2 gap-4">
-          <DatePicker
-            label="Desde"
-            selected={range.from}
-            onSelect={(date) => setRange((prev) => ({ ...prev, from: date }))}
-          />
-          <DatePicker
-            label="Hasta"
-            selected={range.to}
-            onSelect={(date) => setRange((prev) => ({ ...prev, to: date }))}
-          />
-        </div>
-        {auctions.isLoading ? (
-          <div className="min-h-32 flex flex-col justify-center">
-            <Loader2 className="animate-spin" />
-          </div>
-        ) : (
-          <PieGraph data={filteredData} />
-        )}
+    <div className="w-fit flex flex-col items-center p-2">
+      <div className="grid grid-cols-2 gap-4">
+        <DatePicker
+          label="Desde"
+          selected={range.from}
+          onSelect={(date) => setRange((prev) => ({ ...prev, from: date }))}
+        />
+        <DatePicker
+          label="Hasta"
+          selected={range.to}
+          onSelect={(date) => setRange((prev) => ({ ...prev, to: date }))}
+        />
       </div>
-    </SimpleCard>
+      {auctions.isLoading ? (
+        <div className="min-h-32 flex flex-col justify-center">
+          <Loader2 className="animate-spin" />
+        </div>
+      ) : (
+        <PieGraph data={filteredData} />
+      )}
+    </div>
   );
 }
 

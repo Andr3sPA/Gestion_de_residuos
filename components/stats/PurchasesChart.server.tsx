@@ -10,7 +10,6 @@ import {
 import { useEffect, useState } from "react";
 import { CartesianGrid, Label, Line, LineChart, XAxis, YAxis } from "recharts";
 import { format, toDate } from "date-fns";
-import { SimpleCard } from "../common/SimpleCard";
 import { DatePicker } from "../input/DatePicker";
 import { Select, SelectContent, SelectItem, SelectTrigger } from "../ui/select";
 import { EyeIcon, Loader2 } from "lucide-react";
@@ -94,44 +93,42 @@ export function PurchasesChart() {
   }, [purchases.data, purchases.isSuccess, range]);
 
   return (
-    <SimpleCard>
-      <div className="flex flex-col items-center">
-        <div className="grid grid-cols-2 gap-4 pb-4">
-          <DatePicker
-            label="Desde"
-            selected={range.from}
-            onSelect={(date) => setRange((prev) => ({ ...prev, from: date }))}
-          />
-          <DatePicker
-            label="Hasta"
-            selected={range.to}
-            onSelect={(date) => setRange((prev) => ({ ...prev, to: date }))}
-          />
-        </div>
-        <Select
-          value={valueToShow}
-          onValueChange={(v: "purchases" | "totalPrice") => setValueToShow(v)}
-        >
-          <SelectTrigger className="w-min text-nowrap scale-90">
-            <EyeIcon className="mr-2" />
-            {valueToShow === "totalPrice"
-              ? "Sumas de precios"
-              : "Conteo de ventas"}
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="totalPrice">Suma de precios</SelectItem>
-            <SelectItem value="purchases">Conteo de ventas</SelectItem>
-          </SelectContent>
-        </Select>
-        {purchases.isLoading ? (
-          <div className="min-h-32 flex flex-col justify-center">
-            <Loader2 className="animate-spin" />
-          </div>
-        ) : (
-          <LineGraph data={processedData} dataKey={valueToShow} />
-        )}
+    <div className="flex flex-col items-center">
+      <div className="grid grid-cols-2 gap-4 pb-4">
+        <DatePicker
+          label="Desde"
+          selected={range.from}
+          onSelect={(date) => setRange((prev) => ({ ...prev, from: date }))}
+        />
+        <DatePicker
+          label="Hasta"
+          selected={range.to}
+          onSelect={(date) => setRange((prev) => ({ ...prev, to: date }))}
+        />
       </div>
-    </SimpleCard>
+      <Select
+        value={valueToShow}
+        onValueChange={(v: "purchases" | "totalPrice") => setValueToShow(v)}
+      >
+        <SelectTrigger className="w-min text-nowrap scale-90">
+          <EyeIcon className="mr-2" />
+          {valueToShow === "totalPrice"
+            ? "Sumas de precios"
+            : "Conteo de ventas"}
+        </SelectTrigger>
+        <SelectContent>
+          <SelectItem value="totalPrice">Suma de precios</SelectItem>
+          <SelectItem value="purchases">Conteo de ventas</SelectItem>
+        </SelectContent>
+      </Select>
+      {purchases.isLoading ? (
+        <div className="min-h-32 flex flex-col justify-center">
+          <Loader2 className="animate-spin" />
+        </div>
+      ) : (
+        <LineGraph data={processedData} dataKey={valueToShow} />
+      )}
+    </div>
   );
 }
 
