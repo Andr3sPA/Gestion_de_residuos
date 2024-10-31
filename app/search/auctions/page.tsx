@@ -59,6 +59,7 @@ export default function SearchAuctions() {
       accessorKey: "expiresAt",
       header: "Fecha de expiración",
       enableGlobalFilter: false,
+      enableSorting: true,
       cell: ({ row }) => {
         const expiresAt = row.original.expiresAt;
         const date = new Date(expiresAt);
@@ -180,7 +181,6 @@ export default function SearchAuctions() {
                   onSelect={(item) => {
                     const col = columns.find((c) => c.id === "wasteType");
                     if (col) {
-                      console.log(col.getFilterValue());
                       col.setFilterValue(item ? item.label : "");
                     }
                   }}

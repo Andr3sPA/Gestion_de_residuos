@@ -10,6 +10,7 @@ import { SimpleCard } from "@/components/common/SimpleCard";
 import { TableList } from "@/components/common/TableList";
 import { Offer } from "@/components/ManageOffers";
 import { Button } from "@/components/ui/button";
+import { Combobox, ComboboxItem } from "@/components/input/Combobox";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -37,7 +38,16 @@ export default function ManageMyOffers() {
     accepted: "Aceptado",
     rejected: "Rechazado",
   };
-
+  const wasteTypes = useQuery<ComboboxItem[]>({
+    queryKey: ["wasteTypes"],
+    queryFn: () =>
+      axios.get("/api/wastes/wasteTypes").then((res) =>
+        res.data.types.map((t: { id: number; name: string }) => ({
+          id: t.id,
+          label: t.name,
+        })),
+      ),
+  });
   const columns: ColumnDef<Offer>[] = [
     {
       accessorKey: "auction.companySeller.name",
@@ -62,6 +72,20 @@ export default function ManageMyOffers() {
       accessorKey: "auction.contact",
       header: "Contacto",
       enableSorting: true,
+    },
+    {
+      accessorKey: "createdAt",
+      header: "Fecha de Creación",
+      enableGlobalFilter: false,
+      enableSorting: true,
+      cell: ({ row }) => {
+        const createdAt = row.getValue("createdAt") as string;
+        const date = new Date(createdAt);
+        const formattedDate = !isNaN(date.getTime())
+          ? date.toLocaleDateString("es-ES")
+          : "N/A";
+        return <div>{formattedDate}</div>;
+      },
     },
     {
       accessorKey: "status",
@@ -149,7 +173,9 @@ export default function ManageMyOffers() {
         <Loader2Icon className="animate-spin" />
       ) : (
         !offers.isError && (
-          <TableList columns={columns} data={offers.data || []} />
+          <TableList columns={columns} data={offers.data || []} 
+          
+          />
         )
       )}
       {offers.isError && offers.error.message}

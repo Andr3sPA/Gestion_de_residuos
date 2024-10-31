@@ -25,8 +25,10 @@ import {
   LucideRefreshCw,
   MoreHorizontal,
   PlusIcon,
+  FilterIcon,
 } from "lucide-react";
 import { useState } from "react";
+import { Combobox, ComboboxItem } from "@/components/input/Combobox";
 
 interface Waste {
   id: number;
@@ -43,9 +45,27 @@ interface Waste {
 }
 
 export default function ManageWastes() {
+  const [selectedWasteType, setSelectedWasteType] = useState<string | null>(null);
+
   const wastes = useQuery({
-    queryKey: ["myWastes"],
-    queryFn: () => axios.get("/api/wastes/list").then((res) => res.data),
+    queryKey: ["myWastes", selectedWasteType],
+    queryFn: () =>
+      axios
+        .get("/api/wastes/list", {
+          params: { wasteType: selectedWasteType },
+        })
+        .then((res) => res.data),
+  });
+
+  const wasteTypes = useQuery<ComboboxItem[]>({
+    queryKey: ["wasteTypes"],
+    queryFn: () =>
+      axios.get("/api/wastes/wasteTypes").then((res) =>
+        res.data.types.map((t: { id: number; name: string }) => ({
+          id: t.id,
+          label: t.name,
+        })),
+      ),
   });
 
   const [selectedWasteId, setSelectedWasteId] = useState<number | null>(null);
@@ -59,9 +79,12 @@ export default function ManageWastes() {
       cell: ({ row }) => <div>{row.getValue("id")}</div>,
     },
     {
-      accessorKey: "WasteType",
+      id: "wasteType",
+      accessorKey: "wasteType.name",
       header: "Tipo de Residuo",
       enableSorting: true,
+      enableColumnFilter: true,
+      filterFn: "equalsString",
       cell: ({ row }) => (
         <div className="capitalize">
           {row.original.wasteType ? row.original.wasteType.name : "N/A"}
@@ -107,6 +130,7 @@ export default function ManageWastes() {
       accessorKey: "createdAt",
       header: "Fecha de Creación",
       enableGlobalFilter: false,
+      enableSorting: true,
       cell: ({ row }) => {
         const createdAt = row.getValue("createdAt") as string;
         const date = new Date(createdAt);
@@ -146,7 +170,25 @@ export default function ManageWastes() {
   const table = wastes.isLoading ? (
     <Loader2Icon className="animate-spin" />
   ) : (
-    <TableList columns={columns} data={wastes.data} />
+    <TableList
+      columns={columns}
+      data={wastes.data}
+      headerActions={(columns) => (
+        <div className="w-fit flex gap-2">
+          <Combobox
+            prompt="Tipo de residuo"
+            icon={<FilterIcon className="scale-90 mr-1" />}
+            list={wasteTypes.data ?? []}
+            onSelect={(item) => {
+              const col = columns.find((c) => c.id === "wasteType");
+              if (col) {
+                col.setFilterValue(item ? item.label : "");
+              }
+            }}
+          />
+        </div>
+      )}
+    />
   );
 
   return selectedWasteId ? (

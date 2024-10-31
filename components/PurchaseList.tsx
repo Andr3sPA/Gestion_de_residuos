@@ -101,6 +101,7 @@ export function PurchaseList({ recordType }: PurchasesProps) {
       accessorKey: "createdAt",
       header: `Fecha de ${recordType === RecordType.Ventas ? "venta" : "compra"}`,
       enableGlobalFilter: false,
+      enableSorting: true,
       cell: ({ row }) => {
         const createdAt = row.original.createdAt;
         const date = new Date(createdAt);

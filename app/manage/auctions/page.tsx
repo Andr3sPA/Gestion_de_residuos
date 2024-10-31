@@ -3,7 +3,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { ColumnDef } from "@tanstack/react-table";
 import axios from "axios";
-import { CheckIcon, Loader2Icon, PlusIcon, XIcon } from "lucide-react";
+import { CheckIcon, Loader2Icon, PlusIcon, XIcon, FilterIcon } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { SimpleCard } from "@/components/common/SimpleCard";
 import { TableList } from "@/components/common/TableList";
@@ -25,6 +25,7 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
+import { Combobox, ComboboxItem } from "@/components/input/Combobox";
 
 export interface Auction {
   id: number;
@@ -59,16 +60,30 @@ export interface Auction {
 }
 
 export default function ManageAuctions() {
+  const [selectedWasteType, setSelectedWasteType] = useState<string | null>(null);
+
   const auctions = useQuery({
-    queryKey: ["myAuctions"],
+    queryKey: ["myAuctions", selectedWasteType],
     queryFn: () =>
-      axios.get("/api/auctions/list").then((res) => {
-        return res.data;
-      }),
+      axios
+        .get("/api/auctions/list", {
+          params: { wasteType: selectedWasteType },
+        })
+        .then((res) => res.data),
   });
-  const [selectedPurchase, setSelectedPurchase] = useState<Purchase | null>(
-    null,
-  );
+
+  const wasteTypes = useQuery<ComboboxItem[]>({
+    queryKey: ["wasteTypes"],
+    queryFn: () =>
+      axios.get("/api/wastes/wasteTypes").then((res) =>
+        res.data.types.map((t: { id: number; name: string }) => ({
+          id: t.id,
+          label: t.name,
+        })),
+      ),
+  });
+
+  const [selectedPurchase, setSelectedPurchase] = useState<Purchase | null>(null);
   const [isLoading, setIsLoading] = useState(false); // Estado para controlar la carga
   const [loadingAuctionId, setLoadingAuctionId] = useState<number | null>(null); // Estado para rastrear el ID de la subasta cuyo botón se hizo clic
   const router = useRouter();
@@ -105,8 +120,11 @@ export default function ManageAuctions() {
       cell: ({ row }) => <div>{row.original.id}</div>, // Usa 'id' aquí también
     },
     {
+      id: "wasteType",
       accessorKey: "waste.wasteType.name",
       header: "Tipo de residuo",
+      enableColumnFilter: true,
+      filterFn: "equalsString",
       cell: ({ row }) => (
         <span className="block text-center font-semibold">
           {row.original.waste.wasteType.name}
@@ -181,6 +199,7 @@ export default function ManageAuctions() {
     {
       accessorKey: "expiresAt",
       header: "Fecha de expiración",
+      enableSorting: true,
       enableGlobalFilter: false,
       cell: ({ row }) => {
         const expiresAt = row.original.expiresAt;
@@ -252,26 +271,43 @@ export default function ManageAuctions() {
     },
   ];
 
+  const table = auctions.isLoading ? (
+    <Loader2Icon className="animate-spin" />
+  ) : (
+    <TableList
+      columns={columns}
+      data={auctions.data}
+      headerActions={(columns) => (
+        <div className="w-fit flex gap-2">
+          <Combobox
+            prompt="Tipo de residuo"
+            icon={<FilterIcon className="scale-90 mr-1" />}
+            list={wasteTypes.data ?? []}
+            onSelect={(item) => {
+              const col = columns.find((c) => c.id === "wasteType");
+              if (col) {
+                col.setFilterValue(item ? item.label : "");
+              }
+            }}
+          />
+        </div>
+      )}
+    />
+  );
+
   return (
     <SimpleCard
       title="Mis Subastas"
       desc="Visualiza aquí todas las subastas hechas por tu empresa."
       headerActions={
-        <div className="flex justify-end">
+        <div className="flex justify-end gap-4">
           <Button onClick={() => router.push("/create-auction")}>
             <PlusIcon />
           </Button>
         </div>
       }
     >
-      {auctions.isLoading ? (
-        <Loader2Icon className="animate-spin" />
-      ) : (
-        !auctions.isError && (
-          <TableList columns={columns} data={auctions.data || []} />
-        )
-      )}
-      {auctions.isError && auctions.error.message}
+      {table}
     </SimpleCard>
   );
 }
