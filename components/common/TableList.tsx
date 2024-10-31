@@ -1,4 +1,5 @@
 import {
+  Column,
   ColumnDef,
   ColumnFiltersState,
   flexRender,
@@ -10,8 +11,8 @@ import {
   useReactTable,
   VisibilityState,
 } from "@tanstack/react-table";
-import { Loader2 } from "lucide-react";
-import React from "react";
+import { Loader2, Search } from "lucide-react";
+import React, { ReactNode } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -26,19 +27,25 @@ import { IconLeft, IconRight } from "react-day-picker";
 
 export function TableList<T>({
   columns,
+  hidden = [],
   data,
   isLoading = false,
+  headerActions,
 }: {
   columns: ColumnDef<T>[];
+  hidden?: string[];
   data: T[];
   isLoading?: boolean;
+  headerActions?: (columns: Column<T, unknown>[]) => ReactNode;
 }) {
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
     [],
   );
   const [columnVisibility, setColumnVisibility] =
-    React.useState<VisibilityState>({});
+    React.useState<VisibilityState>(
+      Object.fromEntries(hidden.map((h) => [h, false])),
+    );
   const [globalFilter, setGlobalFilter] = React.useState("");
   const table = useReactTable({
     data,
@@ -70,13 +77,17 @@ export function TableList<T>({
 
   return (
     <div className="w-full p-1">
-      <div className="flex items-center py-4">
-        <Input
-          placeholder="Buscar..."
-          value={globalFilter}
-          onChange={(e) => setGlobalFilter(e.target.value)}
-          className="border-gray-300 max-w-sm w-1/5 focus:w-1/2 transition-width ease-out duration-300"
-        />
+      <div className="flex justify-between items-center py-4">
+        <div className="border-2 border-gray-300 rounded-lg flex items-center max-w-sm w-1/5 focus-within:w-1/3 transition-width ease-out duration-300">
+          <Search className="my-2 ml-1.5" />
+          <Input
+            placeholder="Buscar..."
+            value={globalFilter}
+            onChange={(e) => setGlobalFilter(e.target.value)}
+            className="border-none pl-2 focus-visible:ring-0 focus-visible:ring-offset-0 "
+          />
+        </div>
+        {headerActions && headerActions(table.getAllColumns())}
       </div>
       <div className="rounded-b-sm border">
         <Table className="overflow-x-auto">

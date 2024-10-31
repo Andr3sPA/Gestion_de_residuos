@@ -1,6 +1,6 @@
 "use client";
 import { Button } from "@/components/ui/button";
-import { Loader2 } from "lucide-react";
+import { FilterIcon, Loader2 } from "lucide-react";
 import axios from "axios";
 import { useQuery } from "@tanstack/react-query";
 import { ColumnDef } from "@tanstack/react-table";
@@ -16,18 +16,36 @@ import {
 } from "@/components/ui/popover";
 import { Badge } from "@/components/ui/badge";
 import { PopoverArrow } from "@radix-ui/react-popover";
+import { DistanceSelector, PosDist } from "@/components/map/DistanceSelector";
+import { equiRectDist } from "@/lib/utils";
+import { Combobox, ComboboxItem } from "@/components/input/Combobox";
+
 export default function SearchAuctions() {
-  const auctions = useQuery({
+  const auctions = useQuery<Auction[]>({
     queryKey: ["allAuctions"],
     queryFn: () =>
-      axios
-        .get("/api/auctions/search")
-        .then((res) => res.data.auctionsWithCounts),
+      axios.get("/api/auctions/search").then((res) => {
+        return res.data.auctionsWithCounts;
+      }),
+  });
+  const wasteTypes = useQuery<ComboboxItem[]>({
+    queryKey: ["wasteTypes"],
+    queryFn: () =>
+      axios.get("/api/wastes/wasteTypes").then((res) =>
+        res.data.types.map((t: { id: number; name: string }) => ({
+          id: t.id,
+          label: t.name,
+        })),
+      ),
   });
 
   const columns: ColumnDef<Auction>[] = [
     {
+      id: "wasteType",
       accessorKey: "waste.wasteType.name",
+      enableColumnFilter: true,
+      enableSorting: true,
+      filterFn: "equalsString",
       header: () => (
         <span className="w-full inline-block text-center">Tipo de residuo</span>
       ),
@@ -75,6 +93,7 @@ export default function SearchAuctions() {
     {
       accessorKey: "units",
       header: "Cantidad",
+      enableSorting: true,
       cell: ({ row }) => (
         <div className="text-right font-medium">
           {row.original.units}
@@ -98,7 +117,7 @@ export default function SearchAuctions() {
           <Popover>
             <PopoverTrigger asChild>
               <Button variant={"outline"} className="rounded-xl text-xs">
-                Info del vendedor
+                Calificaciones
               </Button>
             </PopoverTrigger>
             <PopoverContent className="flex flex-col w-fit gap-2 text-sm">
@@ -121,6 +140,19 @@ export default function SearchAuctions() {
       id: "details",
       cell: ({ row }) => <AuctionDetails auctionInfo={row.original} />,
     },
+    {
+      id: "distance",
+      enableColumnFilter: true,
+      filterFn: (row, _colId, filterValue: PosDist) => {
+        if (!filterValue.pos) return true;
+        const d = equiRectDist(filterValue.pos, [
+          parseFloat(row.original.pickupLatitude),
+          parseFloat(row.original.pickupLongitude),
+        ]);
+
+        return d <= filterValue.distance;
+      },
+    },
   ];
 
   return (
@@ -135,7 +167,35 @@ export default function SearchAuctions() {
             <Loader2 className="animate-spin" />
           </div>
         ) : (
-          <TableList columns={columns} data={auctions.data} />
+          <TableList
+            columns={columns}
+            hidden={["distance"]}
+            data={auctions.data ?? []}
+            headerActions={(columns) => (
+              <div className="w-fit flex gap-2">
+                <Combobox
+                  prompt="Tipo de residuo"
+                  icon={<FilterIcon className="scale-90 mr-1" />}
+                  list={wasteTypes.data ?? []}
+                  onSelect={(item) => {
+                    const col = columns.find((c) => c.id === "wasteType");
+                    if (col) {
+                      console.log(col.getFilterValue());
+                      col.setFilterValue(item ? item.label : "");
+                    }
+                  }}
+                />
+                <DistanceSelector
+                  onSearch={(posDist) => {
+                    const col = columns.find((c) => c.id === "distance");
+                    if (col) {
+                      col.setFilterValue(posDist);
+                    }
+                  }}
+                />
+              </div>
+            )}
+          />
         )}
       </SimpleCard>
     </div>

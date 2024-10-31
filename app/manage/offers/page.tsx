@@ -10,15 +10,18 @@ import { SimpleCard } from "@/components/common/SimpleCard";
 import { TableList } from "@/components/common/TableList";
 import { Offer } from "@/components/ManageOffers";
 import { Button } from "@/components/ui/button";
-import { off } from "process";
 import {
   DropdownMenu,
   DropdownMenuContent,
-  DropdownMenuItem,
   DropdownMenuLabel,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
+} from "@/components/ui/dropdown-menu";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import { PopoverArrow } from "@radix-ui/react-popover";
 
 export default function ManageMyOffers() {
   const offers = useQuery({
@@ -37,42 +40,13 @@ export default function ManageMyOffers() {
 
   const columns: ColumnDef<Offer>[] = [
     {
-      accessorKey: "id",
-      header: "ID",
-      enableSorting: true,
-      cell: ({ row }) => <div>{row.original.id}</div>,
-    },
-    {
       accessorKey: "auction.companySeller.name",
-      header: "Nombre del Vendedor",
+      header: "Empresa vendedora",
       enableSorting: true,
-    },
-    {
-      accessorKey: "",
-      id: "Calificaciones del vendedor",
-      cell: ({ row }) => (
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button className="rounded-xl text-xs">Calificaciones del vendedor</Button>
-            </DropdownMenuTrigger>
-          <DropdownMenuContent>
-            <DropdownMenuLabel>Subastas realizadas {row.original.counts.countAuctions}</DropdownMenuLabel>
-            <DropdownMenuLabel>Subastas vendidas {row.original.counts.countSales}</DropdownMenuLabel>
-            <DropdownMenuLabel>Ofertas realizadas {row.original.counts.countOffers}</DropdownMenuLabel>
-            <DropdownMenuLabel>Subastas compradas {row.original.counts.countPurchases}</DropdownMenuLabel>
-          </DropdownMenuContent>
-        </DropdownMenu>
-
-      ),
     },
     {
       accessorKey: "auction.waste.description",
       header: "Descripción del Residuo",
-      enableSorting: true,
-    },
-    {
-      accessorKey: "auction.id",
-      header: "ID de Subasta",
       enableSorting: true,
     },
     {
@@ -109,6 +83,38 @@ export default function ManageMyOffers() {
           >
             {statusMap[status]}
           </Badge>
+        );
+      },
+    },
+    {
+      id: "Info del vendedor",
+      header: "Info del vendedor",
+      cell: ({ row }) => {
+        const counts = [
+          ["Subastas realizadas", row.original.counts.countAuctions],
+          ["Subastas vendidas", row.original.counts.countSales],
+          ["Ofertas realizadas", row.original.counts.countOffers],
+          ["Subastas compradas", row.original.counts.countPurchases],
+        ];
+        return (
+          <Popover>
+            <PopoverTrigger asChild>
+              <Button variant={"outline"} className="rounded-xl text-xs">
+                Calificaciones
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent className="flex flex-col w-fit gap-2 text-sm">
+              <PopoverArrow className="fill-background stroke-accent stroke-2" />
+              {counts.map((c, i) => (
+                <div key={i} className="flex gap-4 justify-between">
+                  <span className="text-left">{c[0]}</span>
+                  <Badge variant={"secondary"}>
+                    <span className="text-right font-semibold">{c[1]}</span>
+                  </Badge>
+                </div>
+              ))}
+            </PopoverContent>
+          </Popover>
         );
       },
     },

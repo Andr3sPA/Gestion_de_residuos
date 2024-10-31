@@ -14,11 +14,12 @@ import { Purchase } from "./PurchaseList";
 import {
   DropdownMenu,
   DropdownMenuContent,
-  DropdownMenuItem,
   DropdownMenuLabel,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
+} from "@/components/ui/dropdown-menu";
+import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
+import { PopoverArrow } from "@radix-ui/react-popover";
+import { Badge } from "./ui/badge";
 const wasteCategoryMap = {
   usable: "Usable",
   nonUsable: "No usable",
@@ -32,6 +33,13 @@ export function PurchaseDetails({
   recordType: string;
 }) {
   const [offerOpen, setOfferOpen] = useState(false);
+
+  const counts = [
+    ["Subastas realizadas", purchaseInfo.counts.countAuctions],
+    ["Subastas vendidas", purchaseInfo.counts.countSales],
+    ["Ofertas realizadas", purchaseInfo.counts.countOffers],
+    ["Subastas compradas", purchaseInfo.counts.countPurchases],
+  ];
 
   return (
     <Dialog>
@@ -132,19 +140,28 @@ export function PurchaseDetails({
                 <span className="text-lg font-semibold">
                   {purchaseInfo.offer.companyBuyer.nit}
                 </span>
-                </div>
-                <div>
-                <DropdownMenu>
-                <DropdownMenuTrigger asChild><Button className="rounded-xl text-xs">Calificaciones del comprador
-                </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent>
-                  <DropdownMenuLabel>Subastas realizadas {purchaseInfo.counts.countAuctions}</DropdownMenuLabel>
-                  <DropdownMenuLabel>Subastas vendidas {purchaseInfo.counts.countSales}</DropdownMenuLabel>
-                  <DropdownMenuLabel>Ofertas realizadas {purchaseInfo.counts.countOffers}</DropdownMenuLabel>
-                  <DropdownMenuLabel>Subastas compradas {purchaseInfo.counts.countPurchases}</DropdownMenuLabel>
-                </DropdownMenuContent>
-              </DropdownMenu>
+              </div>
+              <div>
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <Button className="rounded-xl text-xs">
+                      Calificaciones del comprador
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent className="flex flex-col w-fit gap-2 text-sm">
+                    <PopoverArrow className="fill-background stroke-accent stroke-2" />
+                    {counts.map((c, i) => (
+                      <div key={i} className="flex gap-4 justify-between">
+                        <span className="text-left">{c[0]}</span>
+                        <Badge variant={"secondary"}>
+                          <span className="text-right font-semibold">
+                            {c[1]}
+                          </span>
+                        </Badge>
+                      </div>
+                    ))}
+                  </PopoverContent>
+                </Popover>
               </div>
             </>
           )}
@@ -173,21 +190,29 @@ export function PurchaseDetails({
                 <span className="text-lg font-semibold">
                   {purchaseInfo.auction.companySeller.nit}
                 </span>
-                </div>
-                <div>
+              </div>
+              <div>
                 <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button variant="outline">
-                    Calificaciones del vendedor
-                </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent>
-                  <DropdownMenuLabel>Subastas realizadas {purchaseInfo.counts.countAuctions}</DropdownMenuLabel>
-                  <DropdownMenuLabel>Subastas vendidas {purchaseInfo.counts.countSales}</DropdownMenuLabel>
-                  <DropdownMenuLabel>Ofertas realizadas {purchaseInfo.counts.countOffers}</DropdownMenuLabel>
-                  <DropdownMenuLabel>Subastas compradas {purchaseInfo.counts.countPurchases}</DropdownMenuLabel>
-                </DropdownMenuContent>
-              </DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button variant="outline">
+                      Calificaciones del vendedor
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent>
+                    <DropdownMenuLabel>
+                      Subastas realizadas {purchaseInfo.counts.countAuctions}
+                    </DropdownMenuLabel>
+                    <DropdownMenuLabel>
+                      Subastas vendidas {purchaseInfo.counts.countSales}
+                    </DropdownMenuLabel>
+                    <DropdownMenuLabel>
+                      Ofertas realizadas {purchaseInfo.counts.countOffers}
+                    </DropdownMenuLabel>
+                    <DropdownMenuLabel>
+                      Subastas compradas {purchaseInfo.counts.countPurchases}
+                    </DropdownMenuLabel>
+                  </DropdownMenuContent>
+                </DropdownMenu>
               </div>
             </>
           )}

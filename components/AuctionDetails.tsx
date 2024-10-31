@@ -1,7 +1,6 @@
 import { Button } from "./ui/button";
 import {
   Dialog,
-  DialogClose,
   DialogContent,
   DialogDescription,
   DialogFooter,
@@ -16,7 +15,7 @@ import {
 } from "@/components/ui/popover";
 import { Separator } from "@radix-ui/react-select";
 import { PopoverArrow } from "@radix-ui/react-popover";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Auction } from "@/app/manage/auctions/page";
 import { MapPopover } from "./map/MapPopover";
 import { OfferForm } from "./register/OfferForm";
@@ -49,12 +48,7 @@ export function AuctionDetails({
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button
-          variant={canOffer ? "default" : "outline"}
-          className="rounded-xl text-xs"
-        >
-          Detalles
-        </Button>
+        <Button className="rounded-xl text-xs">Detalles</Button>
       </DialogTrigger>
       <DialogContent
         onPointerDownOutside={(e) => {
@@ -158,7 +152,7 @@ export function AuctionDetails({
               </PopoverTrigger>
               <PopoverContent
                 onPointerDownOutside={() => setPopoverOpen(false)}
-                side="right"
+                side="bottom"
                 className="w-full p-4"
               >
                 <PopoverArrow className="bg-background" />

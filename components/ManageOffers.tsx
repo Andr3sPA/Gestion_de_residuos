@@ -29,7 +29,7 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
+} from "@/components/ui/dropdown-menu";
 
 interface Purchase {
   auction_id: number;
@@ -48,11 +48,12 @@ export interface Offer {
     nit: string;
   };
   offerPrice: string;
-  counts:{  
-  countOffers: number;
-  countSales:number;
-  countPurchases:number;
-  countAuctions:number;}
+  counts: {
+    countOffers: number;
+    countSales: number;
+    countPurchases: number;
+    countAuctions: number;
+  };
 }
 
 interface OfferFormProps {
@@ -131,17 +132,26 @@ export function ManageOffers({ auctionId, auctionStatus }: OfferFormProps) {
       id: "Calificaciones del comprador",
       cell: ({ row }) => (
         <DropdownMenu>
-          <DropdownMenuTrigger asChild><Button className="rounded-xl text-xs">Calificaciones del comprador
-          </Button>
+          <DropdownMenuTrigger asChild>
+            <Button className="rounded-xl text-xs">
+              Calificaciones del comprador
+            </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent>
-            <DropdownMenuLabel>Subastas realizadas {row.original.counts.countAuctions}</DropdownMenuLabel>
-            <DropdownMenuLabel>Subastas vendidas {row.original.counts.countSales}</DropdownMenuLabel>
-            <DropdownMenuLabel>Ofertas realizadas {row.original.counts.countOffers}</DropdownMenuLabel>
-            <DropdownMenuLabel>Subastas compradas {row.original.counts.countPurchases}</DropdownMenuLabel>
+            <DropdownMenuLabel>
+              Subastas realizadas {row.original.counts.countAuctions}
+            </DropdownMenuLabel>
+            <DropdownMenuLabel>
+              Subastas vendidas {row.original.counts.countSales}
+            </DropdownMenuLabel>
+            <DropdownMenuLabel>
+              Ofertas realizadas {row.original.counts.countOffers}
+            </DropdownMenuLabel>
+            <DropdownMenuLabel>
+              Subastas compradas {row.original.counts.countPurchases}
+            </DropdownMenuLabel>
           </DropdownMenuContent>
         </DropdownMenu>
-
       ),
     },
     {
@@ -222,7 +232,7 @@ export function ManageOffers({ auctionId, auctionStatus }: OfferFormProps) {
   return (
     <AlertDialog>
       <AlertDialogTrigger asChild>
-        <Button variant="outline">ofertas</Button>
+        <Button variant="outline">Mostrar</Button>
       </AlertDialogTrigger>
       <AlertDialogContent className="w-2/3 max-w-full max-h-full">
         <AlertDialogHeader className="w-full overflow-auto max-w-full">

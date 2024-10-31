@@ -34,16 +34,15 @@ export interface Purchase {
         name: string;
       };
     };
-    
   };
   finalPrice: number;
   createdAt: string;
-  counts:{  
+  counts: {
     countOffers: number;
-    countSales:number;
-    countPurchases:number;
-    countAuctions:number;
-  }
+    countSales: number;
+    countPurchases: number;
+    countAuctions: number;
+  };
 }
 
 export enum RecordType {
@@ -75,8 +74,24 @@ export function PurchaseList({ recordType }: PurchasesProps) {
       cell: ({ row }) => <div>{row.original.id}</div>,
     },
     {
+      accessorKey: "auction.waste.description",
+      header: "Descripción de residuo",
+      enableSorting: true,
+    },
+    {
+      accessorKey: "auction.units",
+      header: "Unidades",
+      cell: ({ row }) => (
+        <span className="block text-right">
+          {row.original.auction.units}{" "}
+          {row.original.auction.waste.unitType.name}
+        </span>
+      ),
+      enableSorting: true,
+    },
+    {
       accessorKey: "finalPrice",
-      header: "Precio de compra",
+      header: `Precio de ${recordType === RecordType.Ventas ? "venta" : "compra"}`,
       enableSorting: true,
       cell: ({ row }) => (
         <div className="text-right">${row.original.finalPrice}</div>
@@ -84,7 +99,7 @@ export function PurchaseList({ recordType }: PurchasesProps) {
     },
     {
       accessorKey: "createdAt",
-      header: "Fecha de creación",
+      header: `Fecha de ${recordType === RecordType.Ventas ? "venta" : "compra"}`,
       enableGlobalFilter: false,
       cell: ({ row }) => {
         const createdAt = row.original.createdAt;
@@ -95,30 +110,10 @@ export function PurchaseList({ recordType }: PurchasesProps) {
         return <div>{formattedDate}</div>;
       },
     },
-    {
-      accessorKey: "auction.waste.description",
-      header: "Descripción de residuo",
-      enableSorting: true,
-    },
-    {
-      accessorKey: "auction.units",
-      header: "Unidades",
-      enableSorting: true,
-    },
-    {
-      accessorKey: "auction.waste.id",
-      header: "Id del residuo",
-      enableSorting: true,
-    },
 
     // Columnas específicas para ventas
     ...(recordType === RecordType.Ventas
       ? [
-          {
-            accessorKey: "offer.contact",
-            header: "Contacto",
-            enableSorting: true,
-          },
           {
             accessorKey: "offer.companyBuyer.name",
             header: "Comprador",
@@ -127,6 +122,11 @@ export function PurchaseList({ recordType }: PurchasesProps) {
           {
             accessorKey: "offer.companyBuyer.nit",
             header: "NIT",
+            enableSorting: true,
+          },
+          {
+            accessorKey: "offer.contact",
+            header: "Contacto",
             enableSorting: true,
           },
         ]
@@ -140,7 +140,6 @@ export function PurchaseList({ recordType }: PurchasesProps) {
             header: "Contacto",
             enableSorting: true,
           },
-
           {
             accessorKey: "auction.conditions",
             header: "Condiciones",

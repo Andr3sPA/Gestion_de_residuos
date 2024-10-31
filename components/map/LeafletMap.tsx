@@ -6,7 +6,7 @@ import {
 } from "leaflet";
 import "leaflet/dist/leaflet.css";
 import { useState } from "react";
-import { MapContainer, TileLayer } from "react-leaflet";
+import { Circle, CircleMarker, MapContainer, TileLayer } from "react-leaflet";
 import { MapSearchAndMark } from "./MapControls";
 
 export default function LeafletMap({
@@ -14,11 +14,13 @@ export default function LeafletMap({
   onMarkChange,
   disabled,
   size,
+  markerRadius,
 }: {
   mark?: LatLngExpression;
   onMarkChange?: (latLng: LatLng) => void;
   disabled?: boolean;
   size: "sm" | "md" | "lg";
+  markerRadius?: number;
 }) {
   const [markedPos, setMarkedPos] = useState<LatLngExpression | null>(
     mark ?? null,
@@ -58,7 +60,10 @@ export default function LeafletMap({
             onMarkChange && onMarkChange(pos as LatLng);
           }
         }}
-      ></MapSearchAndMark>
+      />
+      {markedPos && markerRadius && (
+        <Circle center={markedPos} radius={markerRadius} />
+      )}
     </MapContainer>
   );
 }

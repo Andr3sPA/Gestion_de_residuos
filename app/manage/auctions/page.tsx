@@ -49,12 +49,12 @@ export interface Auction {
   pickupLongitude: string;
   initialPrice: string;
   createdAt: string;
-  counts:{  
+  counts: {
     countOffers: number;
-    countSales:number;
-    countPurchases:number;
-    countAuctions:number;
-  }
+    countSales: number;
+    countPurchases: number;
+    countAuctions: number;
+  };
   status: keyof (typeof enumMappings)["auctionStatusMap"];
 }
 
@@ -105,6 +105,16 @@ export default function ManageAuctions() {
       cell: ({ row }) => <div>{row.original.id}</div>, // Usa 'id' aquí también
     },
     {
+      accessorKey: "waste.wasteType.name",
+      header: "Tipo de residuo",
+      cell: ({ row }) => (
+        <span className="block text-center font-semibold">
+          {row.original.waste.wasteType.name}
+        </span>
+      ),
+      enableSorting: true,
+    },
+    {
       accessorKey: "waste.description",
       header: "Descripción",
       enableSorting: true,
@@ -116,11 +126,6 @@ export default function ManageAuctions() {
         const conds = row.original.conditions;
         return conds && conds.length > 0 ? conds : "Sin condiciones";
       },
-      enableSorting: true,
-    },
-    {
-      accessorKey: "waste.wasteType.name",
-      header: "Tipo de residuo",
       enableSorting: true,
     },
     {
@@ -188,6 +193,7 @@ export default function ManageAuctions() {
     },
     {
       id: "actions",
+      header: () => <span className="block text-center">Ofertas</span>,
       cell: ({ row }) => (
         <ManageOffers
           auctionId={row.original.id}

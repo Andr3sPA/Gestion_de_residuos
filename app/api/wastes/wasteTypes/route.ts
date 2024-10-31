@@ -14,7 +14,6 @@ import { JWTWithRole } from "../../auth/[...nextauth]/route";
 async function listAll(req: NextRequest) {
   const token = (await getToken({ req })) as JWTWithRole;
   if (!token || !token.sub) return unauthorized();
-  if (token.role !== "superAdmin") return forbidden();
 
   const types = await prismaClient.wasteType.findMany();
 

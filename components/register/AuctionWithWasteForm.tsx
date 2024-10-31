@@ -40,6 +40,7 @@ import { SimpleCard } from "../common/SimpleCard";
 import { Combobox } from "../input/Combobox";
 import { MapPopover } from "../map/MapPopover";
 import { PriceInput } from "../input/PriceInput";
+import { NumericFormat } from "react-number-format";
 
 // Esquema de validación con Zod
 const FormSchema = z.object({
@@ -57,9 +58,7 @@ const FormSchema = z.object({
   contact: z
     .string()
     .min(1, { message: "El campo de contacto es obligatorio." }),
-  conditions: z
-    .string()
-    .min(1, { message: "Las condiciones son obligatorias." }), // Nuevo campo de condiciones
+  conditions: z.string(),
   description: z.string().min(1, { message: "La descripción es requerida." }),
   unitType: z.string().min(1, { message: "El tipo de unidad es requerido." }),
   wasteType: z.string().min(1, { message: "El tipo de residuo es requerido." }),
@@ -292,13 +291,13 @@ export function AuctionWithWasteForm() {
                 <FormItem className="flex flex-col">
                   <FormLabel>Unidades</FormLabel>
                   <FormControl>
-                    <Input
-                      type="number"
+                    <NumericFormat
+                      inputMode="numeric"
                       placeholder="Número de unidades"
                       className="text-right"
-                      {...field}
                       value={field.value}
-                      onChange={(e) => field.onChange(e.target.valueAsNumber)}
+                      onValueChange={(v) => field.onChange(v.floatValue)}
+                      customInput={Input}
                     />
                   </FormControl>
                   <FormMessage />

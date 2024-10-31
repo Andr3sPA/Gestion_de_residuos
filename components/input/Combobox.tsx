@@ -10,7 +10,8 @@ import {
   CommandList,
 } from "@/components/ui/command";
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
-import { useEffect, useState } from "react";
+import { ReactNode, useEffect, useState } from "react";
+import { Search } from "lucide-react";
 
 export interface ComboboxItem {
   id: string;
@@ -19,11 +20,15 @@ export interface ComboboxItem {
 
 export function Combobox({
   placeholder,
+  prompt,
+  icon,
   list,
   onSelect,
   selectable = true,
 }: {
   placeholder?: string;
+  prompt?: string;
+  icon?: ReactNode;
   list: ComboboxItem[];
   onSelect?: (item: ComboboxItem | null) => void;
   selectable?: boolean;
@@ -41,9 +46,10 @@ export function Combobox({
           aria-hidden={false}
           className="flex justify-between w-full"
         >
+          {icon}
           {selectedLabel ?? (
             <span className="w-[80%] overflow-clip">
-              {selectable ? "Seleccione una opción" : ""}
+              {selectable ? (prompt ?? "Seleccione una opción") : ""}{" "}
             </span>
           )}
           <CaretSortIcon className="ml-2 h-4 w-4 shrink-0 opacity-50" />
