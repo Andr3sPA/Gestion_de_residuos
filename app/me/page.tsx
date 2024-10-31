@@ -3,6 +3,7 @@
 import { SimpleCard } from "@/components/common/SimpleCard";
 import { MembershipReqTable } from "@/components/MembershipReqTable";
 import { Badge } from "@/components/ui/badge";
+import { Separator } from "@/components/ui/separator";
 import { enumMappings, cn } from "@/lib/utils";
 import { Prisma } from "@prisma/client";
 import { useQuery } from "@tanstack/react-query";
@@ -13,7 +14,7 @@ type UserWithCompany = Prisma.UserGetPayload<{
   include: {
     company: true;
   };
-}>& {
+}> & {
   counts: {
     countOffers: number;
     countSales: number;
@@ -46,6 +47,15 @@ export default function ProfileDetails() {
   const isCompAdmin = me.data && me.data.role === "companyAdmin";
   const isSuperAdmin = me.data && me.data.role === "superAdmin";
   const isMembership = me.data && me.data.membershipStatus === "accepted";
+
+  const counts = me.isSuccess
+    ? [
+        ["Cantidad de subastas", me.data.counts.countAuctions],
+        ["Cantidad de ofertas", me.data.counts.countOffers],
+        ["Cantidad de ventas", me.data.counts.countSales],
+        ["Cantidad de compras", me.data.counts.countPurchases],
+      ]
+    : [];
 
   return (
     <div className="flex flex-col py-8 gap-8 max-w-[100%]">
@@ -98,60 +108,49 @@ export default function ProfileDetails() {
                     </Badge>
                   </div>
                 }
-              >      
-                <div className="grid grid-cols-2">
-                  <div className="flex flex-col gap-1 max-w-52">
-                    <span className="text-sm font-light">
-                      NIT: {me.data.company.nit}
-                    </span>
-                    <span className="text-lg font-semibold">
-                      {me.data.company.name}
-                    </span>
-                    <span className="font-light text-md text-wrap">
-                      {me.data.company.description}
-                    </span>
-                    <div className="flex flex-col">
-                  <span>Cantidad de compras</span>
-                  <div>
-                  <Badge>{me.data.counts.countPurchases}</Badge>  
-                  </div> 
-                  </div>    
-                  <div className="flex flex-col">         
-                  <span>Cantidad de ventas</span>
-                  <div>
-                  <Badge>{me.data.counts.countSales}</Badge>
-                  </div>                
-                    </div>   
-                  </div>
-                  <div className="flex flex-col justify-end gap-1 text-end">
-                    {me.data.company.phoneNumber &&
-                      me.data.company.phoneNumber?.length > 0 && (
-                        <div className="flex flex-col">
-                          <span className="text-xs">Teléfono:</span>
-                          <span className="text-sm font-semibold">
-                            {me.data.company.phoneNumber}
-                          </span>
-                        </div>
-                      )}
-                    <div className="flex flex-col">
-                      <span className="text-xs">Dirección</span>
-                      <span className="text-sm font-semibold">
-                        {me.data.company.address}
+              >
+                <div>
+                  <div className="grid grid-cols-2">
+                    <div className="flex flex-col gap-1 max-w-52">
+                      <span className="text-sm font-light">
+                        NIT: {me.data.company.nit}
+                      </span>
+                      <span className="text-lg font-semibold">
+                        {me.data.company.name}
+                      </span>
+                      <span className="font-light text-md text-wrap">
+                        {me.data.company.description}
                       </span>
                     </div>
-                    <div className="flex flex-col">
-                  <span>Cantidad de ofertas</span>
-                  <div>
-                  <Badge>{me.data.counts.countOffers}</Badge> 
+                    <div className="flex flex-col justify-end gap-1 text-end">
+                      {me.data.company.phoneNumber &&
+                        me.data.company.phoneNumber?.length > 0 && (
+                          <div className="flex flex-col">
+                            <span className="text-xs">Teléfono:</span>
+                            <span className="text-sm font-semibold">
+                              {me.data.company.phoneNumber}
+                            </span>
+                          </div>
+                        )}
+                      <div className="flex flex-col">
+                        <span className="text-xs">Dirección</span>
+                        <span className="text-sm font-semibold">
+                          {me.data.company.address}
+                        </span>
+                      </div>
+                    </div>
                   </div>
-                  </div>  
-                  <div className="flex flex-col">             
-                  <span>Cantidad de subastas</span>
-                  <div>
-                  <Badge>{me.data.counts.countAuctions}</Badge>   
-                  </div>             
-                    </div>   
-                  </div>                   
+                  <Separator className="m-2" />
+                  <div className="grid grid-cols-2 gap-y-2">
+                    {counts.map((c, i) => (
+                      <div key={i} className="flex flex-col items-center">
+                        <span>{c[0]}</span>
+                        <div>
+                          <Badge>{c[1]}</Badge>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
                 </div>
               </SimpleCard>
             )}

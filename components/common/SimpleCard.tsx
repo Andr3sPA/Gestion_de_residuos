@@ -11,12 +11,14 @@ import { ReactNode } from "react";
 export function SimpleCard({
   className = "",
   title,
+  titleCenter,
   desc,
   headerActions,
   children,
 }: {
   className?: string;
   title?: string;
+  titleCenter?: boolean;
   desc?: string;
   headerActions?: ReactNode;
   children: ReactNode;
@@ -32,7 +34,11 @@ export function SimpleCard({
           className={`px-7 grid ${headerActions ? "grid-cols-2" : ""} max-w-full`}
         >
           <div>
-            <CardTitle className="w-full">{title}</CardTitle>
+            <CardTitle
+              className={`w-full ${titleCenter ? "text-center text-xl" : ""}`}
+            >
+              {title}
+            </CardTitle>
             {desc && <CardDescription>{desc}</CardDescription>}
           </div>
           {headerActions && <div>{headerActions}</div>}

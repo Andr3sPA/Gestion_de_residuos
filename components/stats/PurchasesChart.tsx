@@ -47,7 +47,6 @@ export function PurchasesChart() {
     // },
     queryFn: () =>
       axios.get("/api/purchases/listAll").then((res) => {
-        console.log(res.data.purchases);
         return res.data.purchases as Purchase[];
       }),
   });
