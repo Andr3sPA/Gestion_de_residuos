@@ -104,14 +104,14 @@ model Auction {
   createdAt       DateTime       @default(now())
   status          AuctionStatus  @default(available)
   offers          Offer[]
-  Purchase        Purchase[]
+  purchase        Purchase?
   notifications   Notification[]
 }
 
 model Purchase {
   id         Int      @id @default(autoincrement())
   auction    Auction  @relation(fields: [auctionId], references: [id])
-  auctionId  Int
+  auctionId  Int      @unique
   offer      Offer    @relation(fields: [offerId], references: [id])
   offerId    Int      @unique
   finalPrice Decimal

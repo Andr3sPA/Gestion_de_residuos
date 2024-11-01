@@ -9,11 +9,9 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "../ui/dropdown-menu";
-import { useRouter } from "next/navigation";
 
 export function ProfileMenu() {
   const { data } = useSession();
-  const router = useRouter();
 
   return (
     <DropdownMenu>
@@ -31,12 +29,6 @@ export function ProfileMenu() {
           </span>
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
-        <DropdownMenuItem
-          className="cursor-pointer"
-          onClick={() => router.push("/me")}
-        >
-          Mi perfil y empresa
-        </DropdownMenuItem>
         <DropdownMenuSeparator />
         <DropdownMenuItem className="cursor-pointer" onClick={() => signOut()}>
           Cerrar sesión

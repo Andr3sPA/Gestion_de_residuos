@@ -23,7 +23,7 @@ type UserWithCompany = Prisma.UserGetPayload<{
   };
 };
 
-export default function ProfileDetails() {
+export function ProfileDetails() {
   const me = useQuery({
     queryKey: ["me"],
     queryFn: () =>
@@ -58,7 +58,7 @@ export default function ProfileDetails() {
     : [];
 
   return (
-    <div className="flex flex-col py-8 gap-8 max-w-[100%]">
+    <div className="flex flex-col py-8 gap-8 max-w-full w-full">
       <div
         className={`flex ${isCompAdmin || isSuperAdmin ? "flex-row" : "flex-col"} flex-wrap gap-0 px-8 justify-center items-center`}
       >
