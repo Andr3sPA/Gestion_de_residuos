@@ -4,8 +4,25 @@ import { GeneralReport } from "@/components/GeneralReport";
 import { Stats } from "@/components/stats/Stats";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ProfileDetails } from "@/components/users/ProfileDetails";
+import { Loader2 } from "lucide-react";
+import { useSession } from "next-auth/react";
 
 export default function Home() {
+  const { status } = useSession();
+
+  if (status === "loading")
+    return (
+      <div>
+        <Loader2 className="animate-spin" />
+      </div>
+    );
+  if (status === "unauthenticated")
+    return (
+      <div>
+        <span>Usuario no conectado</span>
+      </div>
+    );
+
   return (
     <Tabs defaultValue="stats" className="w-full px-8">
       <TabsList className="p-2">
