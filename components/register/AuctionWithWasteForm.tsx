@@ -10,6 +10,7 @@ import { Input } from "@/components/ui/input";
 import { Calendar } from "@/components/ui/calendar";
 import { CalendarIcon, MapIcon, Loader2Icon, Loader2 } from "lucide-react"; // Importa el ícono de carga
 import { format } from "date-fns";
+import { es } from "date-fns/locale";
 import {
   Select,
   SelectContent,
@@ -260,7 +261,7 @@ export function AuctionWithWasteForm() {
                           className="w-full pl-3 text-left font-normal"
                         >
                           {field.value
-                            ? format(field.value, "PPP")
+                            ? format(field.value, "PPP", { locale: es })
                             : "Selecciona una fecha"}
                           <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
                         </Button>

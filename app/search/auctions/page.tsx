@@ -9,6 +9,7 @@ import { Auction } from "@/app/manage/auctions/page";
 import { SimpleCard } from "@/components/common/SimpleCard";
 import { TableList } from "@/components/common/TableList";
 import { format } from "date-fns";
+import { es } from "date-fns/locale";
 import {
   Popover,
   PopoverContent,
@@ -64,7 +65,7 @@ export default function SearchAuctions() {
         const expiresAt = row.original.expiresAt;
         const date = new Date(expiresAt);
         const formattedDate = !isNaN(date.getTime())
-          ? format(date, "PPP")
+          ? format(date, "PPP", { locale: es })
           : "N/A";
         return <div>{formattedDate}</div>;
       },

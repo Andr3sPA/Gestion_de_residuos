@@ -24,8 +24,8 @@ export default function Home() {
     );
 
   return (
-    <Tabs defaultValue="stats" className="w-full px-8">
-      <TabsList className="p-2">
+    <Tabs defaultValue="stats" className="w-full sm:px-8">
+      <TabsList className="p-2 flex flex-wrap h-fit w-fit">
         <TabsTrigger value="stats">Estadísticas</TabsTrigger>
         <TabsTrigger value="reports">Subastas</TabsTrigger>
         <TabsTrigger value="me">Mi perfil y empresa</TabsTrigger>

@@ -7,6 +7,7 @@ import { TableList } from "./common/TableList";
 import { ColumnDef } from "@tanstack/react-table";
 import { Prisma, Purchase } from "@prisma/client";
 import { format } from "date-fns";
+import { es } from "date-fns/locale";
 import { Badge } from "./ui/badge";
 import { cn } from "@/lib/utils";
 import { SimpleCard } from "./common/SimpleCard";
@@ -67,7 +68,7 @@ export function GeneralReport() {
       header: "Fecha de venta",
       cell: ({ row }) => (
         <span className="block text-right">
-          {format(new Date(row.original.createdAt), "PP")}
+          {format(new Date(row.original.createdAt), "PP", { locale: es })}
         </span>
       ),
     },

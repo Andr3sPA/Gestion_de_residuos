@@ -69,7 +69,7 @@ export function Stats() {
         <SimpleCard
           title="Histórico de ventas"
           titleCenter
-          className="flex-grow h-fit w-auto px-0 py-0.5"
+          className="flex-grow overflow-auto h-fit w-auto px-0 py-0.5"
         >
           <PurchasesChart />
         </SimpleCard>

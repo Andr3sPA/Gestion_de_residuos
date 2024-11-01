@@ -4,6 +4,7 @@ import { Calendar } from "../ui/calendar";
 import { Button } from "../ui/button";
 import { cn } from "@/lib/utils";
 import { format } from "date-fns";
+import { es } from "date-fns/locale";
 
 export function DatePicker({
   label,
@@ -26,7 +27,9 @@ export function DatePicker({
           variant={"outline"}
           className={cn({ "font-light": selectedDate === undefined })}
         >
-          {selectedDate ? format(selectedDate, "PPP") : "--/--/----"}
+          {selectedDate
+            ? format(selectedDate, "PPP", { locale: es })
+            : "--/--/----"}
         </Button>
       </PopoverTrigger>
       <PopoverContent className="w-auto p-0" align="start">

@@ -23,7 +23,10 @@ interface AuctionsCount {
 }
 
 export function Effectivity() {
-  const [range, setRange] = useState({ from: new Date(0), to: new Date() });
+  const [range, setRange] = useState({
+    from: new Date(Date.now() - 365 * 24 * 3600 * 1000),
+    to: new Date(),
+  });
   const auctions = useQuery<Auction[]>({
     queryKey: ["allAuctions"],
     refetchOnMount: false,
@@ -54,8 +57,8 @@ export function Effectivity() {
   }, [range, auctions.isSuccess, auctions.data]);
 
   return (
-    <div className="w-fit flex flex-col items-center">
-      <div className="flex flex-wrap justify-center gap-4">
+    <div className="w-fit flex flex-col items-center overflow-auto">
+      <div className="flex flex-wrap justify-center gap-4 overflow-auto">
         <DatePicker
           label="Desde"
           selected={range.from}

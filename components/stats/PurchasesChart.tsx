@@ -8,22 +8,14 @@ import {
   ChartTooltipContent,
 } from "../ui/chart";
 import { useEffect, useState } from "react";
-import {
-  Area,
-  AreaChart,
-  CartesianGrid,
-  Label,
-  Line,
-  LineChart,
-  XAxis,
-  YAxis,
-} from "recharts";
+import { Area, AreaChart, CartesianGrid, Label, XAxis, YAxis } from "recharts";
 import { format, toDate } from "date-fns";
 import { DatePicker } from "../input/DatePicker";
 import { Select, SelectContent, SelectItem, SelectTrigger } from "../ui/select";
 import { EyeIcon, Loader2 } from "lucide-react";
 import axios from "axios";
 import { Purchase } from "../PurchaseList";
+import { es } from "date-fns/locale";
 
 interface StatPerDate {
   dateMilli: number;
@@ -33,30 +25,17 @@ interface StatPerDate {
 
 export function PurchasesChart() {
   const [range, setRange] = useState({
-    from: new Date(Date.now() - 15 * 24 * 3600 * 1000),
+    from: new Date(Date.now() - 365 * 24 * 3600 * 1000),
     to: new Date(),
   });
   const purchases = useQuery({
     queryKey: ["purchasesGraph"],
     refetchOnMount: false,
     refetchOnWindowFocus: false,
-    queryFn: () => {
-      const test = new Array(20).fill(undefined).map((_, i) => {
-        return {
-          id: i,
-          createdAt: new Date(
-            Date.now() + 30 * 24 * 3600 * 1000 * Math.sin(i * i),
-          ).getTime(),
-          finalPrice: Math.exp(Math.sin(i) + Math.cos(-2 * i)) * 1000,
-        };
-      });
-
-      return test.sort((a, b) => a.createdAt - b.createdAt);
-    },
-    // queryFn: () =>
-    //   axios.get("/api/purchases/listAll").then((res) => {
-    //     return res.data.purchases as Purchase[];
-    //   }),
+    queryFn: () =>
+      axios.get("/api/purchases/listAll").then((res) => {
+        return res.data.purchases as Purchase[];
+      }),
   });
   const [processedData, setProcessedData] = useState<StatPerDate[]>([]);
   const [valueToShow, setValueToShow] = useState<"purchases" | "totalPrice">(
@@ -100,8 +79,8 @@ export function PurchasesChart() {
   }, [purchases.data, purchases.isSuccess, range]);
 
   return (
-    <div className="flex flex-col items-center w-full">
-      <div className="grid grid-cols-2 gap-4 pb-4">
+    <div className="flex flex-col items-center w-full overflow-auto">
+      <div className="flex flex-wrap justify-center gap-4 pb-4">
         <DatePicker
           label="Desde"
           selected={range.from}
@@ -177,7 +156,7 @@ function LineGraph({
             <ChartTooltipContent
               labelFormatter={(_, payload) => {
                 const date = new Date(payload[0].payload.dateMilli);
-                return format(date, "PPP");
+                return format(date, "PPP", { locale: es });
               }}
             />
           }
@@ -188,7 +167,7 @@ function LineGraph({
           dataKey={"dateMilli"}
           tickLine={false}
           tickFormatter={(v) => {
-            return format(new Date(v), "d MMM");
+            return format(new Date(v), "d MMM", { locale: es });
           }}
         />
         <YAxis
