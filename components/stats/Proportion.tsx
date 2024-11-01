@@ -1,9 +1,4 @@
-"use client";
-
-import { Offer } from "@prisma/client";
-import { useQuery } from "@tanstack/react-query";
-import axios from "axios";
-import { Loader2 } from "lucide-react";
+import { Auction, AuctionStatus, Offer } from "@prisma/client";
 import {
   ChartConfig,
   ChartContainer,
@@ -13,28 +8,43 @@ import {
 import { Pie, PieChart } from "recharts";
 import { Badge } from "../ui/badge";
 
-export function OffersProportion() {
-  const offers = useQuery({
-    queryKey: ["offersProportion"],
-    queryFn: () =>
-      axios.get("/api/offers/listAll").then((res) => {
-        const offers = res.data.offers as Offer[];
-        const accepted = offers.filter((o) => o.status === "accepted").length;
-        const rest = offers.length - accepted;
-        return [
-          {
-            proportion: "accepted",
-            count: accepted,
-            fill: "hsl(var(--chart-1))",
-          },
-          { proportion: "rest", count: rest, fill: "hsl(var(--chart-2))" },
-        ];
-      }),
-  });
+export function Proportion({ data }: { data: Auction[] | Offer[] }) {
+  const isAuction = (arg: Auction | Offer): arg is Auction => {
+    return Object.values(AuctionStatus as any).includes(arg.status);
+  };
+
+  let proportions;
+  if (data.length > 0) {
+    if (isAuction(data[0])) {
+      const sold = data.filter((a) => a.status === "sold").length;
+      proportions = [
+        { proportion: "sold", count: sold, fill: "hsl(var(--chart-1))" },
+      ];
+    } else {
+      const accepted = data.filter((o) => o.status === "accepted").length;
+      proportions = [
+        {
+          proportion: "accepted",
+          count: accepted,
+          fill: "hsl(var(--chart-1))",
+        },
+      ];
+    }
+
+    const rest = data.length - proportions[0].count;
+    proportions.push({
+      proportion: "rest",
+      count: rest,
+      fill: "hsl(var(--chart-2))",
+    });
+  }
 
   const config: ChartConfig = {
     accepted: {
       label: "Aceptadas",
+    },
+    sold: {
+      label: "Vendidas",
     },
     rest: {
       label: "Otras",
@@ -61,14 +71,15 @@ export function OffersProportion() {
         className="flex flex-col"
       >
         <tspan className="font-semibold text-lg" x={x} y={y - 8}>
-          {offers.isSuccess &&
-            (
-              offers.data[0].count /
-              (offers.data[0].count + offers.data[1].count)
-            ).toFixed(2)}
+          {proportions
+            ? (
+                proportions[0].count /
+                (proportions[0].count + proportions[1].count)
+              ).toFixed(2)
+            : 0}
         </tspan>
         <tspan className="font-light text-xs" x={x} y={y + 8}>
-          Aceptadas/Total
+          Vendidas/Total
         </tspan>
       </text>
     </svg>
@@ -76,15 +87,19 @@ export function OffersProportion() {
 
   return (
     <div className="w-full">
-      {offers.isLoading && <Loader2 className="animate-spin" />}
-      {offers.isSuccess && (
-        <div className="flex flex-wrap justify-around gap-4">
+      {
+        <div className="flex flex-wrap w-fit justify-around gap-4">
           <ChartContainer config={config} className="min-h-44 max-w-44">
             <PieChart
               margin={{ left: 0, right: 0, top: 0, bottom: 0 }}
               className="hover:bg-accent transition-colors duration-500 rounded-md"
             >
-              <Pie data={offers.data} dataKey={"count"} label />
+              <Pie
+                data={proportions}
+                dataKey={"count"}
+                nameKey={"proportion"}
+                label
+              />
               <ChartTooltip
                 content={<ChartTooltipContent hideLabel nameKey="proportion" />}
               />
@@ -92,19 +107,21 @@ export function OffersProportion() {
           </ChartContainer>
           <div className="flex flex-col gap-1 text-sm mb-2">
             <div className="flex justify-between gap-2">
-              <span>Total de ofertas</span>
+              <span>Total de subastas</span>
               <Badge variant={"outline"}>
-                {offers.data[0].count + offers.data[1].count}
+                {proportions ? proportions[0].count + proportions[1].count : 0}
               </Badge>
             </div>
             <div className="flex justify-between gap-2">
-              <span>Aceptadas</span>
-              <Badge className="bg-chart-1">{offers.data[0].count}</Badge>
+              <span>Vendidas</span>
+              <Badge className="bg-chart-1">
+                {proportions ? proportions[0].count : 0}
+              </Badge>
             </div>
             <div className="flex flex-col items-center mt-2">{proportion}</div>
           </div>
         </div>
-      )}
+      }
     </div>
   );
 }

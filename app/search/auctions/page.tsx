@@ -22,7 +22,7 @@ import { Combobox, ComboboxItem } from "@/components/input/Combobox";
 
 export default function SearchAuctions() {
   const auctions = useQuery<Auction[]>({
-    queryKey: ["allAuctions"],
+    queryKey: ["auctionsWithCounts"],
     queryFn: () =>
       axios.get("/api/auctions/search").then((res) => {
         return res.data.auctionsWithCounts;

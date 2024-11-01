@@ -166,7 +166,7 @@ function LineGraph({
       </div>
     );
   return data.length === 0 ? (
-    <div className="min-h-32 flex flex-col justify-center">
+    <div className="min-h-32 h-auto flex flex-col justify-center">
       <span className="text-nowrap">No se encontraron datos</span>
     </div>
   ) : (
