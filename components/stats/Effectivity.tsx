@@ -55,7 +55,7 @@ export function Effectivity() {
 
   return (
     <div className="w-fit flex flex-col items-center">
-      <div className="grid grid-cols-2 gap-4">
+      <div className="flex flex-wrap justify-center gap-4">
         <DatePicker
           label="Desde"
           selected={range.from}
@@ -100,14 +100,14 @@ function PieGraph({ data }: { data: AuctionsCount[] | undefined }) {
   }, [data]);
 
   return total === 0 ? (
-    <div className="flex flex-col justify-center min-h-60 m-2 px-4 rounded-md">
+    <div className="flex flex-col justify-center min-h-42 m-2 px-4 rounded-md">
       <span className="font-light">
         No hay subastas en el rango seleccionado
       </span>
     </div>
   ) : (
     <ChartContainer
-      className="sm:w-min sm:mt-2 m-2 mt-6 w-3/5 min-h-60 hover:bg-accent transition-colors duration-500 rounded-md"
+      className="sm:mt-2 m-2 mt-6 w-3/4 min-h-44 hover:bg-accent transition-colors duration-500 rounded-md"
       config={config}
     >
       <PieChart>
@@ -122,8 +122,8 @@ function PieGraph({ data }: { data: AuctionsCount[] | undefined }) {
         />
         <ChartLegend content={<ChartLegendContent className="flex-wrap" />} />
         <Pie
-          innerRadius={50}
-          outerRadius={80}
+          innerRadius={"70%"}
+          outerRadius={"105%"}
           paddingAngle={3}
           data={data}
           dataKey={"count"}

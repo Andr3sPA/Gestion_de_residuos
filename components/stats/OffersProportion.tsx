@@ -60,7 +60,7 @@ export function OffersProportion() {
         y={y}
         className="flex flex-col"
       >
-        <tspan className="font-semibold" x={x} y={y - 8}>
+        <tspan className="font-semibold text-lg" x={x} y={y - 8}>
           {offers.isSuccess &&
             (
               offers.data[0].count /
@@ -78,7 +78,7 @@ export function OffersProportion() {
     <div className="w-full">
       {offers.isLoading && <Loader2 className="animate-spin" />}
       {offers.isSuccess && (
-        <div className="flex flex-wrap justify-between gap-4">
+        <div className="flex flex-wrap justify-around gap-4">
           <ChartContainer config={config} className="min-h-44 max-w-44">
             <PieChart
               margin={{ left: 0, right: 0, top: 0, bottom: 0 }}
@@ -90,7 +90,7 @@ export function OffersProportion() {
               />
             </PieChart>
           </ChartContainer>
-          <div className="flex flex-col gap-1 text-sm">
+          <div className="flex flex-col gap-1 text-sm mb-2">
             <div className="flex justify-between gap-2">
               <span>Total de ofertas</span>
               <Badge variant={"outline"}>

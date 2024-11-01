@@ -8,6 +8,7 @@ import "leaflet/dist/leaflet.css";
 import { useState } from "react";
 import { Circle, CircleMarker, MapContainer, TileLayer } from "react-leaflet";
 import { MapSearchAndMark } from "./MapControls";
+import { cn } from "@/lib/utils";
 
 export default function LeafletMap({
   mark,
@@ -42,7 +43,7 @@ export default function LeafletMap({
 
   return (
     <MapContainer
-      className={className}
+      className={cn(className, "sm:max-w-full max-w-[350px]")}
       center={markedPos ?? position}
       zoom={13}
       bounds={bounds}

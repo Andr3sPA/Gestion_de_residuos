@@ -61,7 +61,7 @@ export function AuctionsProportion() {
         y={y}
         className="flex flex-col"
       >
-        <tspan className="font-semibold" x={x} y={y - 8}>
+        <tspan className="font-semibold text-lg" x={x} y={y - 8}>
           {auctions.isSuccess &&
             (
               auctions.data[0].count /
@@ -91,7 +91,7 @@ export function AuctionsProportion() {
               />
             </PieChart>
           </ChartContainer>
-          <div className="flex flex-col gap-1 text-sm">
+          <div className="flex flex-col gap-1 text-sm mb-2">
             <div className="flex justify-between gap-2">
               <span>Total de subastas</span>
               <Badge variant={"outline"}>

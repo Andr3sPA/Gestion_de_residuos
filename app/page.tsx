@@ -11,7 +11,7 @@ import { Loader2 } from "lucide-react";
 import { useSession } from "next-auth/react";
 
 export default function Home() {
-  const { status } = useSession();
+  const { status, data } = useSession();
 
   if (status === "unauthenticated") return <div>Nothing</div>;
   if (status === "loading")
@@ -21,34 +21,48 @@ export default function Home() {
       </div>
     );
 
+  //FIXME: change mean and organize Porportions
   return (
     <div className="flex flex-col w-full gap-6 justify-start">
-      <div className="flex flex-wrap justify-center">
-        <SimpleCard
-          title="Estado de las subastas"
-          titleCenter
-          className="px-0 py-0.5"
-        >
-          <Effectivity />
-        </SimpleCard>
-        <SimpleCard
-          title="Histórico de ventas"
-          titleCenter
-          className="px-0 py-0.5"
-        >
-          <PurchasesChart />
-        </SimpleCard>
-        <SimpleCard
-          title="Proporción de subastas vendidas y ofertas aceptadas"
-          titleCenter
-          className="pt-0 mt-0"
-        >
-          <div className="flex flex-col">
-            <AuctionsProportion />
-            <Separator className="m-2" />
-            <OffersProportion />
-          </div>
-        </SimpleCard>
+      <div className="flex md:px-8 p-2 md:flex-row flex-col justify-center md:items-start items-stretch">
+        <div className="flex flex-col flex-grow items-stretch w-auto">
+          <SimpleCard title={`Hola!, ${data?.user?.name}`} className="w-auto">
+            <div>
+              <span>Existen en promedio </span>
+              <span className="text-lg font-semibold">5.2 </span>
+              <span className="font-semibold text-sm">ofertas </span>
+              <span>por </span>
+              <span className="font-semibold text-sm">subasta</span>
+            </div>
+          </SimpleCard>
+          <SimpleCard
+            title="Histórico de ventas"
+            titleCenter
+            className="flex-grow h-fit w-auto px-0 py-0.5"
+          >
+            <PurchasesChart />
+          </SimpleCard>
+        </div>
+        <div className="flex flex-col items-stretch">
+          <SimpleCard
+            title="Estado de las subastas"
+            titleCenter
+            className="px-0 py-0.5 w-auto"
+          >
+            <Effectivity />
+          </SimpleCard>
+          <SimpleCard
+            title="Subastas vendidas y ofertas aceptadas"
+            titleCenter
+            className="pt-0 mt-0 w-auto"
+          >
+            <div className="flex flex-col items-center w-auto">
+              <AuctionsProportion />
+              <Separator className="m-2" />
+              <OffersProportion />
+            </div>
+          </SimpleCard>
+        </div>
       </div>
     </div>
   );

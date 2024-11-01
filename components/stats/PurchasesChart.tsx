@@ -8,7 +8,16 @@ import {
   ChartTooltipContent,
 } from "../ui/chart";
 import { useEffect, useState } from "react";
-import { CartesianGrid, Label, Line, LineChart, XAxis, YAxis } from "recharts";
+import {
+  Area,
+  AreaChart,
+  CartesianGrid,
+  Label,
+  Line,
+  LineChart,
+  XAxis,
+  YAxis,
+} from "recharts";
 import { format, toDate } from "date-fns";
 import { DatePicker } from "../input/DatePicker";
 import { Select, SelectContent, SelectItem, SelectTrigger } from "../ui/select";
@@ -24,7 +33,6 @@ interface StatPerDate {
 
 export function PurchasesChart() {
   const [range, setRange] = useState({
-    // from: new Date().setFullYear(new Date().getFullYear() - 1),
     from: new Date(Date.now() - 15 * 24 * 3600 * 1000),
     to: new Date(),
   });
@@ -32,23 +40,23 @@ export function PurchasesChart() {
     queryKey: ["purchasesGraph"],
     refetchOnMount: false,
     refetchOnWindowFocus: false,
-    // queryFn: () => {
-    //   const test = new Array(20).fill(undefined).map((_, i) => {
-    //     return {
-    //       id: i,
-    //       createdAt: new Date(
-    //         Date.now() + 30 * 24 * 3600 * 1000 * Math.sin(i * i),
-    //       ).getTime(),
-    //       finalPrice: Math.exp(Math.sin(i) + Math.cos(-2 * i)) * 1000,
-    //     };
-    //   });
-    //
-    //   return test.sort((a, b) => a.createdAt - b.createdAt);
-    // },
-    queryFn: () =>
-      axios.get("/api/purchases/listAll").then((res) => {
-        return res.data.purchases as Purchase[];
-      }),
+    queryFn: () => {
+      const test = new Array(20).fill(undefined).map((_, i) => {
+        return {
+          id: i,
+          createdAt: new Date(
+            Date.now() + 30 * 24 * 3600 * 1000 * Math.sin(i * i),
+          ).getTime(),
+          finalPrice: Math.exp(Math.sin(i) + Math.cos(-2 * i)) * 1000,
+        };
+      });
+
+      return test.sort((a, b) => a.createdAt - b.createdAt);
+    },
+    // queryFn: () =>
+    //   axios.get("/api/purchases/listAll").then((res) => {
+    //     return res.data.purchases as Purchase[];
+    //   }),
   });
   const [processedData, setProcessedData] = useState<StatPerDate[]>([]);
   const [valueToShow, setValueToShow] = useState<"purchases" | "totalPrice">(
@@ -92,7 +100,7 @@ export function PurchasesChart() {
   }, [purchases.data, purchases.isSuccess, range]);
 
   return (
-    <div className="flex flex-col items-center">
+    <div className="flex flex-col items-center w-full">
       <div className="grid grid-cols-2 gap-4 pb-4">
         <DatePicker
           label="Desde"
@@ -112,7 +120,7 @@ export function PurchasesChart() {
         <SelectTrigger className="w-min text-nowrap scale-90">
           <EyeIcon className="mr-2" />
           {valueToShow === "totalPrice"
-            ? "Sumas de precios"
+            ? "Suma de precios"
             : "Conteo de ventas"}
         </SelectTrigger>
         <SelectContent>
@@ -158,12 +166,12 @@ function LineGraph({
       </div>
     );
   return data.length === 0 ? (
-    <div className="w-min min-h-32 flex flex-col justify-center">
+    <div className="min-h-32 flex flex-col justify-center">
       <span className="text-nowrap">No se encontraron datos</span>
     </div>
   ) : (
-    <ChartContainer config={config} className="w-min min-h-52 mt-2">
-      <LineChart data={data}>
+    <ChartContainer config={config} className="min-w-24 w-full mt-2">
+      <AreaChart data={data} accessibilityLayer>
         <ChartTooltip
           content={
             <ChartTooltipContent
@@ -175,7 +183,6 @@ function LineGraph({
           }
         />
         <XAxis
-          padding={{ left: 10, right: 10 }}
           type="number"
           domain={["minData", "maxData"]}
           dataKey={"dateMilli"}
@@ -194,8 +201,19 @@ function LineGraph({
           dataKey={dataKey}
         />
         <CartesianGrid />
-        <Line dataKey={dataKey} />
-      </LineChart>
+        <defs>
+          <linearGradient id="countGrad" x1={0} y1={0} x2={0} y2={1}>
+            <stop offset={"5%"} stopColor="#3182bd" stopOpacity={0.8} />
+            <stop offset={"95%"} stopColor="#3182bd" stopOpacity={0} />
+          </linearGradient>
+        </defs>
+        <Area
+          dataKey={dataKey}
+          type={"monotone"}
+          fillOpacity={1}
+          fill="url(#countGrad)"
+        />
+      </AreaChart>
     </ChartContainer>
   );
 }

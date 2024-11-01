@@ -31,11 +31,11 @@ export function SimpleCard({
     >
       {renderHeader && (
         <CardHeader
-          className={`px-7 grid ${headerActions ? "grid-cols-2" : ""} max-w-full`}
+          className={`px-6 ${headerActions ? "grid grid-cols-2" : ""} max-w-full`}
         >
-          <div>
+          <div className={`${titleCenter ? "flex justify-center" : ""}`}>
             <CardTitle
-              className={`w-full ${titleCenter ? "text-center text-xl" : ""}`}
+              className={`w-fit ${titleCenter ? "text-center text-xl" : ""}`}
             >
               {title}
             </CardTitle>
