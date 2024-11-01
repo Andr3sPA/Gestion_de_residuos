@@ -5,7 +5,7 @@ import { prismaClient } from "@/prisma/client";
 
 export async function GET(req: NextRequest) {
   const token = await getToken({ req });
-  if (!token || !token.sub) return unauthorized;
+  if (!token || !token.sub) return unauthorized();
 
   const offers = await prismaClient.offer.findMany({
     select: {
