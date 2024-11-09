@@ -22,6 +22,7 @@ export function WasteTypeForm() {
       ),
   });
   const [newTypeName, setNewTypeName] = useState("");
+  const [newEmissionFactor, setNewEmissionFactor] = useState("");
   const [loading, setLoading] = useState(false);
 
   return (
@@ -33,6 +34,7 @@ export function WasteTypeForm() {
             <label htmlFor="name" className="text-sm font-bold">
               Nombre
             </label>
+            
             <form
               onSubmit={(e) => {
                 e.preventDefault();
@@ -40,6 +42,7 @@ export function WasteTypeForm() {
                 axios
                   .post("/api/wastes/wasteTypes", {
                     name: newTypeName,
+                    emissionFactor: newEmissionFactor,
                   })
                   .then(() => {
                     types.refetch();
@@ -66,6 +69,18 @@ export function WasteTypeForm() {
                 placeholder="Ingrese el nombre del residuo"
                 value={newTypeName}
                 onChange={(e) => setNewTypeName(e.target.value)}
+              />
+                            
+                <label htmlFor="emissionFactor" className="text-sm font-bold">
+                  Factor de emisión
+                </label>
+
+              <Input
+                id="emissionFactor"
+                type="text"
+                placeholder="Ingrese el factor de emisión"
+                value={newEmissionFactor}
+                onChange={(e) => setNewEmissionFactor(e.target.value)}
               />
               <Button className="scale-90" disabled={loading} type="submit">
                 {loading ? <Loader2 className="animate-spin" /> : <SaveIcon />}
