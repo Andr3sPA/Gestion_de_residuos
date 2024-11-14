@@ -16,20 +16,20 @@ import { LoginMenu } from "../users/LoginMenu";
 import { ProfileMenu } from "../users/ProfileMenu";
 import { NavigationSheet } from "./NavigationSheet";
 import { Button } from "../ui/button";
-import { useRouter } from "next/navigation";
 import { UserSession } from "@/app/api/auth/[...nextauth]/route";
+import Link from "next/link";
 
 const navButtons = [
   { title: "Inicio", href: "/" },
   { title: "Mis residuos", href: "/manage/wastes" },
   { title: "Vender", href: "/create-auction" },
   { title: "Comprar", href: "/search/auctions" },
+  { title: "Explorar", href: "/map" },
   { title: "Admin", href: "/admin" },
 ];
 
 export default function Header() {
   const { status, data } = useSession();
-  const router = useRouter();
 
   const loggedIn = status === "authenticated";
   const isSuperAdmin =
@@ -44,32 +44,34 @@ export default function Header() {
   };
 
   return (
-    <div className="flex w-full flex-col shadow-md">
-      <header className="text-white sticky z-20 top-0 flex h-16 items-center gap-4 border-b bg-primary px-4 md:px-6">
+    <div className="flex w-full sticky top-0 z-20 flex-col shadow-md">
+      <header
+        className="text-white flex h-16 items-center gap-4 border-b bg-primary px-4 md:px-6"
+        style={{ position: "-webkit-sticky" }}
+      >
         <NavigationSheet />
         <NavigationMenu className="hidden md:block">
           <NavigationMenuList>
             {navButtons.map((btn) => (
               <NavigationMenuItem key={btn.title}>
                 <NavigationMenuLink asChild>
-                  <Button
-                    variant={"ghost"}
-                    disabled={isBtnDisabled(btn.title)}
-                    className={cn(
-                      "select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none",
-                      "transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground",
-                      "disabled:-translate-x-4",
-                      "transition ease-in duration-300",
-                      "disabled:opacity-0 disabled:w-0 disabled:p-0",
-                    )}
-                    onClick={() =>
-                      !isBtnDisabled(btn.title) && router.push(btn.href)
-                    }
-                  >
-                    <div className="text-sm font-medium leading-none">
-                      {btn.title}
-                    </div>
-                  </Button>
+                  <Link href={btn.href}>
+                    <Button
+                      variant={"ghost"}
+                      disabled={isBtnDisabled(btn.title)}
+                      className={cn(
+                        "select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none",
+                        "transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground",
+                        "disabled:-translate-x-4",
+                        "transition ease-in duration-300",
+                        "disabled:opacity-0 disabled:w-0 disabled:p-0",
+                      )}
+                    >
+                      <div className="text-sm font-medium leading-none">
+                        {btn.title}
+                      </div>
+                    </Button>
+                  </Link>
                 </NavigationMenuLink>
               </NavigationMenuItem>
             ))}
@@ -77,14 +79,14 @@ export default function Header() {
               <NavigationMenuTrigger
                 disabled={isBtnDisabled("Mis actividades")}
                 className={cn(
-                  "disabled:-translate-x-4",
+                  "disabled:-translate-x-4 z-50",
                   "bg-primary transition ease-in duration-300",
                   "disabled:opacity-0 disabled:w-0 disabled:p-0",
                 )}
               >
                 Mis actividades
               </NavigationMenuTrigger>
-              <NavigationMenuContent className="absolute z-50 p-2">
+              <NavigationMenuContent className="relative z-50 p-2">
                 <ul className="grid gap-1 p-2 md:w-[300px] lg:w-[400px] lg:grid-cols-1">
                   <ListItem
                     href="/manage/auctions"
@@ -117,29 +119,26 @@ export default function Header() {
 const ListItem = React.forwardRef<
   React.ElementRef<"a">,
   React.ComponentPropsWithoutRef<"a">
->(({ className, title, children, href }, ref) => {
-  const router = useRouter();
-
+>(({ className, title, children, href }) => {
   return (
     <li>
       <NavigationMenuLink asChild>
-        <Button
-          variant={"ghost"}
-          className={cn(
-            "block select-none space-y-1 rounded-md p-2 leading-none no-underline outline-none",
-            "transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground",
-            "w-full text-left",
-            className,
-          )}
-          onClick={() => {
-            href && router.push(href);
-          }}
-        >
-          <div className="text-sm font-medium leading-none">{title}</div>
-          <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
-            {children}
-          </p>
-        </Button>
+        <Link href={href ?? ""}>
+          <Button
+            variant={"ghost"}
+            className={cn(
+              "block select-none space-y-1 rounded-md p-2 leading-none no-underline outline-none",
+              "transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground",
+              "w-full text-left",
+              className,
+            )}
+          >
+            <div className="text-sm font-medium leading-none">{title}</div>
+            <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
+              {children}
+            </p>
+          </Button>
+        </Link>
       </NavigationMenuLink>
     </li>
   );

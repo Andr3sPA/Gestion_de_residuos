@@ -91,7 +91,7 @@ export function Proportion({ data }: { data: Auction[] | Offer[] }) {
         <div className="flex flex-wrap w-fit justify-around gap-4">
           <ChartContainer config={config} className="min-h-44 max-w-44">
             <PieChart
-              margin={{ left: 0, right: 0, top: 0, bottom: 0 }}
+              margin={{ left: 15, right: 15, top: 15, bottom: 15 }}
               className="hover:bg-accent transition-colors duration-500 rounded-md"
             >
               <Pie

@@ -12,4 +12,15 @@ const LMap = dynamic(() => import("./LeafletMap"), {
   },
 });
 
-export default LMap;
+const GMap = dynamic(() => import("./GeneralMap"), {
+  ssr: false,
+  loading: () => {
+    return (
+      <div className="flex justify-center">
+        <Loader2 className="animate-spin" />
+      </div>
+    );
+  },
+});
+
+export { LMap, GMap };

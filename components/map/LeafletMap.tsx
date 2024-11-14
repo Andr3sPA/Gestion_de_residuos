@@ -6,9 +6,15 @@ import {
 } from "leaflet";
 import "leaflet/dist/leaflet.css";
 import { useState } from "react";
-import { Circle, CircleMarker, MapContainer, TileLayer } from "react-leaflet";
+import { Circle, MapContainer, TileLayer } from "react-leaflet";
 import { MapSearchAndMark } from "./MapControls";
 import { cn } from "@/lib/utils";
+
+const position: LatLngTuple = [6.243082, -75.579098];
+const bounds: LatLngBoundsLiteral = [
+  [6.332875, -75.646512],
+  [6.131853, -75.510556],
+];
 
 export default function LeafletMap({
   mark,
@@ -26,13 +32,6 @@ export default function LeafletMap({
   const [markedPos, setMarkedPos] = useState<LatLngExpression | null>(
     mark ?? null,
   );
-
-  // TODO: define Medellín's bounds and center
-  const position: LatLngTuple = [6.243082, -75.579098];
-  const bounds: LatLngBoundsLiteral = [
-    [6.332875, -75.646512],
-    [6.131853, -75.510556],
-  ];
 
   const className =
     size === "sm"

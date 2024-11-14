@@ -161,7 +161,7 @@ export function ProfileDetails() {
         <div className="flex justify-center px-8">
           <SimpleCard
             title="Solicitudes de afiliación"
-            desc="Controla aquí que usuarios perteneces o no a tu empresa"
+            desc="Controla aquí que usuarios pertenecen o no a tu empresa"
           >
             <MembershipReqTable me={me.data.id} />
           </SimpleCard>

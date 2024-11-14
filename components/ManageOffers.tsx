@@ -61,6 +61,8 @@ interface OfferFormProps {
   auctionStatus: AuctionStatus;
 }
 
+//TODO: refetch auction
+
 export function ManageOffers({ auctionId, auctionStatus }: OfferFormProps) {
   const [selectedPurchase, setSelectedPurchase] = useState<Purchase | null>(
     null,

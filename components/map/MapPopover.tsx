@@ -1,5 +1,5 @@
 import { MapIcon } from "lucide-react";
-import LMap from "../map/ClientOnlyMap";
+import { LMap } from "../map/ClientOnlyMap";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";

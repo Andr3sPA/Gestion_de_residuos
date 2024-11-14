@@ -68,6 +68,8 @@ export function PurchasesChart() {
               result.push(res[date]);
             }
             res[date].purchases += 1;
+            if (typeof p.finalPrice === "string")
+              p.finalPrice = parseFloat(p.finalPrice);
             res[date].totalPrice += p.finalPrice;
             return res;
           },

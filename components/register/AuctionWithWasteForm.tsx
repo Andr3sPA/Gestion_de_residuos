@@ -8,7 +8,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { Input } from "@/components/ui/input";
 import { Calendar } from "@/components/ui/calendar";
-import { CalendarIcon, MapIcon, Loader2Icon, Loader2 } from "lucide-react"; // Importa el ícono de carga
+import { CalendarIcon, Loader2Icon, Loader2 } from "lucide-react"; // Importa el ícono de carga
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
 import {
@@ -165,23 +165,6 @@ export function AuctionWithWasteForm() {
               )}
             />
 
-            {/* Combobox para Unit Type */}
-            <FormField
-              control={form.control}
-              name="unitType"
-              render={({ field }) => (
-                <FormItem className="flex flex-col">
-                  <FormLabel htmlFor="unitType">Tipo de Unidad</FormLabel>
-                  <Combobox
-                    list={unitTypesData ?? []}
-                    onSelect={(option) => {
-                      form.setValue("unitType", option ? option.id : "");
-                    }}
-                  />
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
             {/* Campo de Descripción */}
             <FormField
               control={form.control}
@@ -200,6 +183,7 @@ export function AuctionWithWasteForm() {
                 </FormItem>
               )}
             />
+
             {/* Select para la categoría */}
             <FormField
               control={form.control}
@@ -227,6 +211,46 @@ export function AuctionWithWasteForm() {
               )}
             />
 
+            {/* Combobox para Unit Type */}
+            <FormField
+              control={form.control}
+              name="unitType"
+              render={({ field }) => (
+                <FormItem className="flex flex-col">
+                  <FormLabel htmlFor="unitType">Tipo de Unidad</FormLabel>
+                  <Combobox
+                    list={unitTypesData ?? []}
+                    onSelect={(option) => {
+                      form.setValue("unitType", option ? option.id : "");
+                    }}
+                  />
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            {/* Unidades */}
+            <FormField
+              control={form.control}
+              name="units"
+              render={({ field }) => (
+                <FormItem className="flex flex-col">
+                  <FormLabel>Unidades</FormLabel>
+                  <FormControl>
+                    <NumericFormat
+                      inputMode="numeric"
+                      placeholder="Número de unidades"
+                      className="text-right"
+                      value={field.value}
+                      onValueChange={(v) => field.onChange(v.floatValue)}
+                      customInput={Input}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
             {/* Precio */}
             <FormField
               control={form.control}
@@ -246,6 +270,7 @@ export function AuctionWithWasteForm() {
                 </FormItem>
               )}
             />
+
             {/* Fecha de Expiración */}
             <FormField
               control={form.control}
@@ -284,27 +309,6 @@ export function AuctionWithWasteForm() {
                 </FormItem>
               )}
             />
-            {/* Unidades */}
-            <FormField
-              control={form.control}
-              name="units"
-              render={({ field }) => (
-                <FormItem className="flex flex-col">
-                  <FormLabel>Unidades</FormLabel>
-                  <FormControl>
-                    <NumericFormat
-                      inputMode="numeric"
-                      placeholder="Número de unidades"
-                      className="text-right"
-                      value={field.value}
-                      onValueChange={(v) => field.onChange(v.floatValue)}
-                      customInput={Input}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
 
             {/* Campo de Contacto */}
             <FormField
@@ -326,6 +330,7 @@ export function AuctionWithWasteForm() {
                 </FormItem>
               )}
             />
+
             {/* Campo de Condiciones */}
             <FormField
               control={form.control}

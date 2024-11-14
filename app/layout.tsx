@@ -18,7 +18,7 @@ export default function RootLayout({
   return (
     <html lang="es" className={quicksand.className}>
       <Providers>
-        <body className="flex flex-col gap-8 min-h-screen items-center">
+        <body className="flex flex-col min-h-screen items-center">
           <Header />
           {children}
           <Toaster />

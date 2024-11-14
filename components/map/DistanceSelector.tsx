@@ -17,7 +17,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "../ui/tooltip";
-import LMap from "./ClientOnlyMap";
+import { LMap } from "./ClientOnlyMap";
 
 export interface PosDist {
   pos: LatLngTuple | null;

@@ -33,13 +33,21 @@ export function SimpleCard({
         <CardHeader
           className={`px-6 ${headerActions ? "grid grid-cols-2" : ""} max-w-full`}
         >
-          <div className={`${titleCenter ? "flex justify-center" : ""}`}>
+          <div
+            className={`${titleCenter ? "flex flex-wrap justify-center" : ""}`}
+          >
             <CardTitle
-              className={`w-fit ${titleCenter ? "text-center text-xl" : ""}`}
+              className={`w-fit ${titleCenter ? "text-center text-xl w-full" : ""}`}
             >
               {title}
             </CardTitle>
-            {desc && <CardDescription>{desc}</CardDescription>}
+            {desc && (
+              <CardDescription
+                className={`w-full text-primary ${titleCenter ? "text-center" : ""}`}
+              >
+                {desc}
+              </CardDescription>
+            )}
           </div>
           {headerActions && <div>{headerActions}</div>}
         </CardHeader>
