@@ -40,6 +40,7 @@ async function create(req: NextRequest) {
   const newType = await prismaClient.wasteType.create({
     data: {
       name: body.name,
+      emissionFactor: body.emissionFactor,
     },
   });
 
