@@ -119,11 +119,11 @@ export default function Header() {
 const ListItem = React.forwardRef<
   React.ElementRef<"a">,
   React.ComponentPropsWithoutRef<"a">
->(({ className, title, children, href }) => {
+>(({ className, title, children, href }, ref) => {
   return (
     <li>
       <NavigationMenuLink asChild>
-        <Link href={href ?? ""}>
+        <Link ref={ref} href={href ?? ""}>
           <Button
             variant={"ghost"}
             className={cn(

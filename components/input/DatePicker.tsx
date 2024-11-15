@@ -5,17 +5,27 @@ import { Button } from "../ui/button";
 import { cn } from "@/lib/utils";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "../ui/tooltip";
 
 export function DatePicker({
   label,
   dir = "vertical",
   selected,
   onSelect,
+  classname,
+  side = "bottom",
 }: {
   label?: string;
   dir?: "horizontal" | "vertical";
   selected?: Date;
   onSelect?: (date: Date) => void;
+  classname?: string;
+  side?: "top" | "right" | "bottom" | "left";
 }) {
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(selected);
   const [open, setOpen] = useState(false);
@@ -25,14 +35,20 @@ export function DatePicker({
       <PopoverTrigger asChild>
         <Button
           variant={"outline"}
-          className={cn({ "font-light": selectedDate === undefined })}
+          className={cn(
+            { "font-light": selectedDate === undefined },
+            "overflow-x-clip w-min",
+            classname,
+          )}
         >
-          {selectedDate
-            ? format(selectedDate, "PPP", { locale: es })
-            : "--/--/----"}
+          <span className="text-left overflow-x-hidden w-full">
+            {selectedDate
+              ? format(selectedDate, "PPP", { locale: es })
+              : "--/--/----"}
+          </span>
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="w-auto p-0" align="start">
+      <PopoverContent className="w-auto p-0" align="start" side={side}>
         <Calendar
           mode="single"
           selected={selectedDate}

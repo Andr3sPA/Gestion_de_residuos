@@ -9,6 +9,7 @@ import { useState } from "react";
 import { Circle, MapContainer, TileLayer } from "react-leaflet";
 import { MapSearchAndMark } from "./MapControls";
 import { cn } from "@/lib/utils";
+import { GeocodingResult } from "leaflet-control-geocoder/dist/geocoders";
 
 const position: LatLngTuple = [6.243082, -75.579098];
 const bounds: LatLngBoundsLiteral = [
@@ -19,12 +20,14 @@ const bounds: LatLngBoundsLiteral = [
 export default function LeafletMap({
   mark,
   onMarkChange,
+  onReverseGeocoding,
   disabled,
   size,
   markerRadius,
 }: {
   mark?: LatLngExpression;
   onMarkChange?: (latLng: LatLng) => void;
+  onReverseGeocoding?: (reversed: GeocodingResult | null) => void;
   disabled?: boolean;
   size: "sm" | "md" | "lg";
   markerRadius?: number;
@@ -60,6 +63,9 @@ export default function LeafletMap({
             onMarkChange && onMarkChange(pos as LatLng);
           }
         }}
+        onReverseGeocoding={
+          onReverseGeocoding ? (r) => onReverseGeocoding(r[0]) : undefined
+        }
       />
       {markedPos && markerRadius && (
         <Circle center={markedPos} radius={markerRadius} />

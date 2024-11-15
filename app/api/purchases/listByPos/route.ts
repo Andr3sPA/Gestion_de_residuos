@@ -7,6 +7,7 @@ type WasteSold = {
   wasteType: string;
   units: number;
   unitType: string;
+  date: Date;
 };
 
 export type PurchasesByPos = {
@@ -47,6 +48,7 @@ export async function GET(req: NextRequest) {
       wasteType: purchase.auction.waste.wasteType.name,
       units: purchase.auction.units.toNumber(),
       unitType: purchase.auction.waste.unitType.name,
+      date: purchase.createdAt,
     });
   });
 
