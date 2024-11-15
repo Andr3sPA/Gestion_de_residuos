@@ -8,6 +8,7 @@ import { Separator } from "@radix-ui/react-dropdown-menu";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import { useSession } from "next-auth/react";
+import { CO2Chart } from "./CO2Chart";
 
 export function Stats() {
   const { status, data } = useSession();
@@ -67,7 +68,16 @@ export function Stats() {
           )}
         </SimpleCard>
         <SimpleCard
+          title="Contribución de tu empresa al medioambiente"
+          desc="Estas son las emisiones de carbono que tu empresa logró evitar con la venta y compra de residuos"
+          titleCenter
+          className="flex-grow overflow-auto h-fit w-auto px-0 py-0.5"
+        >
+          <CO2Chart />
+        </SimpleCard>
+        <SimpleCard
           title="Histórico de ventas"
+          desc="Resumen de ventas hechas en la plataforma"
           titleCenter
           className="flex-grow overflow-auto h-fit w-auto px-0 py-0.5"
         >
