@@ -51,7 +51,7 @@ export default function Dev() {
     <div className="w-full h-full flex flex-col justify-center">
       <div
         className={cn(
-          "flex flex-col gap-2 justify-center absolute left-0 z-10 m-2",
+          "flex flex-col gap-2 justify-center fixed left-0 top-36 z-10 m-2",
           "opacity-60 hover:opacity-100 transition-opacity duration-300 ease-out",
         )}
       >
