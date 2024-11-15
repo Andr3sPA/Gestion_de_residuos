@@ -66,7 +66,7 @@ export function MapSearchAndMark({
         reverseGeocode(e.geocode.center);
       })
       .addTo(map);
-  }, [map, onMarkChange]);
+  }, [map, onMarkChange, reverseGeocode]);
 
   return markedPos ? <Marker position={markedPos} /> : null;
 }
