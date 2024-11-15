@@ -23,15 +23,37 @@ export async function GET(req: NextRequest) {
   const wasteTypes = await prismaClient.wasteType.findMany();
   if (!wasteTypes) return NextResponse.json({ error: "internal error" }, { status: 500 })
   for (let i = 0; i < wasteTypes.length; i++) {
-    const wasteSum = await prismaClient.waste.aggregate({
-        where: { 
-          companyOwnerId: user?.companyId, 
-          wasteTypeId: wasteTypes[i].id
-        },
-        _sum: {
+    const wasteSum = await prismaClient.auction.aggregate({
+      where: { 
+        OR: [
+          {
+            companySellerId: user?.companyId,
+            waste: {
+              wasteTypeId: wasteTypes[i].id
+              },
+            status:"sold"  
+            
+          },
+          {
+            status:"sold" ,
+            purchase: {
+              offer: {
+                companyBuyerId:user?.companyId,
+                status:"accepted"
+              }
+            },
+            waste: {
+                wasteTypeId: wasteTypes[i].id
+              
+            }
+          }
+        ]
+      },
+      _sum: {
           units: true
-        }
-      })
+        
+      }
+    });
     CO2Avoided.push({
         name: wasteTypes[i].name,
         avoidedCO2: (Number(wasteSum._sum.units) ?? 0) * Number(wasteTypes[i].emissionFactor)
