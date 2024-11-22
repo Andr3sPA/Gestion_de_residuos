@@ -2,7 +2,7 @@
 
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
-import { PurchasesByPos } from "../api/purchases/listByPos/route";
+import { AuctionsByPos } from "../api/purchases/listAuctionsByPos/route";
 import { GMap } from "@/components/map/ClientOnlyMap";
 import { Loader2 } from "lucide-react";
 import { DatePicker } from "@/components/input/DatePicker";
@@ -15,13 +15,13 @@ export default function Dev() {
     from: new Date(Date.now() - 30 * 24 * 3600 * 1000),
     to: new Date(),
   });
-  const [filteredPurchases, setFilteredPurchases] = useState<PurchasesByPos>(
+  const [filteredPurchases, setFilteredPurchases] = useState<AuctionsByPos>(
     [],
   );
-  const purchases = useQuery<PurchasesByPos>({
+  const purchases = useQuery<AuctionsByPos>({
     queryKey: ["purchasesSummary"],
     queryFn: () =>
-      axios.get("/api/purchases/listByPos").then((res) => {
+      axios.get("/api/purchases/listAuctionsByPos").then((res) => {
         return res.data.purchases;
       }),
   });
@@ -29,14 +29,14 @@ export default function Dev() {
   useEffect(() => {
     if (!purchases.isSuccess) return;
 
-    const filtered: PurchasesByPos = [];
+    const filtered: AuctionsByPos = [];
     for (let p of purchases.data) {
-      const filteredWastes = p.wastes.filter(
+      const filteredWastes = p.auctions.filter(
         (w) =>
-          new Date(w.date) > dateRange.from && new Date(w.date) < dateRange.to,
+          new Date(w.createdAt) > dateRange.from && new Date(w.createdAt) < dateRange.to,
       );
       if (filteredWastes.length > 0) {
-        filtered.push({ pos: p.pos, wastes: filteredWastes });
+        filtered.push({ pos: p.pos, auctions: filteredWastes });
       }
     }
 

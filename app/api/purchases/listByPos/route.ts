@@ -2,7 +2,6 @@ import { getToken } from "next-auth/jwt";
 import { NextRequest } from "next/server";
 import { ok, unauthorized } from "../../(utils)/responses";
 import { prismaClient } from "@/prisma/client";
-
 type WasteSold = {
   wasteType: string;
   units: number;

@@ -4,9 +4,10 @@ import "leaflet-defaulticon-compatibility";
 import "leaflet-defaulticon-compatibility/dist/leaflet-defaulticon-compatibility.css";
 import { LatLngTuple, LatLngBoundsLiteral } from "leaflet";
 import { MapContainer, Marker, Popup, TileLayer } from "react-leaflet";
-import { PurchasesByPos } from "@/app/api/purchases/listByPos/route";
+import { AuctionsByPos } from "@/app/api/purchases/listAuctionsByPos/route";
 import { Badge } from "../ui/badge";
 import { Separator } from "../ui/separator";
+import { AuctionDetails } from "../AuctionDetails";
 
 const position: LatLngTuple = [6.243082, -75.579098];
 const bounds: LatLngBoundsLiteral = [
@@ -14,7 +15,7 @@ const bounds: LatLngBoundsLiteral = [
   [6.131853, -75.510556],
 ];
 
-export default function GeneralMap({ marks }: { marks: PurchasesByPos }) {
+export default function GeneralMap({ marks }: { marks: AuctionsByPos }) {
   return (
     <MapContainer
       className={cn("w-full h-[calc(100vh_-_4rem)]")}
@@ -42,19 +43,22 @@ export default function GeneralMap({ marks }: { marks: PurchasesByPos }) {
                 "flex flex-col gap-1 pr-3 max-h-40 overflow-y-auto min-w-16",
               )}
             >
-              {m.wastes.map((w, wi) => (
+              {m.auctions.map((w, wi) => (
                 <li
                   key={wi}
                   className="flex items-center gap-6 justify-between"
                 >
                   <Badge variant={"secondary"} className="capitalize">
-                    {w.wasteType}
+                    {w.waste.wasteType.name}
                   </Badge>
                   <div className="flex items-center gap-1">
                     <span className="font-semibold">{w.units}</span>
                     <span className="capitalize text-xs font-extralight">
-                      {w.unitType}
+                      {w.waste.unitType.name}
                     </span>
+                  </div>
+                  <div>
+                  <AuctionDetails auctionInfo={w} />
                   </div>
                 </li>
               ))}
