@@ -51,6 +51,7 @@ export interface Auction {
   initialPrice: string;
   createdAt: string;
   counts: {
+    [x: string]: any;
     countOffers: number;
     countSales: number;
     countPurchases: number;

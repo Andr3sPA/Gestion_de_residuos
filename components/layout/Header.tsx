@@ -23,8 +23,6 @@ const navButtons = [
   { title: "Inicio", href: "/" },
   { title: "Mis residuos", href: "/manage/wastes" },
   { title: "Vender", href: "/create-auction" },
-  { title: "Comprar", href: "/search/auctions" },
-  { title: "Explorar", href: "/map" },
   { title: "Admin", href: "/admin" },
 ];
 
@@ -40,6 +38,8 @@ export default function Header() {
     if (isSuperAdmin && title !== "Inicio" && title !== "Admin") return true;
     if (!isSuperAdmin && title === "Admin") return true;
     if ((!loggedIn || isSuperAdmin) && title === "Mis actividades") return true;
+    if ((!loggedIn || isSuperAdmin) && title === "Comprar") return true;
+    if ((!loggedIn || isSuperAdmin) && title === "Mis ventas") return true;
     return false;
   };
 
@@ -75,6 +75,54 @@ export default function Header() {
                 </NavigationMenuLink>
               </NavigationMenuItem>
             ))}
+              <NavigationMenuItem>
+              <NavigationMenuTrigger
+                disabled={isBtnDisabled("Mis ventas")}
+                className={cn(
+                  "disabled:-translate-x-4 z-50",
+                  "bg-primary transition ease-in duration-300",
+                  "disabled:opacity-0 disabled:w-0 disabled:p-0",
+                )}
+              >
+                Mis ventas
+              </NavigationMenuTrigger>
+              <NavigationMenuContent className="relative z-50 p-2">
+                <ul className="grid gap-1 p-2 md:w-[300px] lg:w-[400px] lg:grid-cols-1">
+                  <ListItem
+                    href="/mapSales"
+                    title="Por ubicación"
+                  ></ListItem>
+                  <ListItem
+                    href="/manage/sales"
+                    title="Por lista"
+                  ></ListItem>
+                </ul>
+              </NavigationMenuContent>
+            </NavigationMenuItem>
+            <NavigationMenuItem>
+              <NavigationMenuTrigger
+                disabled={isBtnDisabled("Comprar")}
+                className={cn(
+                  "disabled:-translate-x-4 z-50",
+                  "bg-primary transition ease-in duration-300",
+                  "disabled:opacity-0 disabled:w-0 disabled:p-0",
+                )}
+              >
+                Comprar
+              </NavigationMenuTrigger>
+              <NavigationMenuContent className="relative z-50 p-2">
+                <ul className="grid gap-1 p-2 md:w-[300px] lg:w-[400px] lg:grid-cols-1">
+                  <ListItem
+                    href="/mapAuctions"
+                    title="Por ubicación"
+                  ></ListItem>
+                  <ListItem
+                    href="/search/auctions"
+                    title="Por lista"
+                  ></ListItem>
+                </ul>
+              </NavigationMenuContent>
+            </NavigationMenuItem>
             <NavigationMenuItem>
               <NavigationMenuTrigger
                 disabled={isBtnDisabled("Mis actividades")}
@@ -96,7 +144,6 @@ export default function Header() {
                     href="/manage/offers"
                     title="Mis ofertas"
                   ></ListItem>
-                  <ListItem href="/manage/sales" title="Mis ventas"></ListItem>
                   <ListItem
                     href="/manage/purchases"
                     title="Mis compras"

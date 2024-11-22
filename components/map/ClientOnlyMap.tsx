@@ -12,7 +12,17 @@ const LMap = dynamic(() => import("./LeafletMap"), {
   },
 });
 
-const GMap = dynamic(() => import("./GeneralMap"), {
+const GMap = dynamic(() => import("./AuctionsMap"), {
+  ssr: false,
+  loading: () => {
+    return (
+      <div className="flex justify-center">
+        <Loader2 className="animate-spin" />
+      </div>
+    );
+  },
+});
+const SMap = dynamic(() => import("./SalesMap"), {
   ssr: false,
   loading: () => {
     return (
@@ -23,4 +33,4 @@ const GMap = dynamic(() => import("./GeneralMap"), {
   },
 });
 
-export { LMap, GMap };
+export { LMap, GMap,SMap };

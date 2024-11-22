@@ -2,8 +2,8 @@
 
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
-import { AuctionsByPos } from "../api/purchases/listAuctionsByPos/route";
-import { GMap } from "@/components/map/ClientOnlyMap";
+import { PurchasesByPos } from "../api/purchases/listByPos/route";
+import { SMap } from "@/components/map/ClientOnlyMap";
 import { Loader2 } from "lucide-react";
 import { DatePicker } from "@/components/input/DatePicker";
 import { InfoTooltip } from "@/components/ui/info";
@@ -15,13 +15,13 @@ export default function Dev() {
     from: new Date(Date.now() - 30 * 24 * 3600 * 1000),
     to: new Date(),
   });
-  const [filteredPurchases, setFilteredPurchases] = useState<AuctionsByPos>(
+  const [filteredPurchases, setFilteredPurchases] = useState<PurchasesByPos>(
     [],
   );
-  const purchases = useQuery<AuctionsByPos>({
+  const purchases = useQuery<PurchasesByPos>({
     queryKey: ["purchasesSummary"],
     queryFn: () =>
-      axios.get("/api/purchases/listAuctionsByPos").then((res) => {
+      axios.get("/api/purchases/listByPos").then((res) => {
         return res.data.purchases;
       }),
   });
@@ -29,14 +29,14 @@ export default function Dev() {
   useEffect(() => {
     if (!purchases.isSuccess) return;
 
-    const filtered: AuctionsByPos = [];
+    const filtered: PurchasesByPos = [];
     for (let p of purchases.data) {
-      const filteredWastes = p.auctions.filter(
+      const filteredWastes = p.wastes.filter(
         (w) =>
-          new Date(w.createdAt) > dateRange.from && new Date(w.createdAt) < dateRange.to,
+          new Date(w.date) > dateRange.from && new Date(w.date) < dateRange.to,
       );
       if (filteredWastes.length > 0) {
-        filtered.push({ pos: p.pos, auctions: filteredWastes });
+        filtered.push({ pos: p.pos, wastes: filteredWastes });
       }
     }
 
@@ -84,7 +84,7 @@ export default function Dev() {
         tooltip="Aquí puedes explorar los residuos que han sido vendidos según su ubicación."
         side="left"
       />
-      <GMap marks={filteredPurchases} />
+      <SMap marks={filteredPurchases} />
     </div>
   );
 }

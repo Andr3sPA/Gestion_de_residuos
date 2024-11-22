@@ -8,12 +8,24 @@ import { AuctionsByPos } from "@/app/api/purchases/listAuctionsByPos/route";
 import { Badge } from "../ui/badge";
 import { Separator } from "../ui/separator";
 import { AuctionDetails } from "../AuctionDetails";
-
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import { PopoverArrow } from "@radix-ui/react-popover";
+import { Button } from "@/components/ui/button";
 const position: LatLngTuple = [6.243082, -75.579098];
 const bounds: LatLngBoundsLiteral = [
   [6.332875, -75.646512],
   [6.131853, -75.510556],
 ];
+const countsTranslations: { [key: string]: string } = {
+  countOffers: "Ofertas realizadas",
+  countSales: "Subastas vendidas",
+  countPurchases: "Subastas compradas",
+  countAuctions: "Subastas realizadas",
+};
 
 export default function GeneralMap({ marks }: { marks: AuctionsByPos }) {
   return (
@@ -35,7 +47,7 @@ export default function GeneralMap({ marks }: { marks: AuctionsByPos }) {
         <Marker key={i} position={m.pos as LatLngTuple}>
           <Popup>
             <h6 className="font-bold text-center w-full text-primary">
-              Ventas
+              Subastas
             </h6>
             <Separator className="my-1.5" />
             <ul
@@ -59,6 +71,26 @@ export default function GeneralMap({ marks }: { marks: AuctionsByPos }) {
                   </div>
                   <div>
                   <AuctionDetails auctionInfo={w} />
+                  </div>
+                  <div>
+                  <Popover>
+                      <PopoverTrigger asChild>
+                        <Button variant={"outline"} className="rounded-xl text-xs">
+                          Calificaciones
+                        </Button>
+                      </PopoverTrigger>
+                      <PopoverContent className="flex flex-col w-fit gap-2 text-sm max-h-none overflow-visible">
+                        <PopoverArrow className="fill-background stroke-accent stroke-2" />
+                        {Object.entries(w.counts).map(([key, value], i) => (
+                          <div key={i} className="flex gap-4 justify-between">
+                            <span className="text-left">{countsTranslations[key]}</span>
+                            <Badge variant={"secondary"}>
+                              <span className="text-right font-semibold">{value}</span>
+                            </Badge>
+                          </div>
+                        ))}
+                      </PopoverContent>
+                    </Popover>
                   </div>
                 </li>
               ))}
