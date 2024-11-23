@@ -32,6 +32,7 @@ const navButtons = [
   { title: "Mis residuos", href: "/manage/wastes" },
   { title: "Vender", href: "/create-auction" },
   { title: "Admin", href: "/admin" },
+  {title:"Explorar",href:"/mapSales" },
 ];
 
 export default function Header() {
@@ -47,7 +48,6 @@ export default function Header() {
     if (!isSuperAdmin && title === "Admin") return true;
     if ((!loggedIn || isSuperAdmin) && title === "Mis actividades") return true;
     if ((!loggedIn || isSuperAdmin) && title === "Comprar") return true;
-    if ((!loggedIn || isSuperAdmin) && title === "Mis ventas") return true;
     return false;
   };
 
@@ -80,28 +80,6 @@ export default function Header() {
           ))}
           <NavigationMenu>
             <NavigationMenuList>
-              <NavigationMenuItem>
-                <NavigationMenuTrigger
-                  disabled={isBtnDisabled("Mis ventas")}
-                  className={cn(
-                    "disabled:-translate-x-4 z-50",
-                    "bg-primary transition ease-in duration-300",
-                    "disabled:opacity-0 disabled:w-0 disabled:p-0",
-                  )}
-                >
-                  Mis ventas
-                </NavigationMenuTrigger>
-                <NavigationMenuContent className="relative z-50 p-2">
-                  <ul className="grid gap-1 p-2 md:w-[300px] lg:w-[400px] lg:grid-cols-1">
-                    <ListItem href="/mapSales" title="Por ubicación">
-                      <MapPinnedIcon />
-                    </ListItem>
-                    <ListItem href="/manage/sales" title="Por lista">
-                      <ListIcon />
-                    </ListItem>
-                  </ul>
-                </NavigationMenuContent>
-              </NavigationMenuItem>
               <NavigationMenuItem>
                 <NavigationMenuTrigger
                   disabled={isBtnDisabled("Comprar")}
@@ -139,6 +117,9 @@ export default function Header() {
                   <ul className="grid gap-1 p-2 md:w-[300px] lg:w-[400px] lg:grid-cols-1">
                     <ListItem href="/manage/auctions" title="Mis subastas">
                       <ListOrderedIcon />
+                    </ListItem>
+                    <ListItem href="/manage/sales" title="Mis ventas">
+                    <ListCheckIcon/>
                     </ListItem>
                     <ListItem href="/manage/offers" title="Mis ofertas">
                       <ListTodoIcon />
