@@ -12,6 +12,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "../ui/tooltip";
+import { add } from "date-fns";
 
 export function MapPopover({
   markedPos,
@@ -27,12 +28,14 @@ export function MapPopover({
   return (
     <div className="flex gap-2">
       <Popover>
-        <TooltipProvider>
+        <TooltipProvider delayDuration={400}>
           <Tooltip>
             <TooltipTrigger asChild>
-              <Input contentEditable={false} value={addr}></Input>
+              <Input contentEditable={false} disabled value={addr}></Input>
             </TooltipTrigger>
-            <TooltipContent className="w-64">{addr}</TooltipContent>
+            <TooltipContent hidden={addr.length <= 0} className="w-64">
+              {addr}
+            </TooltipContent>
           </Tooltip>
         </TooltipProvider>
         <PopoverTrigger asChild>

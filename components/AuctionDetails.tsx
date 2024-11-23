@@ -21,13 +21,34 @@ import { MapPopover } from "./map/MapPopover";
 import { OfferForm } from "./register/OfferForm";
 import { Badge } from "./ui/badge";
 import { cn } from "@/lib/utils";
+import { InfoIcon, StarIcon } from "lucide-react";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "./ui/tooltip";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuTrigger,
+} from "./ui/dropdown-menu";
+
+const countsTranslations: { [key: string]: string } = {
+  countOffers: "Ofertas realizadas",
+  countSales: "Subastas vendidas",
+  countPurchases: "Subastas compradas",
+  countAuctions: "Subastas realizadas",
+};
 
 export function AuctionDetails({
   auctionInfo,
   canOffer = true,
+  className,
 }: {
   auctionInfo: Auction;
   canOffer?: boolean;
+  className?: string;
 }) {
   const [popoverOpen, setPopoverOpen] = useState(false);
   const [open, setOpen] = useState(false);
@@ -48,7 +69,9 @@ export function AuctionDetails({
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button className="rounded-xl text-xs">Detalles</Button>
+        <Button className={cn("rounded-xl text-xs", className)}>
+          Detalles
+        </Button>
       </DialogTrigger>
       <DialogContent
         onPointerDownOutside={(e) => {
@@ -102,9 +125,39 @@ export function AuctionDetails({
           <div>
             <span className="text-xs font-light">Ofrecido por</span>
             <Separator />
-            <span className="text-lg font-semibold">
-              {auctionInfo.companySeller.name}
-            </span>
+            <div className="flex flex-col gap-1 items-start">
+              <span className="text-lg font-semibold inline-block">
+                {auctionInfo.companySeller.name}
+              </span>
+              {auctionInfo.counts && (
+                <DropdownMenu>
+                  <DropdownMenuTrigger>
+                    <Button variant={"outline"} size={"sm"} className="text-xs">
+                      Calificaciones
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent side="top" className="p-4">
+                    {Object.entries(auctionInfo.counts).map(
+                      ([key, value], i) => (
+                        <div
+                          key={i}
+                          className="flex gap-4 justify-between text-sm"
+                        >
+                          <span className="text-left">
+                            {countsTranslations[key]}
+                          </span>
+                          <Badge variant={"secondary"}>
+                            <span className="text-right font-semibold">
+                              {value}
+                            </span>
+                          </Badge>
+                        </div>
+                      ),
+                    )}
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              )}
+            </div>
           </div>
           <div>
             <span className="text-xs font-light">Ubicación</span>

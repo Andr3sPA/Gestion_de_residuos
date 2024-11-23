@@ -12,7 +12,7 @@ const LMap = dynamic(() => import("./LeafletMap"), {
   },
 });
 
-const GMap = dynamic(() => import("./AuctionsMap"), {
+const AMap = dynamic(() => import("./AuctionsMap"), {
   ssr: false,
   loading: () => {
     return (
@@ -33,4 +33,4 @@ const SMap = dynamic(() => import("./SalesMap"), {
   },
 });
 
-export { LMap, GMap,SMap };
+export { LMap, AMap, SMap };

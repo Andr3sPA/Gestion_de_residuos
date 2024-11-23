@@ -10,7 +10,7 @@ import { InfoTooltip } from "@/components/ui/info";
 import { useEffect, useState } from "react";
 import { cn } from "@/lib/utils";
 
-export default function Dev() {
+export default function MapSales() {
   const [dateRange, setDateRange] = useState({
     from: new Date(Date.now() - 30 * 24 * 3600 * 1000),
     to: new Date(),
@@ -88,3 +88,4 @@ export default function Dev() {
     </div>
   );
 }
+

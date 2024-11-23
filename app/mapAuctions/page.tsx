@@ -2,38 +2,37 @@
 
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
-import { AuctionsByPos } from "../api/purchases/listAuctionsByPos/route";
-import { GMap } from "@/components/map/ClientOnlyMap";
+import { AMap } from "@/components/map/ClientOnlyMap";
 import { Loader2 } from "lucide-react";
 import { DatePicker } from "@/components/input/DatePicker";
 import { InfoTooltip } from "@/components/ui/info";
 import { useEffect, useState } from "react";
 import { cn } from "@/lib/utils";
+import { AuctionsByPos } from "../api/auctions/listByPos/route";
 
-export default function Dev() {
+export default function MapAuctions() {
   const [dateRange, setDateRange] = useState({
     from: new Date(Date.now() - 30 * 24 * 3600 * 1000),
     to: new Date(),
   });
-  const [filteredPurchases, setFilteredPurchases] = useState<AuctionsByPos>(
-    [],
-  );
-  const purchases = useQuery<AuctionsByPos>({
-    queryKey: ["purchasesSummary"],
+  const [filteredPurchases, setFilteredPurchases] = useState<AuctionsByPos>([]);
+  const auctions = useQuery<AuctionsByPos>({
+    queryKey: ["auctionsByPos"],
     queryFn: () =>
-      axios.get("/api/purchases/listAuctionsByPos").then((res) => {
-        return res.data.purchases;
+      axios.get("/api/auctions/listByPos").then((res) => {
+        return res.data.auctions;
       }),
   });
 
   useEffect(() => {
-    if (!purchases.isSuccess) return;
+    if (!auctions.isSuccess) return;
 
     const filtered: AuctionsByPos = [];
-    for (let p of purchases.data) {
+    for (let p of auctions.data) {
       const filteredWastes = p.auctions.filter(
         (w) =>
-          new Date(w.createdAt) > dateRange.from && new Date(w.createdAt) < dateRange.to,
+          new Date(w.createdAt) > dateRange.from &&
+          new Date(w.createdAt) < dateRange.to,
       );
       if (filteredWastes.length > 0) {
         filtered.push({ pos: p.pos, auctions: filteredWastes });
@@ -41,9 +40,9 @@ export default function Dev() {
     }
 
     setFilteredPurchases(filtered);
-  }, [purchases.isSuccess, purchases.data, dateRange]);
+  }, [auctions.isSuccess, auctions.data, dateRange]);
 
-  return purchases.isLoading ? (
+  return auctions.isLoading ? (
     <div className="flex justify-center items-center w-full p-8 max-h-screen">
       <Loader2 className="animate-spin" />
     </div>
@@ -84,7 +83,7 @@ export default function Dev() {
         tooltip="Aquí puedes explorar las subastas según su ubicación."
         side="left"
       />
-      <GMap marks={filteredPurchases} />
+      <AMap marks={filteredPurchases} />
     </div>
   );
 }

@@ -18,6 +18,14 @@ import { NavigationSheet } from "./NavigationSheet";
 import { Button } from "../ui/button";
 import { UserSession } from "@/app/api/auth/[...nextauth]/route";
 import Link from "next/link";
+import {
+  ListCheckIcon,
+  ListCollapseIcon,
+  ListIcon,
+  ListOrderedIcon,
+  ListTodoIcon,
+  MapPinnedIcon,
+} from "lucide-react";
 
 const navButtons = [
   { title: "Inicio", href: "/" },
@@ -50,109 +58,100 @@ export default function Header() {
         style={{ position: "-webkit-sticky" }}
       >
         <NavigationSheet />
-        <NavigationMenu className="hidden md:block">
-          <NavigationMenuList>
-            {navButtons.map((btn) => (
-              <NavigationMenuItem key={btn.title}>
-                <NavigationMenuLink asChild>
-                  <Link href={btn.href}>
-                    <Button
-                      variant={"ghost"}
-                      disabled={isBtnDisabled(btn.title)}
-                      className={cn(
-                        "select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none",
-                        "transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground",
-                        "disabled:-translate-x-4",
-                        "transition ease-in duration-300",
-                        "disabled:opacity-0 disabled:w-0 disabled:p-0",
-                      )}
-                    >
-                      <div className="text-sm font-medium leading-none">
-                        {btn.title}
-                      </div>
-                    </Button>
-                  </Link>
-                </NavigationMenuLink>
-              </NavigationMenuItem>
-            ))}
+        <div className="hidden md:flex">
+          {navButtons.map((btn) => (
+            <Link key={btn.title} href={btn.href}>
+              <Button
+                variant={"ghost"}
+                disabled={isBtnDisabled(btn.title)}
+                className={cn(
+                  "select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none",
+                  "transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground",
+                  "disabled:-translate-x-4",
+                  "transition ease-in duration-300",
+                  "disabled:opacity-0 disabled:w-0 disabled:p-0",
+                )}
+              >
+                <div className="text-sm font-medium leading-none">
+                  {btn.title}
+                </div>
+              </Button>
+            </Link>
+          ))}
+          <NavigationMenu>
+            <NavigationMenuList>
               <NavigationMenuItem>
-              <NavigationMenuTrigger
-                disabled={isBtnDisabled("Mis ventas")}
-                className={cn(
-                  "disabled:-translate-x-4 z-50",
-                  "bg-primary transition ease-in duration-300",
-                  "disabled:opacity-0 disabled:w-0 disabled:p-0",
-                )}
-              >
-                Mis ventas
-              </NavigationMenuTrigger>
-              <NavigationMenuContent className="relative z-50 p-2">
-                <ul className="grid gap-1 p-2 md:w-[300px] lg:w-[400px] lg:grid-cols-1">
-                  <ListItem
-                    href="/mapSales"
-                    title="Por ubicación"
-                  ></ListItem>
-                  <ListItem
-                    href="/manage/sales"
-                    title="Por lista"
-                  ></ListItem>
-                </ul>
-              </NavigationMenuContent>
-            </NavigationMenuItem>
-            <NavigationMenuItem>
-              <NavigationMenuTrigger
-                disabled={isBtnDisabled("Comprar")}
-                className={cn(
-                  "disabled:-translate-x-4 z-50",
-                  "bg-primary transition ease-in duration-300",
-                  "disabled:opacity-0 disabled:w-0 disabled:p-0",
-                )}
-              >
-                Comprar
-              </NavigationMenuTrigger>
-              <NavigationMenuContent className="relative z-50 p-2">
-                <ul className="grid gap-1 p-2 md:w-[300px] lg:w-[400px] lg:grid-cols-1">
-                  <ListItem
-                    href="/mapAuctions"
-                    title="Por ubicación"
-                  ></ListItem>
-                  <ListItem
-                    href="/search/auctions"
-                    title="Por lista"
-                  ></ListItem>
-                </ul>
-              </NavigationMenuContent>
-            </NavigationMenuItem>
-            <NavigationMenuItem>
-              <NavigationMenuTrigger
-                disabled={isBtnDisabled("Mis actividades")}
-                className={cn(
-                  "disabled:-translate-x-4 z-50",
-                  "bg-primary transition ease-in duration-300",
-                  "disabled:opacity-0 disabled:w-0 disabled:p-0",
-                )}
-              >
-                Mis actividades
-              </NavigationMenuTrigger>
-              <NavigationMenuContent className="relative z-50 p-2">
-                <ul className="grid gap-1 p-2 md:w-[300px] lg:w-[400px] lg:grid-cols-1">
-                  <ListItem
-                    href="/manage/auctions"
-                    title="Mis subastas"
-                  ></ListItem>
-                  <ListItem
-                    href="/manage/offers"
-                    title="Mis ofertas"
-                  ></ListItem>
-                  <ListItem
-                    href="/manage/purchases"
-                    title="Mis compras"
-                  ></ListItem>
-                </ul>
-              </NavigationMenuContent>
-            </NavigationMenuItem>
-          </NavigationMenuList>
-        </NavigationMenu>
+                <NavigationMenuTrigger
+                  disabled={isBtnDisabled("Mis ventas")}
+                  className={cn(
+                    "disabled:-translate-x-4 z-50",
+                    "bg-primary transition ease-in duration-300",
+                    "disabled:opacity-0 disabled:w-0 disabled:p-0",
+                  )}
+                >
+                  Mis ventas
+                </NavigationMenuTrigger>
+                <NavigationMenuContent className="relative z-50 p-2">
+                  <ul className="grid gap-1 p-2 md:w-[300px] lg:w-[400px] lg:grid-cols-1">
+                    <ListItem href="/mapSales" title="Por ubicación">
+                      <MapPinnedIcon />
+                    </ListItem>
+                    <ListItem href="/manage/sales" title="Por lista">
+                      <ListIcon />
+                    </ListItem>
+                  </ul>
+                </NavigationMenuContent>
+              </NavigationMenuItem>
+              <NavigationMenuItem>
+                <NavigationMenuTrigger
+                  disabled={isBtnDisabled("Comprar")}
+                  className={cn(
+                    "disabled:-translate-x-4 z-50",
+                    "bg-primary transition ease-in duration-300",
+                    "disabled:opacity-0 disabled:w-0 disabled:p-0",
+                  )}
+                >
+                  Comprar
+                </NavigationMenuTrigger>
+                <NavigationMenuContent className="relative z-50 p-2">
+                  <ul className="grid gap-1 p-2 md:w-[300px] lg:w-[400px] lg:grid-cols-1">
+                    <ListItem href="/mapAuctions" title="Por ubicación">
+                      <MapPinnedIcon />
+                    </ListItem>
+                    <ListItem href="/search/auctions" title="Por lista">
+                      <ListIcon />
+                    </ListItem>
+                  </ul>
+                </NavigationMenuContent>
+              </NavigationMenuItem>
+              <NavigationMenuItem>
+                <NavigationMenuTrigger
+                  disabled={isBtnDisabled("Mis actividades")}
+                  className={cn(
+                    "disabled:-translate-x-4 z-50",
+                    "bg-primary transition ease-in duration-300",
+                    "disabled:opacity-0 disabled:w-0 disabled:p-0",
+                  )}
+                >
+                  Mis actividades
+                </NavigationMenuTrigger>
+                <NavigationMenuContent className="relative z-50 p-2">
+                  <ul className="grid gap-1 p-2 md:w-[300px] lg:w-[400px] lg:grid-cols-1">
+                    <ListItem href="/manage/auctions" title="Mis subastas">
+                      <ListOrderedIcon />
+                    </ListItem>
+                    <ListItem href="/manage/offers" title="Mis ofertas">
+                      <ListTodoIcon />
+                    </ListItem>
+                    <ListItem href="/manage/purchases" title="Mis compras">
+                      <ListCheckIcon />
+                    </ListItem>
+                  </ul>
+                </NavigationMenuContent>
+              </NavigationMenuItem>
+            </NavigationMenuList>
+          </NavigationMenu>
+        </div>
         <div className="flex w-full items-center gap-4 md:ml-auto md:gap-2 lg:gap-4">
           <div className="ml-auto flex-1 sm:flex-initial"></div>
           <NotificationComponent disabled={!loggedIn || isSuperAdmin} />
@@ -180,10 +179,10 @@ const ListItem = React.forwardRef<
               className,
             )}
           >
-            <div className="text-sm font-medium leading-none">{title}</div>
-            <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
+            <div className="flex items-center gap-2 text-sm font-medium leading-none">
               {children}
-            </p>
+              <span>{title}</span>
+            </div>
           </Button>
         </Link>
       </NavigationMenuLink>

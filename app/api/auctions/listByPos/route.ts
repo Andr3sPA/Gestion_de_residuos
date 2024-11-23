@@ -19,9 +19,9 @@ export async function GET(req: NextRequest) {
   });
 
   const auctions = await prismaClient.auction.findMany({
-    where:{
-        status:"available",
-        companySellerId: user?.companyId ? { not: user.companyId } : undefined
+    where: {
+      status: "available",
+      companySellerId: user?.companyId ? { not: user.companyId } : undefined,
     },
     select: {
       id: true,
@@ -31,26 +31,26 @@ export async function GET(req: NextRequest) {
       pickupLongitude: true,
       createdAt: true,
       status: true,
-      companySellerId:true,
-      conditions:true,
-      contact:true,
-      expiresAt:true,
+      companySellerId: true,
+      conditions: true,
+      contact: true,
+      expiresAt: true,
       wasteId: true,
       waste: {
         select: {
-          category:true,
+          category: true,
           description: true,
           wasteType: {
             select: {
-              name: true
-            }
+              name: true,
+            },
           },
           unitType: {
             select: {
-              name: true
-            }
-          }
-        }
+              name: true,
+            },
+          },
+        },
       },
       companySeller: {
         select: {
@@ -58,14 +58,14 @@ export async function GET(req: NextRequest) {
           description: true,
           offers: true,
           auctions: true,
-        }
-      }
+        },
+      },
     },
   });
   const auctionsWithCounts = await Promise.all(
     auctions.map(async (auction) => {
-      const countOffers = auction.companySeller.offers.length
-  
+      const countOffers = auction.companySeller.offers.length;
+
       const countSales = await prismaClient.purchase.count({
         where: {
           auction: {
@@ -73,7 +73,7 @@ export async function GET(req: NextRequest) {
           },
         },
       });
-  
+
       const countPurchases = await prismaClient.purchase.count({
         where: {
           offer: {
@@ -81,9 +81,9 @@ export async function GET(req: NextRequest) {
           },
         },
       });
-  
-      const countAuctions = auction.companySeller.auctions.length
-  
+
+      const countAuctions = auction.companySeller.auctions.length;
+
       return {
         ...auction,
         counts: {
@@ -93,7 +93,7 @@ export async function GET(req: NextRequest) {
           countAuctions,
         },
       };
-    })
+    }),
   );
 
   const auctionsByPos: {
@@ -115,5 +115,5 @@ export async function GET(req: NextRequest) {
       auctions: v,
     }),
   );
-  return ok({ purchases: auctionsAvailable });
+  return ok({ auctions: auctionsAvailable });
 }
