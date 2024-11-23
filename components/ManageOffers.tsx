@@ -232,29 +232,32 @@ export function ManageOffers({ auctionId, auctionStatus }: OfferFormProps) {
   let canAcceptReject = auctionStatus === "available";
 
   return (
-    <AlertDialog>
-      <AlertDialogTrigger asChild>
-        <Button variant="outline">Mostrar</Button>
-      </AlertDialogTrigger>
-      <AlertDialogContent className="w-2/3 max-w-full max-h-full">
-        <AlertDialogHeader className="w-full overflow-auto max-w-full">
-          <AlertDialogTitle>Ofertas de la subasta {auctionId}</AlertDialogTitle>
-          <AlertDialogDescription></AlertDialogDescription>
-          {offers.isLoading ? (
-            <div className="w-full min-h-8 flex justify-center items-center">
-              <Loader2Icon className="animate-spin" />
-            </div>
-          ) : (
-            !offers.isError && (
-              <TableList columns={columns} data={offers.data || []} />
-            )
-          )}
-          {offers.isError && <div>{offers.error.message}</div>}
-        </AlertDialogHeader>
-        <AlertDialogFooter>
-          <AlertDialogCancel>Cerrar</AlertDialogCancel>
-        </AlertDialogFooter>
-      </AlertDialogContent>
-    </AlertDialog>
+<AlertDialog>
+  <AlertDialogTrigger asChild>
+    <Button variant="outline">Mostrar</Button>
+  </AlertDialogTrigger>
+  <AlertDialogContent className="w-[1300px] max-w-full max-h-full">
+    <AlertDialogHeader className="w-full overflow-auto max-w-full">
+      <AlertDialogTitle>Ofertas de la subasta {auctionId}</AlertDialogTitle>
+      <AlertDialogDescription></AlertDialogDescription>
+      {offers.isLoading ? (
+        <div className="w-full min-h-8 flex justify-center items-center">
+          <Loader2Icon className="animate-spin" />
+        </div>
+      ) : (
+        !offers.isError && (
+          <div className="w-[1250px] max-w-full">
+            <TableList columns={columns} data={offers.data || []} />
+          </div>
+        )
+      )}
+      {offers.isError && <div>{offers.error.message}</div>}
+    </AlertDialogHeader>
+    <AlertDialogFooter>
+      <AlertDialogCancel>Cerrar</AlertDialogCancel>
+    </AlertDialogFooter>
+  </AlertDialogContent>
+</AlertDialog>
+
   );
 }

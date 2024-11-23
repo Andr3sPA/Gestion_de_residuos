@@ -8,6 +8,10 @@ import { AuctionsByPos } from "@/app/api/purchases/listAuctionsByPos/route";
 import { Badge } from "../ui/badge";
 import { Separator } from "../ui/separator";
 import { AuctionDetails } from "../AuctionDetails";
+import { Auction } from "@/app/manage/auctions/page";
+import { ColumnDef } from "@tanstack/react-table";
+
+import { SimpleCard } from "@/components/common/SimpleCard";
 import {
   Popover,
   PopoverContent,
@@ -15,17 +19,73 @@ import {
 } from "@/components/ui/popover";
 import { PopoverArrow } from "@radix-ui/react-popover";
 import { Button } from "@/components/ui/button";
+import { Table } from "lucide-react";
+import { TableList } from "../common/TableList";
+
 const position: LatLngTuple = [6.243082, -75.579098];
 const bounds: LatLngBoundsLiteral = [
   [6.332875, -75.646512],
   [6.131853, -75.510556],
 ];
+
 const countsTranslations: { [key: string]: string } = {
   countOffers: "Ofertas realizadas",
   countSales: "Subastas vendidas",
   countPurchases: "Subastas compradas",
   countAuctions: "Subastas realizadas",
 };
+
+const columns: ColumnDef<Auction>[] = [
+  {
+    accessorKey: "waste type",
+    header: "",
+    enableColumnFilter: true,
+    filterFn: "equalsString",
+    cell: ({ row }) => (
+      <>
+        <Badge variant={"secondary"} className="capitalize">
+          {row.original.waste.wasteType.name}
+        </Badge>
+        <div className="flex items-center gap-1">
+          <span className="font-semibold">{row.original.units}</span>
+          <span className="capitalize text-xs font-extralight">
+            {row.original.waste.unitType.name}
+          </span>
+        </div>
+      </>
+    ),
+    enableSorting: true,
+  },
+  {
+    accessorKey: "Offer",
+    header: "",
+    cell: ({ row }) => <AuctionDetails auctionInfo={row.original} />,
+  },
+  {
+    accessorKey: "Califications",
+    header: "",
+    cell: ({ row }) => (
+      <Popover>
+        <PopoverTrigger asChild>
+          <Button variant={"outline"} className="rounded-xl text-xs">
+            Calificaciones
+          </Button>
+        </PopoverTrigger>
+        <PopoverContent className="flex flex-col w-fit gap-2 text-sm max-h-none overflow-visible">
+          <PopoverArrow className="fill-background stroke-accent stroke-2" />
+          {Object.entries(row.original.counts).map(([key, value], i) => (
+            <div key={i} className="flex gap-4 justify-between">
+              <span className="text-left">{countsTranslations[key]}</span>
+              <Badge variant={"secondary"}>
+                <span className="text-right font-semibold">{value}</span>
+              </Badge>
+            </div>
+          ))}
+        </PopoverContent>
+      </Popover>
+    ),
+  },
+];
 
 export default function GeneralMap({ marks }: { marks: AuctionsByPos }) {
   return (
@@ -45,59 +105,14 @@ export default function GeneralMap({ marks }: { marks: AuctionsByPos }) {
       />
       {marks.map((m, i) => (
         <Marker key={i} position={m.pos as LatLngTuple}>
-          <Popup>
-            <h6 className="font-bold text-center w-full text-primary">
-              Subastas
-            </h6>
-            <Separator className="my-1.5" />
-            <ul
-              className={cn(
-                "flex flex-col gap-1 pr-3 max-h-40 overflow-y-auto min-w-16",
-              )}
-            >
-              {m.auctions.map((w, wi) => (
-                <li
-                  key={wi}
-                  className="flex items-center gap-6 justify-between"
-                >
-                  <Badge variant={"secondary"} className="capitalize">
-                    {w.waste.wasteType.name}
-                  </Badge>
-                  <div className="flex items-center gap-1">
-                    <span className="font-semibold">{w.units}</span>
-                    <span className="capitalize text-xs font-extralight">
-                      {w.waste.unitType.name}
-                    </span>
-                  </div>
-                  <div>
-                  <AuctionDetails auctionInfo={w} />
-                  </div>
-                  <div>
-                  <Popover>
-                      <PopoverTrigger asChild>
-                        <Button variant={"outline"} className="rounded-xl text-xs">
-                          Calificaciones
-                        </Button>
-                      </PopoverTrigger>
-                      <PopoverContent className="flex flex-col w-fit gap-2 text-sm max-h-none overflow-visible">
-                        <PopoverArrow className="fill-background stroke-accent stroke-2" />
-                        {Object.entries(w.counts).map(([key, value], i) => (
-                          <div key={i} className="flex gap-4 justify-between">
-                            <span className="text-left">{countsTranslations[key]}</span>
-                            <Badge variant={"secondary"}>
-                              <span className="text-right font-semibold">{value}</span>
-                            </Badge>
-                          </div>
-                        ))}
-                      </PopoverContent>
-                    </Popover>
-                  </div>
-                </li>
-              ))}
-            </ul>
+          <Popup maxWidth={500} className="overflow-visible">
+            <div className="w-[380px]">
+              <TableList columns={columns} data={m.auctions} />
+            </div>
           </Popup>
         </Marker>
       ))}
     </MapContainer>
   );
 }
+
