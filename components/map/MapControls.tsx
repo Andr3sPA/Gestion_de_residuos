@@ -1,16 +1,17 @@
-import { Marker } from "react-leaflet";
-import { useEffect, useRef } from "react";
-import { useMapEvent } from "react-leaflet";
-import L, { latLng, LatLngExpression, LatLngLiteral } from "leaflet";
+import { Marker, useMapEvents } from "react-leaflet";
+import { useEffect, useRef, useState } from "react";
+import L, { LatLngExpression, LatLngLiteral } from "leaflet";
 
 import "leaflet-defaulticon-compatibility";
 import "leaflet-defaulticon-compatibility/dist/leaflet-defaulticon-compatibility.css";
 import "leaflet-control-geocoder/dist/Control.Geocoder.css";
 import Geocoder, { geocoders } from "leaflet-control-geocoder";
 import {
+  GeocodingCallback,
   GeocodingResult,
   Nominatim,
 } from "leaflet-control-geocoder/dist/geocoders";
+import { useGeocoder } from "@/hooks/use-geocoder";
 
 export function MapSearchAndMark({
   onMarkChange,
@@ -18,37 +19,24 @@ export function MapSearchAndMark({
   onReverseGeocoding,
 }: {
   onMarkChange: (latLng: LatLngExpression) => void;
-  onReverseGeocoding?: (reversed: GeocodingResult[]) => void;
+  onReverseGeocoding?: (reversed: GeocodingResult[] | undefined) => void;
   markedPos: LatLngExpression | null;
 }) {
   let gcControl = useRef<Geocoder | null>(null);
-  let geocoder = useRef<Nominatim | null>(null);
+  const { reverseGeocode } = useGeocoder();
 
-  const reverseGeocode = (latLng: LatLngLiteral) => {
-    if (onReverseGeocoding && map.options.crs) {
-      geocoder.current?.reverse(
-        latLng,
-        1 << 26, // scale of 2^26, this is the max scale with max detail
-        (res) => {
-          onReverseGeocoding(res);
-        },
-      );
-    }
-  };
-
-  const map = useMapEvent("click", (e) => {
-    onMarkChange(e.latlng);
-    reverseGeocode(e.latlng);
+  const map = useMapEvents({
+    click: (e) => {
+      onMarkChange(e.latlng);
+      onReverseGeocoding && reverseGeocode(e.latlng, onReverseGeocoding);
+    },
   });
 
   useEffect(() => {
-    if (gcControl.current || geocoder.current) return;
-
-    geocoder.current = new geocoders.Nominatim();
+    if (gcControl.current) return;
 
     gcControl.current = new Geocoder({
       defaultMarkGeocode: false,
-      geocoder: geocoder.current,
     });
 
     gcControl.current
@@ -63,7 +51,8 @@ export function MapSearchAndMark({
         map.fitBounds(poly.getBounds());
         onMarkChange(e.geocode.center);
 
-        reverseGeocode(e.geocode.center);
+        onReverseGeocoding &&
+          reverseGeocode(e.geocode.center, onReverseGeocoding);
       })
       .addTo(map);
   }, [map, onMarkChange, reverseGeocode]);

@@ -131,7 +131,7 @@ export function AuctionDetails({
               </span>
               {auctionInfo.counts && (
                 <DropdownMenu>
-                  <DropdownMenuTrigger>
+                  <DropdownMenuTrigger asChild>
                     <Button variant={"outline"} size={"sm"} className="text-xs">
                       Calificaciones
                     </Button>

@@ -24,8 +24,8 @@ export function InfoTooltip({
             <InfoIcon className="stroke-primary stroke-2" />
           </div>
         </TooltipTrigger>
-        <TooltipContent side={side}>
-          <p className="p-1">{tooltip}</p>
+        <TooltipContent side={side} className="max-w-[60vw]">
+          <p className="p-1 text-wrap">{tooltip}</p>
         </TooltipContent>
       </Tooltip>
     </TooltipProvider>

@@ -1,29 +1,41 @@
+"use client";
+
 import { MapIcon } from "lucide-react";
 import { LMap } from "../map/ClientOnlyMap";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
-import { LatLng } from "leaflet";
-import { LatLngTuple } from "leaflet";
-import { useState } from "react";
+import { LatLng, LatLngExpression } from "leaflet";
+import { useEffect, useState } from "react";
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
 } from "../ui/tooltip";
-import { add } from "date-fns";
+import { useGeocoder } from "@/hooks/use-geocoder";
 
 export function MapPopover({
   markedPos,
   onMarkChange,
   enableEdit = true,
 }: {
-  markedPos?: LatLngTuple;
+  markedPos?: LatLngExpression;
   onMarkChange?: (pos: LatLng) => void;
   enableEdit?: boolean;
 }) {
   const [addr, setAddr] = useState("");
+  const [addrInitialized, setAddrInitialized] = useState(false);
+  const { reverseGeocode } = useGeocoder();
+
+  useEffect(() => {
+    if (!addrInitialized && markedPos) {
+      reverseGeocode(markedPos, (r) => {
+        setAddr(r[0].properties?.display_name);
+        setAddrInitialized(true);
+      });
+    }
+  }, [reverseGeocode, addrInitialized]);
 
   return (
     <div className="flex gap-2">
@@ -33,7 +45,10 @@ export function MapPopover({
             <TooltipTrigger asChild>
               <Input contentEditable={false} disabled value={addr}></Input>
             </TooltipTrigger>
-            <TooltipContent hidden={addr.length <= 0} className="w-64">
+            <TooltipContent
+              hidden={addr.length <= 0}
+              className="w-64 font-normal"
+            >
               {addr}
             </TooltipContent>
           </Tooltip>
@@ -50,6 +65,7 @@ export function MapPopover({
             disabled={!enableEdit}
             onMarkChange={onMarkChange}
             onReverseGeocoding={(r) => {
+              if (!enableEdit) return;
               if (!r) {
                 setAddr("");
                 return;

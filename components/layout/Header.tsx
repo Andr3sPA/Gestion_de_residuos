@@ -19,7 +19,7 @@ import { Button } from "../ui/button";
 import { UserSession } from "@/app/api/auth/[...nextauth]/route";
 import Link from "next/link";
 import {
-  ListCheckIcon,
+  ListChecksIcon,
   ListCollapseIcon,
   ListIcon,
   ListOrderedIcon,
@@ -32,7 +32,7 @@ const navButtons = [
   { title: "Mis residuos", href: "/manage/wastes" },
   { title: "Vender", href: "/create-auction" },
   { title: "Admin", href: "/admin" },
-  {title:"Explorar",href:"/mapSales" },
+  { title: "Explorar ventas", href: "/mapSales" },
 ];
 
 export default function Header() {
@@ -118,14 +118,14 @@ export default function Header() {
                     <ListItem href="/manage/auctions" title="Mis subastas">
                       <ListOrderedIcon />
                     </ListItem>
-                    <ListItem href="/manage/sales" title="Mis ventas">
-                    <ListCheckIcon/>
-                    </ListItem>
                     <ListItem href="/manage/offers" title="Mis ofertas">
                       <ListTodoIcon />
                     </ListItem>
+                    <ListItem href="/manage/sales" title="Mis ventas">
+                      <ListChecksIcon />
+                    </ListItem>
                     <ListItem href="/manage/purchases" title="Mis compras">
-                      <ListCheckIcon />
+                      <ListCollapseIcon />
                     </ListItem>
                   </ul>
                 </NavigationMenuContent>

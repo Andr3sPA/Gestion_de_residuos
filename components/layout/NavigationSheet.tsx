@@ -33,7 +33,7 @@ export function NavigationSheet() {
     { title: "Mis residuos", href: "/manage/wastes" },
     { title: "Vender", href: "/create-auction" },
     { title: "Comprar", href: "/search/auctions" },
-    { title: "Explorar", href: "/map" },
+    { title: "Explorar ventas", href: "/mapSales" },
   ];
 
   const activityButtons = [

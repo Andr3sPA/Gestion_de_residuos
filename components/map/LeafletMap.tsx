@@ -2,6 +2,7 @@ import {
   LatLng,
   LatLngBoundsLiteral,
   LatLngExpression,
+  LatLngLiteral,
   LatLngTuple,
 } from "leaflet";
 import "leaflet/dist/leaflet.css";
@@ -64,7 +65,9 @@ export default function LeafletMap({
           }
         }}
         onReverseGeocoding={
-          onReverseGeocoding ? (r) => onReverseGeocoding(r[0]) : undefined
+          onReverseGeocoding
+            ? (r) => onReverseGeocoding(r ? r[0] : null)
+            : undefined
         }
       />
       {markedPos && markerRadius && (
