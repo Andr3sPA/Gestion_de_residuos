@@ -9,6 +9,7 @@ import { SimpleCard } from "../common/SimpleCard";
 import { Combobox } from "../input/Combobox";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
+import { NumericFormat } from "react-number-format";
 
 export function WasteTypeForm() {
   const types = useQuery({
@@ -22,19 +23,15 @@ export function WasteTypeForm() {
       ),
   });
   const [newTypeName, setNewTypeName] = useState("");
-  const [newEmissionFactor, setNewEmissionFactor] = useState("");
+  const [newEmissionFactor, setNewEmissionFactor] = useState("0");
   const [loading, setLoading] = useState(false);
 
   return (
     <SimpleCard className="h-fit" title="Crear tipos de residuo">
       {types.isLoading && <Loader2 className="animate-spin" />}
       {types.isSuccess && (
-        <div className="w-full justify-start grid grid-rows-2 gap-4">
+        <div className="w-full sm:justify-start justify-center grid grid-rows-2 gap-4">
           <div className="w-full">
-            <label htmlFor="name" className="text-sm font-bold">
-              Nombre
-            </label>
-            
             <form
               onSubmit={(e) => {
                 e.preventDefault();
@@ -61,27 +58,41 @@ export function WasteTypeForm() {
                     setLoading(false);
                   });
               }}
-              className="flex gap-2"
+              className="flex sm:flex-row flex-col sm:items-end items-center gap-2"
             >
-              <Input
-                id="name"
-                type="text"
-                placeholder="Ingrese el nombre del residuo"
-                value={newTypeName}
-                onChange={(e) => setNewTypeName(e.target.value)}
-              />
-                            
+              <div>
+                <label htmlFor="name" className="text-sm font-bold">
+                  Nombre
+                </label>
+                <Input
+                  id="name"
+                  required
+                  type="text"
+                  placeholder="Ingrese el nombre del residuo"
+                  value={newTypeName}
+                  onChange={(e) => setNewTypeName(e.target.value)}
+                />
+              </div>
+
+              <div>
                 <label htmlFor="emissionFactor" className="text-sm font-bold">
                   Factor de emisión
                 </label>
 
-              <Input
-                id="emissionFactor"
-                type="text"
-                placeholder="Ingrese el factor de emisión"
-                value={newEmissionFactor}
-                onChange={(e) => setNewEmissionFactor(e.target.value)}
-              />
+                <NumericFormat
+                  id="emissionFactor"
+                  inputMode="numeric"
+                  allowNegative={false}
+                  decimalScale={4}
+                  className="text-right"
+                  required
+                  placeholder="Ingrese el factor de emisión"
+                  value={newEmissionFactor}
+                  onChange={(e) => setNewEmissionFactor(e.target.value)}
+                  customInput={Input}
+                />
+              </div>
+
               <Button className="scale-90" disabled={loading} type="submit">
                 {loading ? <Loader2 className="animate-spin" /> : <SaveIcon />}
               </Button>
