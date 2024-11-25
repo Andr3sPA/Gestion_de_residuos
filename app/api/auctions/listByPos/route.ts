@@ -97,7 +97,7 @@ export async function GET(req: NextRequest) {
   );
 
   const auctionsByPos: {
-    [pos: string]: Auction[];
+    [pos: string]: any[];
   } = {};
 
   auctionsWithCounts.forEach((auction) => {

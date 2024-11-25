@@ -35,7 +35,7 @@ export function MapPopover({
         setAddrInitialized(true);
       });
     }
-  }, [reverseGeocode, addrInitialized]);
+  }, [reverseGeocode, addrInitialized, markedPos]);
 
   return (
     <div className="flex gap-2">
