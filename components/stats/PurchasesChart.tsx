@@ -130,7 +130,7 @@ function LineGraph({
   const config: ChartConfig = {
     totalPrice: {
       label: "Precio total",
-      color: "hsl(var(--chart-1))",
+      color: "var(--chart-1)",
     },
     dateMilli: {
       label: "Fecha",
@@ -184,8 +184,8 @@ function LineGraph({
         <CartesianGrid />
         <defs>
           <linearGradient id="countGrad" x1={0} y1={0} x2={0} y2={1}>
-            <stop offset={"5%"} stopColor="#3182bd" stopOpacity={0.8} />
-            <stop offset={"95%"} stopColor="#3182bd" stopOpacity={0} />
+            <stop offset={"5%"} stopColor="var(--chart-1)" stopOpacity={0.8} />
+            <stop offset={"95%"} stopColor="var(--chart-1)" stopOpacity={0} />
           </linearGradient>
         </defs>
         <Area

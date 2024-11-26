@@ -18,7 +18,7 @@ export function Proportion({ data }: { data: Auction[] | Offer[] }) {
     if (isAuction(data[0])) {
       const sold = data.filter((a) => a.status === "sold").length;
       proportions = [
-        { proportion: "sold", count: sold, fill: "hsl(var(--chart-1))" },
+        { proportion: "sold", count: sold, fill: "var(--chart-1)" },
       ];
     } else {
       const accepted = data.filter((o) => o.status === "accepted").length;
@@ -26,7 +26,7 @@ export function Proportion({ data }: { data: Auction[] | Offer[] }) {
         {
           proportion: "accepted",
           count: accepted,
-          fill: "hsl(var(--chart-1))",
+          fill: "var(--chart-1)",
         },
       ];
     }
@@ -35,7 +35,7 @@ export function Proportion({ data }: { data: Auction[] | Offer[] }) {
     proportions.push({
       proportion: "rest",
       count: rest,
-      fill: "hsl(var(--chart-2))",
+      fill: "var(--chart-2)",
     });
   }
 

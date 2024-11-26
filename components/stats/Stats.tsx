@@ -34,9 +34,42 @@ export function Stats() {
       </div>
     );
 
+  /* <div className="flex w-full md:px-8 p-2 md:flex-row flex-col justify-center md:items-start items-stretch"> */
+
+  /* <SimpleCard title={`Hola!, ${data?.user?.name}`} className="w-auto"> */
+  /*   {auctionsAndOffers.isLoading && ( */
+  /*     <div> */
+  /*       <Loader2 className="animate-spin" /> */
+  /*     </div> */
+  /*   )} */
+  /*   {auctionsAndOffers.isSuccess && ( */
+  /*     <div className="w-full"> */
+  /*       <span>Existen en promedio </span> */
+  /*       <span className="text-lg font-semibold"> */
+  /*         {parseFloat( */
+  /*           ( */
+  /*             auctionsAndOffers.data[1].length / */
+  /*             auctionsAndOffers.data[0].length */
+  /*           ).toFixed(1), */
+  /*         )}{" "} */
+  /*       </span> */
+  /*       <span className="font-semibold text-sm">ofertas </span> */
+  /*       <span>por </span> */
+  /*       <span className="font-semibold text-sm">subasta</span> */
+  /*     </div> */
+  /*   )} */
+  /*   {auctionsAndOffers.isError && ( */
+  /*     <div className="w-full"> */
+  /*       <span> */
+  /*         Hubo un error al cargar los datos, vuelva a recargar la página */
+  /*       </span> */
+  /*     </div> */
+  /*   )} */
+  /* </SimpleCard> */
+
   return (
-    <div className="flex w-full md:px-8 p-2 md:flex-row flex-col justify-center md:items-start items-stretch">
-      <div className="flex flex-col flex-grow items-stretch w-auto">
+    <div className="lg:px-8 w-full">
+      <div className="w-full">
         <SimpleCard title={`Hola!, ${data?.user?.name}`} className="w-auto">
           {auctionsAndOffers.isLoading && (
             <div>
@@ -67,11 +100,13 @@ export function Stats() {
             </div>
           )}
         </SimpleCard>
+      </div>
+      <div className="grid auto-rows-min lg:grid-cols-2 w-full">
         <SimpleCard
           title="Contribución de tu empresa al medioambiente"
           desc="Estas son las emisiones de carbono que tu empresa logró evitar con la venta y compra de residuos"
           titleCenter
-          className="flex-grow overflow-auto h-fit w-auto px-0 py-0.5"
+          className="flex-grow overflow-auto h-auto w-auto px-0 py-0.5"
         >
           <CO2Chart />
         </SimpleCard>
@@ -83,19 +118,17 @@ export function Stats() {
         >
           <PurchasesChart />
         </SimpleCard>
-      </div>
-      <div className="flex flex-col items-stretch">
         <SimpleCard
           title="Estado de las subastas"
           titleCenter
-          className="px-0 py-0.5 w-auto"
+          className="w-auto h-auto"
         >
           <Effectivity />
         </SimpleCard>
         <SimpleCard
           title="Subastas vendidas y ofertas aceptadas"
           titleCenter
-          className="pt-0 mt-0 w-auto"
+          className="w-auto"
         >
           <div className="flex flex-col items-center w-auto">
             {auctionsAndOffers.isLoading && (

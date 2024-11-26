@@ -25,7 +25,7 @@ export default function Home() {
 
   return (
     <Tabs defaultValue="stats" className="w-full sm:p-8 py-4">
-      <TabsList className="p-2 flex flex-wrap h-fit sm:w-fit w-full">
+      <TabsList className="p-2 flex flex-wrap h-fit sm:w-fit w-full sm:px-0 mx-2">
         <TabsTrigger value="stats">Estadísticas</TabsTrigger>
         <TabsTrigger value="reports">Subastas</TabsTrigger>
         <TabsTrigger value="me">Mi perfil y empresa</TabsTrigger>

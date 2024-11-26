@@ -50,14 +50,14 @@ export function Effectivity() {
             new Date(a.createdAt) <= range.to
           );
         }).length,
-        fill: `hsl(var(--chart-${(i % 5) + 1}))`,
+        fill: `var(--chart-${(i % 5) + 1})`,
       }),
     );
     setFilteredData(counts);
   }, [range, auctions.isSuccess, auctions.data]);
 
   return (
-    <div className="w-fit flex flex-col items-center overflow-auto">
+    <div className="w-fit h-full flex flex-col justify-around items-center overflow-auto">
       <div className="flex flex-wrap justify-center gap-4 overflow-auto">
         <DatePicker
           label="Desde"
@@ -103,14 +103,14 @@ function PieGraph({ data }: { data: AuctionsCount[] | undefined }) {
   }, [data]);
 
   return total === 0 ? (
-    <div className="flex flex-col justify-center min-h-42 m-2 px-4 rounded-md">
+    <div className="flex flex-col justify-center min-h-44 m-2 px-4 rounded-md">
       <span className="font-light">
         No hay subastas en el rango seleccionado
       </span>
     </div>
   ) : (
     <ChartContainer
-      className="sm:mt-2 m-2 mt-6 w-3/4 min-h-44 hover:bg-accent transition-colors duration-500 rounded-md"
+      className="flex-grow sm:mt-8 m-2 mt-6 w-[80%] min-h-36 hover:bg-accent transition-colors duration-500 rounded-md"
       config={config}
     >
       <PieChart>

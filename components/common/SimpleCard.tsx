@@ -27,14 +27,17 @@ export function SimpleCard({
 
   return (
     <Card
-      className={cn("w-fit p-4 m-4 border-2 shadow-md max-w-full", className)}
+      className={cn(
+        "w-fit p-0 m-4 border-2 shadow-md max-w-full overflow-x-auto",
+        className,
+      )}
     >
       {renderHeader && (
         <CardHeader
           className={`px-6 ${headerActions ? "grid grid-cols-2" : ""} max-w-full`}
         >
           <div
-            className={`${titleCenter ? "flex flex-wrap justify-center" : ""}`}
+            className={`${titleCenter ? "flex flex-wrap justify-center w-full" : ""}`}
           >
             <CardTitle
               className={`w-fit ${titleCenter ? "text-center text-xl w-full" : ""}`}
@@ -53,7 +56,7 @@ export function SimpleCard({
         </CardHeader>
       )}
       <CardContent
-        className={cn("flex justify-center max-w-full", {
+        className={cn("flex justify-center max-w-[100%] h-fit", {
           "pt-6": !renderHeader,
         })}
       >
