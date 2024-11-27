@@ -21,6 +21,9 @@ import {
 import { cn } from "@/lib/utils";
 import { useSession } from "next-auth/react";
 import { UserSession } from "@/app/api/auth/[...nextauth]/route";
+import logo from "@/public/logosimbolo_prosecto.png";
+import Image from "next/image";
+import { CopyrightIcon } from "lucide-react";
 
 export function NavigationSheet() {
   const { status, data } = useSession();
@@ -111,7 +114,16 @@ export function NavigationSheet() {
             </CollapsibleContent>
           </Collapsible>
         </nav>
-        <SheetFooter className="p-4 text-right">footer</SheetFooter>
+        <SheetFooter className="flex flex-row w-full p-4 justify-end">
+          <a target="_blank" href="https://prosecto.com.co/">
+            <Image
+              src={logo}
+              className="w-24 aspect-auto"
+              alt="Símbolo de prosecto"
+            />
+          </a>
+          <CopyrightIcon className="ml-1 w-3 h-3" />
+        </SheetFooter>
       </SheetContent>
     </Sheet>
   );
