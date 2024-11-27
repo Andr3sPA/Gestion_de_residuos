@@ -1,13 +1,14 @@
 "use client";
 
 import { GeneralReport } from "@/components/GeneralReport";
+import { Welcome } from "@/components/Home";
 import { Stats } from "@/components/stats/Stats";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ProfileDetails } from "@/components/users/ProfileDetails";
 import { Loader2 } from "lucide-react";
 import { useSession } from "next-auth/react";
 
-export default function Home() {
+export default function HomePage() {
   const { status } = useSession();
 
   if (status === "loading")
@@ -16,12 +17,7 @@ export default function Home() {
         <Loader2 className="animate-spin" />
       </div>
     );
-  if (status === "unauthenticated")
-    return (
-      <div>
-        <span>Usuario no conectado</span>
-      </div>
-    );
+  if (status === "unauthenticated") return <Welcome />;
 
   return (
     <Tabs defaultValue="stats" className="w-full sm:p-8 py-4">

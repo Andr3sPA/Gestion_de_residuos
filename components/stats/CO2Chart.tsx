@@ -17,7 +17,7 @@ export function CO2Chart() {
     queryFn: () =>
       axios.get("/api/wastes/CO2Avoided").then((res) => {
         const numColors = 5;
-        return res.data.map((e: any, i: number) => ({
+        return res.data.CO2Avoided.map((e: any, i: number) => ({
           ...e,
           fill: `var(--chart-${(i % numColors) + 1})`,
         }));

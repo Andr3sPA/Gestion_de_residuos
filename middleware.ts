@@ -27,7 +27,7 @@ export const config = {
      * - _next/image (image optimization files)
      * - favicon.ico (favicon file)
      */
-    "/((?!api/users/login|api/users/signup|$|signup|api/companies/list).*)",
+    "/((?!api/users/login|api/users/signup|$|signup|api/companies/list|api/wastes/CO2Avoided).*)",
     "/admin",
   ],
 };

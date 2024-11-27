@@ -24,7 +24,6 @@ const colors = {
   tuscany: "#B95F2E",
   zeus: "#201E18",
 };
-//TODO: apply more colors to globals.css
 
 export default colors;
 

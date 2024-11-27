@@ -1,10 +1,6 @@
 import { NextResponse } from "next/server";
 
-const commonResponse = (
-  status: number,
-  error?: string,
-  extras?: { [key: string]: any },
-) => {
+const commonResponse = (status: number, error?: string, extras?: any) => {
   return NextResponse.json({ error, ...extras }, { status });
 };
 
@@ -21,7 +17,6 @@ export const alreadyExists = (reason?: string) =>
 export const internal = (reason?: string) =>
   commonResponse(500, reason ?? "Error interno del servidor");
 
-export const ok = (data?: { [key: string]: any }) =>
-  commonResponse(200, undefined, data);
+export const ok = (data?: any) => commonResponse(200, undefined, data);
 export const created = (data?: { [key: string]: any }) =>
   commonResponse(201, undefined, data);

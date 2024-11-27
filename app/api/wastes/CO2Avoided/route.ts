@@ -1,33 +1,37 @@
 import { prismaClient } from "@/prisma/client";
 import { NextRequest, NextResponse } from "next/server";
 import { getToken } from "next-auth/jwt";
-import { unauthorized } from "../../(utils)/responses";
+import { internal, ok, unauthorized } from "../../(utils)/responses";
+import { $Enums } from "@prisma/client";
 
 export async function GET(req: NextRequest) {
   const token = await getToken({ req });
 
-  if (!token || !token.sub) {
-    return unauthorized();
+  let loggedIn = false;
+  let user = undefined;
+  if (token && token.sub) {
+    user = await prismaClient.user.findUnique({
+      where: {
+        id: parseInt(token.sub),
+      },
+    });
+    if (!user) return unauthorized();
+    if (user.role !== "superAdmin" && !user.companyId)
+      return unauthorized("El usuario no pertenece a ninguna empresa");
+    loggedIn = true;
   }
-  const user = await prismaClient.user.findUnique({
-    where: {
-      id: parseInt(token.sub),
-    },
-  });
 
-  if (!user) return unauthorized();
-  if (!user.companyId)
-    return unauthorized("El usuario no pertenece a ninguna empresa");
-  const CO2Avoided: any[] = [];
   const wasteTypes = await prismaClient.wasteType.findMany();
-  if (!wasteTypes)
-    return NextResponse.json({ error: "internal error" }, { status: 500 });
+  if (!wasteTypes) return internal("no waste types present");
+
+  const CO2Avoided: any[] = [];
   for (let i = 0; i < wasteTypes.length; i++) {
     const wasteSum = await prismaClient.auction.aggregate({
       where: {
         OR: [
           {
-            companySellerId: user?.companyId,
+            companySellerId:
+              loggedIn && user?.companyId ? user.companyId : undefined,
             waste: {
               wasteTypeId: wasteTypes[i].id,
             },
@@ -37,7 +41,8 @@ export async function GET(req: NextRequest) {
             status: "sold",
             purchase: {
               offer: {
-                companyBuyerId: user?.companyId,
+                companyBuyerId:
+                  loggedIn && user?.companyId ? user?.companyId : undefined,
                 status: "accepted",
               },
             },
@@ -59,5 +64,5 @@ export async function GET(req: NextRequest) {
     });
   }
 
-  return NextResponse.json(CO2Avoided, { status: 201 });
+  return ok({ CO2Avoided });
 }
