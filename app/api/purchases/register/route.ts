@@ -85,7 +85,7 @@ export async function POST(req: NextRequest) {
         read: false, // Asegúrate de incluir todos los campos requeridos
       },
     });
-    return NextResponse.json({ message: "offer rejected" }, { status: 201 });
+    return NextResponse.json({ message: "Oferta rechazada" }, { status: 201 });
   } else if (data.status == "accepted") {
     const offer = await prismaClient.offer.findUnique({
       where: {
@@ -184,6 +184,6 @@ export async function POST(req: NextRequest) {
         read: false, // Asegúrate de incluir todos los campos requeridos
       },
     });
-    return NextResponse.json({ message: "offer accepted" }, { status: 201 });
+    return NextResponse.json({ message: "Oferta aceptada" }, { status: 201 });
   }
 }

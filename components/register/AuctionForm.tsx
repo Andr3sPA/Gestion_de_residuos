@@ -87,7 +87,7 @@ export function AuctionForm({ wasteId, onCancel }: OfferFormProps) {
       .catch((error) => {
         toast({
           variant: "destructive",
-          title: "Error al registrar la oferta.",
+          title: "Error al registrar la subasta.",
           description: error.message,
         });
       })
@@ -284,7 +284,7 @@ export function AuctionForm({ wasteId, onCancel }: OfferFormProps) {
             {isLoading ? (
               <Loader2Icon className="animate-spin" />
             ) : (
-              "Registrar Oferta"
+              "Registrar Subasta"
             )}
           </Button>
         </div>
