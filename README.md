@@ -1,36 +1,37 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Descripción
+Este proyecto fue desarrollado como parte de un Proyecto Integrador propiciado por el área de Ingeniería de Sistemas de la Universidad de Antioquia.
+Este consiste en una aplicación web creada con Next.js para ayudar a las empresas a gestionar residuos. Incluye un mapa para encontrar residuos disponibles, roles de usuario para compradores, vendedores y recolectores, y un sistema para clasificar residuos como reciclables o no reciclables. La plataforma facilita la subasta, compra y gestión de la eliminación de residuos.
 
-## Getting Started
+## Requisitos Funcionales y No Funcionales
 
-First, run the development server:
+### **Requisitos Funcionales**
+- Registro e inicio de sesión con roles (compradores, vendedores, recolectores).  
+- Mapa interactivo para ubicar residuos.  
+- Registro y clasificación de residuos (reciclables/no reciclables).  
+- Creación de subastas y compras directas.  
+- Gestión de servicios de recolección.  
+- Notificaciones sobre transacciones y estado de residuos.  
+- Historial de subastas, compras y recolecciones.  
+- Búsqueda y filtros por categoría y ubicación.  
+
+### **Requisitos No Funcionales**
+- **Usabilidad**: Interfaz intuitiva.  
+- **Seguridad**: Autenticación y cifrado.  
+- **Escalabilidad**: Soporte para crecimiento.  
+- **Compatibilidad**: Web y móvil.  
+- **Mantenibilidad**: Código modular.  
+
+
+# Ejecución
+
+Antes de ejecutar tienes que asegurarte de instalar las dependencias necesarias:
+
+```bash
+npm install
+```
+
+Luego inicia el servidor en modo desarrollador:
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
-
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
-
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
-
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
