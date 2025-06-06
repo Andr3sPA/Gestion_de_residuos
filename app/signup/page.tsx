@@ -63,7 +63,7 @@ export default function Signup() {
     queryKey: ["companies"],
     queryFn: () =>
       axios.get("/api/companies/list").then((res) => {
-        const newL = res.data.companies.map((c: any) => ({
+        return res.data.companies.map((c: any) => ({
           id: c.id,
           label: c.name,
         }));
